@@ -4,8 +4,10 @@
 		<script type="text/javascript" src="/js/main.js"></script>
 	</head>
 	<body>
+              <div id="notearea" style="position:relative;width:100%;height:90%;">
 		{% for note in notes %}
-		<div class="note" id="{{ note.key }}">
+		<div class="note" id="{{ note.key }}" style="position:absolute;left:{{ note.x }}px;top:{{ note.y }}px;background-color:yellow;cursor:move;"
+		     onmousedown="startDrag(event)">
 			<div class="note-header">
 				{{ note.subject }}:
 			</div>
@@ -21,6 +23,6 @@
 		</form>
 
 		<a href="{{ url }}">{{ url_linktext }}</a>
-
+             </div>
 	</body>
 </html>
