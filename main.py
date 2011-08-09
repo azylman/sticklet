@@ -21,27 +21,27 @@ def guestbook_key(guestbook_name=None):
 	return db.Key.from_path('Guestbook', guestbook_name or 'default_guestbook')
 
 class MainPage(webapp.RequestHandler):
-		def get(self):
-				guestbook_name=self.request.get('guestbook_name')
-				greetings_query = StickyNote.all().ancestor(
-						guestbook_key(guestbook_name)).order('-date')
-				greetings = greetings_query.fetch(10)
+	def get(self):
+		guestbook_name=self.request.get('guestbook_name')
+		greetings_query = StickyNote.all().ancestor(
+			guestbook_key(guestbook_name)).order('-date')
+		greetings = greetings_query.fetch(10)
 
-				if users.get_current_user():
-						url = users.create_logout_url(self.request.uri)
-						url_linktext = 'Logout'
-				else:
-						url = users.create_login_url(self.request.uri)
-						url_linktext = 'Login'
+		if users.get_current_user():
+			url = users.create_logout_url(self.request.uri)
+			url_linktext = 'Logout'
+		else:
+			url = users.create_login_url(self.request.uri)
+			url_linktext = 'Login'
 
-				template_values = {
-						'greetings': greetings,
-						'url': url,
-						'url_linktext': url_linktext,
-				}
+		template_values = {
+			'greetings': greetings,
+			'url': url,
+			'url_linktext': url_linktext,
+		}
 
-				path = os.path.join(os.path.dirname(__file__), 'index.html')
-				self.response.out.write(template.render(path, template_values))
+		path = os.path.join(os.path.dirname(__file__), 'index.html')
+		self.response.out.write(template.render(path, template_values))
 
 class Guestbook(webapp.RequestHandler):
 	def post(self):
