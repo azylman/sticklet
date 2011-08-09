@@ -62,8 +62,8 @@ class Note(webapp.RequestHandler):
 				note.subject = note.content[:4]
 			else:
 				note.subject = note.content
-			note.x = 0
-			note.y = 0
+			note.x = 0.0
+			note.y = 0.0
 			note.z = 0
 
 			note.put()

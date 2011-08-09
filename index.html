@@ -5,7 +5,7 @@
 	</head>
 	<body>
 		{% for note in notes %}
-		<div class="note">
+		<div class="note" id="{{ note.key }}">
 			<div class="note-header">
 				{{ note.subject }}:
 			</div>
