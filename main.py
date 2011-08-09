@@ -1,13 +1,10 @@
 import cgi
-import datetime
 import os
-import urllib
 import wsgiref.handlers
 
 import stickynote
 
 from google.appengine.api import users
-from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -35,32 +32,8 @@ class MainPage(webapp.RequestHandler):
 		else:
 			self.redirect(users.create_login_url(self.request.uri))
 
-class Note(webapp.RequestHandler):
-	def post(self):
-		# We set the same parent key on the 'StickyNote' to ensure each greeting is in
-		# the same entity group. Queries across the single entity group will be
-		# consistent. However, the write rate to a single entity group should
-		# be limited to ~1/second.
-
-		user = users.get_current_user()
-		if user:
-			note = stickynote.snModel(parent=stickynote.key(user.email()))
-			note.author = users.get_current_user()
-			note.content = self.request.get('content')
-			if len(note.content) > 3:
-				note.subject = note.content[:4]
-			else:
-				note.subject = note.content
-			note.x = 0.0
-			note.y = 0.0
-			note.z = 0
-
-			note.put()
-		self.redirect('/')
-
 application = webapp.WSGIApplication([
-	('/', MainPage),
-	('/sign', Note)
+	('/', MainPage)
 ], debug=True)
 
 def main():
