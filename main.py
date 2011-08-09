@@ -3,25 +3,14 @@ import datetime
 import os
 import urllib
 import wsgiref.handlers
+
+import stickynote
+
 from google.appengine.api import users
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
-
-class StickyNote(db.Model):
-	"""Models an individual Guestbook entry with an author, content, and date."""
-	author = db.UserProperty()
-	content = db.StringProperty(multiline=True)
-	date = db.DateTimeProperty(auto_now_add=True)
-	subject = db.StringProperty()
-	x = db.FloatProperty()
-	y = db.FloatProperty()
-	z = db.IntegerProperty()
-
-def notepage_key(email):
-	"""Constructs a datastore key for a Guestbook entity with guestbook_name."""
-	return db.Key.from_path('StickyNote', email)
 
 class MainPage(webapp.RequestHandler):
 	def get(self):
@@ -31,8 +20,8 @@ class MainPage(webapp.RequestHandler):
 			url = users.create_logout_url(self.request.uri)
 			url_linktext = 'Logout'
 
-			notes_query = StickyNote.all().ancestor(
-				notepage_key(user.email())).order('-date')
+			notes_query = stickynote.snModel.all().ancestor(
+				stickynote.key(user.email())).order('-date')
 			notes = notes_query.fetch(10)
 
 			template_values = {
@@ -55,7 +44,7 @@ class Note(webapp.RequestHandler):
 
 		user = users.get_current_user()
 		if user:
-			note = StickyNote(parent=notepage_key(user.email()))
+			note = stickynote.snModel(parent=stickynote.key(user.email()))
 			note.author = users.get_current_user()
 			note.content = self.request.get('content')
 			if len(note.content) > 3:
