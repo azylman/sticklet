@@ -14,34 +14,34 @@ class StickyNote(db.Model):
 	author = db.UserProperty()
 	content = db.StringProperty(multiline=True)
 	date = db.DateTimeProperty(auto_now_add=True)
-	subject = db.StringProperty
+	subject = db.StringProperty()
 
-def guestbook_key(guestbook_name=None):
+def notepage_key(email):
 	"""Constructs a datastore key for a Guestbook entity with guestbook_name."""
-	return db.Key.from_path('Guestbook', guestbook_name or 'default_guestbook')
+	return db.Key.from_path('StickyNote', email)
 
 class MainPage(webapp.RequestHandler):
 	def get(self):
-		guestbook_name=self.request.get('guestbook_name')
-		greetings_query = StickyNote.all().ancestor(
-			guestbook_key(guestbook_name)).order('-date')
-		greetings = greetings_query.fetch(10)
 
-		if users.get_current_user():
+		user = users.get_current_user()
+		if user:
 			url = users.create_logout_url(self.request.uri)
 			url_linktext = 'Logout'
+
+			greetings_query = StickyNote.all().ancestor(
+				notepage_key(user.email())).order('-date')
+			greetings = greetings_query.fetch(10)
+
+			template_values = {
+				'greetings': greetings,
+				'url': url,
+				'url_linktext': url_linktext,
+			}
+
+			path = os.path.join(os.path.dirname(__file__), 'index.html')
+			self.response.out.write(template.render(path, template_values))
 		else:
-			url = users.create_login_url(self.request.uri)
-			url_linktext = 'Login'
-
-		template_values = {
-			'greetings': greetings,
-			'url': url,
-			'url_linktext': url_linktext,
-		}
-
-		path = os.path.join(os.path.dirname(__file__), 'index.html')
-		self.response.out.write(template.render(path, template_values))
+			self.redirect(users.create_login_url(self.request.uri))
 
 class Guestbook(webapp.RequestHandler):
 	def post(self):
@@ -49,15 +49,19 @@ class Guestbook(webapp.RequestHandler):
 		# the same entity group. Queries across the single entity group will be
 		# consistent. However, the write rate to a single entity group should
 		# be limited to ~1/second.
-		guestbook_name = self.request.get('guestbook_name')
-		greeting = StickyNote(parent=guestbook_key(guestbook_name))
 
-		if users.get_current_user():
+		user = users.get_current_user()
+		if user:
+			greeting = StickyNote(parent=notepage_key(user.email()))
 			greeting.author = users.get_current_user()
+			greeting.content = self.request.get('content')
+			if len(greeting.content) > 3:
+				greeting.subject = greeting.content[:4]
+			else:
+				greeting.subject = greeting.content
 
-		greeting.content = self.request.get('content')
-		greeting.put()
-		self.redirect('/?' + urllib.urlencode({'guestbook_name': guestbook_name}))
+			greeting.put()
+		self.redirect('/')
 
 application = webapp.WSGIApplication([
 	('/', MainPage),
