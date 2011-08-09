@@ -2,19 +2,17 @@ var dragged = {};
 var z = 0;
 function startDrag ( e ) {
 
-    event.stopPropagation();
+    e.stopPropagation();
 
-    var el = e.target;
-    var edd = e.currentTarget;
+    var el = e.currentTarget;
+    dragged.el = el;
 
-    dragged.el = edd;
-
-    edd.style.zIndex = ++z;
+    el.style.zIndex = ++z;
 
     dragged.x = e.clientX + window.scrollX;
     dragged.y = e.clientY + window.scrollY;
-    dragged.sx = parseInt( edd.style.left );
-    dragged.sy = parseInt( edd.style.top );
+    dragged.sx = parseInt( el.style.left );
+    dragged.sy = parseInt( el.style.top );
 
     document.addEventListener( "mousemove", dragging, true );
     document.addEventListener( "mouseup", stopDrag, true );

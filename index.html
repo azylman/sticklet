@@ -9,10 +9,10 @@
 		<div class="note" id="{{ note.key }}" style="position:absolute;left:{{ note.x }}px;top:{{ note.y }}px;background-color:yellow;cursor:move;"
 		     onmousedown="startDrag(event)">
 			<div class="note-header">
-				{{ note.subject }}:
+				<span style="cursor:text;">{{ note.subject }}:</span>
 			</div>
 			<div class="note-content">
-				<blockquote>{{ note.content|escape }}</blockquote>
+				<blockquote style="cursor:text;">{{ note.content|escape }}</blockquote>
 			</div>
 		</div>
 		{% endfor %}
