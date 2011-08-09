@@ -43,7 +43,7 @@ class MainPage(webapp.RequestHandler):
 		else:
 			self.redirect(users.create_login_url(self.request.uri))
 
-class Guestbook(webapp.RequestHandler):
+class Note(webapp.RequestHandler):
 	def post(self):
 		# We set the same parent key on the 'StickyNote' to ensure each greeting is in
 		# the same entity group. Queries across the single entity group will be
@@ -65,7 +65,7 @@ class Guestbook(webapp.RequestHandler):
 
 application = webapp.WSGIApplication([
 	('/', MainPage),
-	('/sign', Guestbook)
+	('/sign', Note)
 ], debug=True)
 
 def main():
