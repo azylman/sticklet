@@ -9,12 +9,12 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-class Greeting(db.Model):
+class StickyNote(db.Model):
   """Models an individual Guestbook entry with an author, content, and date."""
   author = db.UserProperty()
   content = db.StringProperty(multiline=True)
   date = db.DateTimeProperty(auto_now_add=True)
-
+  subject = db.StringProperty
 
 def guestbook_key(guestbook_name=None):
   """Constructs a datastore key for a Guestbook entity with guestbook_name."""
@@ -23,7 +23,7 @@ def guestbook_key(guestbook_name=None):
 class MainPage(webapp.RequestHandler):
     def get(self):
         guestbook_name=self.request.get('guestbook_name')
-        greetings_query = Greeting.all().ancestor(
+        greetings_query = StickyNote.all().ancestor(
             guestbook_key(guestbook_name)).order('-date')
         greetings = greetings_query.fetch(10)
 
@@ -45,12 +45,12 @@ class MainPage(webapp.RequestHandler):
 
 class Guestbook(webapp.RequestHandler):
   def post(self):
-    # We set the same parent key on the 'Greeting' to ensure each greeting is in
+    # We set the same parent key on the 'StickyNote' to ensure each greeting is in
     # the same entity group. Queries across the single entity group will be
     # consistent. However, the write rate to a single entity group should
     # be limited to ~1/second.
     guestbook_name = self.request.get('guestbook_name')
-    greeting = Greeting(parent=guestbook_key(guestbook_name))
+    greeting = StickyNote(parent=guestbook_key(guestbook_name))
 
     if users.get_current_user():
       greeting.author = users.get_current_user()

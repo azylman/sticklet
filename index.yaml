@@ -15,3 +15,9 @@ indexes:
   properties:
   - name: date
     direction: desc
+
+- kind: StickyNote
+  ancestor: yes
+  properties:
+  - name: date
+    direction: desc
