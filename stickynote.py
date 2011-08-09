@@ -1,6 +1,10 @@
 from google.appengine.ext import db
 
-class snModel(db.Model):
+class StickyNoteModel(db.Model):
+	def to_dict(self):
+		return dict([(p, unicode(getattr(self, p))) for p in self.properties()])
+
+class snModel(StickyNoteModel):
 	"""Models an individual Guestbook entry with an author, content, and date."""
 	author = db.UserProperty()
 	content = db.StringProperty(multiline=True)
