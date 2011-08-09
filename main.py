@@ -28,12 +28,12 @@ class MainPage(webapp.RequestHandler):
 			url = users.create_logout_url(self.request.uri)
 			url_linktext = 'Logout'
 
-			greetings_query = StickyNote.all().ancestor(
+			notes_query = StickyNote.all().ancestor(
 				notepage_key(user.email())).order('-date')
-			greetings = greetings_query.fetch(10)
+			notes = notes_query.fetch(10)
 
 			template_values = {
-				'greetings': greetings,
+				'notes': notes,
 				'url': url,
 				'url_linktext': url_linktext,
 			}
@@ -52,15 +52,15 @@ class Guestbook(webapp.RequestHandler):
 
 		user = users.get_current_user()
 		if user:
-			greeting = StickyNote(parent=notepage_key(user.email()))
-			greeting.author = users.get_current_user()
-			greeting.content = self.request.get('content')
-			if len(greeting.content) > 3:
-				greeting.subject = greeting.content[:4]
+			note = StickyNote(parent=notepage_key(user.email()))
+			note.author = users.get_current_user()
+			note.content = self.request.get('content')
+			if len(note.content) > 3:
+				note.subject = note.content[:4]
 			else:
-				greeting.subject = greeting.content
+				note.subject = note.content
 
-			greeting.put()
+			note.put()
 		self.redirect('/')
 
 application = webapp.WSGIApplication([

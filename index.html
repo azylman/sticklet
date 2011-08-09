@@ -3,13 +3,13 @@
 		<link type="text/css" rel="stylesheet" href="/css/main.css" />
 	</head>
 	<body>
-		{% for greeting in greetings %}
-		<div class="greeting">
-			<div class="greeting-header">
-				{{ greeting.subject }}:
+		{% for note in notes %}
+		<div class="note">
+			<div class="note-header">
+				{{ note.subject }}:
 			</div>
-			<div class="greeting-content">
-				<blockquote>{{ greeting.content|escape }}</blockquote>
+			<div class="note-content">
+				<blockquote>{{ note.content|escape }}</blockquote>
 			</div>
 		</div>
 		{% endfor %}
