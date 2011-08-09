@@ -3,6 +3,8 @@ import wsgiref.handlers
 
 import stickynote
 
+from django.utils import simplejson as json
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -30,8 +32,7 @@ class Note(webapp.RequestHandler):
 		if user:
 			notes_query = stickynote.snModel.all().ancestor(
 				stickynote.key(user.email())).order('-date')
-			notes = notes_query.fetch(10)
-			self.response.out.write(notes)
+			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
 
 application = webapp.WSGIApplication([
 	('/notes', Note)
