@@ -37,7 +37,7 @@ function stopDrag ( e ) {
 
     //save position with ajax call
     //var submit = JSON.stringify ( dragged.el );
-    console.log ( dragged );
+    //console.log ( dragged );
     
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
