@@ -15,6 +15,9 @@ class StickyNote(db.Model):
 	content = db.StringProperty(multiline=True)
 	date = db.DateTimeProperty(auto_now_add=True)
 	subject = db.StringProperty()
+	x = db.FloatProperty()
+	y = db.FloatProperty()
+	z = db.IntegerProperty()
 
 def notepage_key(email):
 	"""Constructs a datastore key for a Guestbook entity with guestbook_name."""
@@ -59,6 +62,9 @@ class Note(webapp.RequestHandler):
 				note.subject = note.content[:4]
 			else:
 				note.subject = note.content
+			note.x = 0
+			note.y = 0
+			note.z = 0
 
 			note.put()
 		self.redirect('/')
