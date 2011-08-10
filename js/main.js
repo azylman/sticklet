@@ -115,7 +115,14 @@ function submitNote () {
 
 };
 
-function createNote() {
+function createNote( e ) {
+
+    var x = e.clientX + window.scrollX;
+    var y = e.clientY + window.scrollY;
+
+    //create note here
+    // how do we get the id?
+    //writeNote ( {"x" : x, "y" : y } );
 
     var eel = document.getElementById( "form" );
     eel.style.display = "inline";
@@ -133,7 +140,7 @@ function writeNote ( note ) {
     h.className = "note-header";
     var s = document.createElement ( "span" );
     s.addEventListener ( "dblclick", editText, true );
-    s.textContent = note.subject;
+    s.textContent = note.subject + ":";
     var o = document.createElement ( "div" );
     o.className = "options";
     o.textContent = "^";
@@ -144,7 +151,7 @@ function writeNote ( note ) {
     c.className = "note-content";
     var b = document.createElement ( "blockquote" );
     b.addEventListener ( "dblclick", editText, true );
-    b.textContent = note.content + ":";
+    b.textContent = note.content;
     c.appendChild ( b );
     elm.appendChild ( c );
     document.getElementById("notearea").appendChild ( elm );

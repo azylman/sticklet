@@ -4,7 +4,7 @@
 		<link type="text/css" rel="stylesheet" href="/css/main.css" />
 	</head>
 	<body>
-              <div id="notearea" ondblclick="createNote()">
+              <div id="notearea" ondblclick="createNote(event)">
 		{% for note in notes %}
 		<div class="note" id="{{ note.key }}" style="left:{{ note.x }}px;top:{{ note.y }}px;" onmousedown="startDrag(event)">
 			<div class="note-header">
