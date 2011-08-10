@@ -3,6 +3,7 @@ var z = 0;
 function startDrag ( e ) {
 
     e.stopPropagation();
+    e.preventDefault();
 
     var el = e.currentTarget;
     if ( e.target.tagName == "TEXTAREA" ) return;
@@ -22,6 +23,7 @@ function startDrag ( e ) {
 function dragging ( e ) {
 
     e.stopPropagation();
+    e.preventDefault();
 
     var x = e.clientX + window.scrollX;
     var y = e.clientY + window.scrollY;
@@ -34,6 +36,7 @@ function dragging ( e ) {
 function stopDrag ( e ) {
     
     e.stopPropagation();
+    e.preventDefault();
     //save position with ajax call
 
     document.removeEventListener( "mousemove", dragging, true );
