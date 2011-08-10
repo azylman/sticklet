@@ -105,37 +105,10 @@ function submitNote () {
 	     "fn" : function( resp ){
 		 if ( resp != "" && resp != null){
 		     var note = JSON.parse ( resp );
-		     var elm = document.createElement ( "div" );
-		     elm.className = "note";
-		     elm.id = note.id;
-		     elm.style.left = note.x + "px";
-		     elm.style.top = note.y + "px";
-		     elm.addEventListener( "mousedown", startDrag, true );
-		     //el.onmousedown="startDrag(event);";
-		     var h = document.createElement ( "div" );
-		     h.className = "note-header";
-		     var s = document.createElement ( "span" );
-		     s.addEventListener ( "dblclick", editText, true );
-		     //s.ondblclick="editText(event);";
-		     s.textContent = note.subject;
-		     var o = document.createElement ( "div" );
-		     o.className = "options";
-		     o.textContent = "^";
-		     h.appendChild ( s );
-		     h.appendChild ( o );
-		     elm.appendChild ( h );
-		     var c = document.createElement ( "div" );
-		     c.className = "note-content";
-		     var b = document.createElement ( "blockquote" );
-		     b.addEventListener ( "dblclick", editText, true );
-		     //b.ondblclick="editText(event);";
-		     b.textContent = note.content;
-		     c.appendChild ( b );
-		     elm.appendChild ( c );
-		     document.getElementById("notearea").appendChild ( elm );
+		     writeNote ( note );
 		     el.value = "";
 		     document.getElementById("form").style.display="none";
-		 } 
+		 }
 	     },
 	     "data" : ["content=" + el.value]
     });
@@ -147,6 +120,34 @@ function createNote() {
     var eel = document.getElementById( "form" );
     eel.style.display = "inline";
 
+}
+
+function writeNote ( note ) {
+    var elm = document.createElement ( "div" );
+    elm.className = "note";
+    elm.id = note.id;
+    elm.style.left = note.x + "px";
+    elm.style.top = note.y + "px";
+    elm.addEventListener( "mousedown", startDrag, true );
+    var h = document.createElement ( "div" );
+    h.className = "note-header";
+    var s = document.createElement ( "span" );
+    s.addEventListener ( "dblclick", editText, true );
+    s.textContent = note.subject;
+    var o = document.createElement ( "div" );
+    o.className = "options";
+    o.textContent = "^";
+    h.appendChild ( s );
+    h.appendChild ( o );
+    elm.appendChild ( h );
+    var c = document.createElement ( "div" );
+    c.className = "note-content";
+    var b = document.createElement ( "blockquote" );
+    b.addEventListener ( "dblclick", editText, true );
+    b.textContent = note.content + ":";
+    c.appendChild ( b );
+    elm.appendChild ( c );
+    document.getElementById("notearea").appendChild ( elm );
 }
 
 function $ajax ( o ) {
