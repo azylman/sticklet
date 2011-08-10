@@ -21,15 +21,15 @@ class Note(webapp.RequestHandler):
 			note = stickynote.snModel(parent=stickynote.key(user.email()))
 			note.author = users.get_current_user()
 			note.content = self.request.get('content')
-			if len(note.content) > 3:
-				note.subject = note.content[:4]
-			else:
-				note.subject = note.content
-			note.x = 0.0
-			note.y = 0.0
-			note.z = 0
-
-			note.put()
+			if note.content != "" or note.content == None:
+				if len(note.content) > 3:
+					note.subject = note.content[:4]
+				else:
+					note.subject = note.content
+				note.x = 0
+				note.y = 0
+				note.z = 0
+				note.put()
 		self.redirect('/')
 
 	def get(self):
@@ -38,9 +38,25 @@ class Note(webapp.RequestHandler):
 			notes_query = stickynote.snModel.all().ancestor(
 				stickynote.key(user.email())).order('-date')
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
+	
+
+class uNote(webapp.RequestHandler):
+	def post(self):
+		user = users.get_current_user()
+		if user:
+			note = stickynote.db.get( self.request.get('id') )
+			if note:
+				note.x = int(self.request.get('x'))
+				note.y = int(self.request.get('y'))
+				note.z = int(self.request.get('z'))
+				note.put()
+				self.response.out.write ( "true" );
+			else:
+				self.response.out.write ("no id found")
 
 application = webapp.WSGIApplication([
-	('/notes', Note)
+	('/notes', Note),
+	('/note', uNote)
 ], debug=True)
 
 def main():

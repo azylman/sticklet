@@ -1,18 +1,19 @@
 <html>
 	<head>
+	        <title>WebNotes</title>
 		<link type="text/css" rel="stylesheet" href="/css/main.css" />
-		<script type="text/javascript" src="/js/main.js"></script>
 	</head>
 	<body>
-              <div id="notearea" style="position:relative;width:100%;height:90%;">
+              <div id="notearea">
 		{% for note in notes %}
-		<div class="note" id="{{ note.key }}" style="position:absolute;left:{{ note.x }}px;top:{{ note.y }}px;background-color:yellow;cursor:move;"
-		     onmousedown="startDrag(event)">
+		<div class="note" id="{{ note.key }}" style="left:{{ note.x }}px;top:{{ note.y }}px;" onmousedown="startDrag(event)">
 			<div class="note-header">
-				<span style="cursor:text;" ondblclick="editText(event);">{{ note.subject }}:</span>
+				<span ondblclick="editText(event);">{{ note.subject }}:</span>
+				<div class="options">^</div>
+				
 			</div>
 			<div class="note-content">
-				<blockquote style="cursor:text;" ondblclick="editText(event);">{{ note.content|escape }}</blockquote>
+				<blockquote ondblclick="editText(event);">{{ note.content|escape }}</blockquote>
 			</div>
 		</div>
 		{% endfor %}
@@ -25,4 +26,5 @@
 		<a href="{{ url }}">{{ url_linktext }}</a>
              </div>
 	</body>
+	<script type="text/javascript" src="/js/main.js"></script>
 </html>
