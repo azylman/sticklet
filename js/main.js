@@ -59,7 +59,7 @@ function editText ( e ) {
 
     var el = e.currentTarget;
     var tx = document.createElement("textarea");
-    tx.style.backgroundColor="yellow";
+    tx.style.backgroundColor= el.style.backgroundColor;
     tx.style.borderStyle="none";
     tx.style.borderColor="transparent";
     tx.style.overflow="auto";
@@ -127,7 +127,7 @@ function createNote( e ) {
     var eel = document.getElementById( "form" );
     eel.style.display = "inline";
 
-}
+};
 
 function writeNote ( note ) {
     var elm = document.createElement ( "div" );
