@@ -5,6 +5,7 @@ function startDrag ( e ) {
     e.stopPropagation();
 
     var el = e.currentTarget;
+    if ( e.target.tagName == "TEXTAREA" ) return;
     dragged.el = el;
 
     el.style.zIndex = ++z;
@@ -41,3 +42,31 @@ function stopDrag ( e ) {
 
 }
 
+function editText ( e ) {
+    e.stopPropagation();
+
+    var el = e.currentTarget;
+    var tx = document.createElement("textarea");
+    tx.style.backgroundColor="yellow";
+    tx.style.borderStyle="none";
+    tx.style.borderColor="transparent";
+    tx.style.overflow="auto";
+    tx.style.width = el.style.width;
+    tx.style.height = el.style.height;
+    tx.rows = (parseInt(el.style.height) / parseInt(el.style.fontSize));
+
+    tx.addEventListener("onblur", closeSave, true);
+    document.addEventListener("click", closeSave, true );
+
+    tx.value = el.textContent.replace ( /<br.+>/g, "\n" );
+
+
+    el.parentNode.replaceChild ( tx, el );
+    
+}
+
+function closeSave ( e ) {
+
+    //console.log ( e );
+
+}
