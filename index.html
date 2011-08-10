@@ -4,7 +4,7 @@
 		<link type="text/css" rel="stylesheet" href="/css/main.css" />
 	</head>
 	<body>
-              <div id="notearea">
+              <div id="notearea" ondblclick="createNote()">
 		{% for note in notes %}
 		<div class="note" id="{{ note.key }}" style="left:{{ note.x }}px;top:{{ note.y }}px;" onmousedown="startDrag(event)">
 			<div class="note-header">
@@ -17,14 +17,12 @@
 			</div>
 		</div>
 		{% endfor %}
-
-		<form action="/notes" method="post">
-			<div><textarea name="content" rows="3" cols="60"></textarea></div>
-			<div><input type="submit" value="Sign Guestbook"></div>
-		</form>
-
-		<a href="{{ url }}">{{ url_linktext }}</a>
              </div>
+		<div id="form" style="display:none;">
+			<div><textarea id="content" rows="3" cols="60"></textarea>
+			<button type="button" onclick="submitNote()">Create Note</button>
+		</div>
+		<a href="{{ url }}">{{ url_linktext }}</a>
 	</body>
 	<script type="text/javascript" src="/js/main.js"></script>
 </html>

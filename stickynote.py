@@ -12,7 +12,7 @@ class StickyNoteModel(db.Model):
 class snModel(StickyNoteModel):
 	def to_dict(self):
 		return dict({
-			"id": unicode(self.key),
+			"id": unicode(self.key()),
 			"author" : unicode(self.author),
 			"content" : self.content,
 			"date" : unicode(self.date),

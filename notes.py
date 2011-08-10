@@ -21,7 +21,7 @@ class Note(webapp.RequestHandler):
 			note = stickynote.snModel(parent=stickynote.key(user.email()))
 			note.author = users.get_current_user()
 			note.content = self.request.get('content')
-			if note.content != "" or note.content == None:
+			if note.content != "" and note.content != None:
 				if len(note.content) > 3:
 					note.subject = note.content[:4]
 				else:
@@ -30,7 +30,8 @@ class Note(webapp.RequestHandler):
 				note.y = 0
 				note.z = 0
 				note.put()
-		self.redirect('/')
+				self.response.out.write(json.dumps(note.to_dict()))
+		#self.redirect('/')
 
 	def get(self):
 		user = users.get_current_user()

@@ -37,7 +37,6 @@ function stopDrag ( e ) {
     
     e.stopPropagation();
     e.preventDefault();
-    //save position with ajax call
     $ajax ({ "dest" : "note",
     	     "sync" : true,
     	     "type" : "POST",
@@ -49,7 +48,6 @@ function stopDrag ( e ) {
     	     "data" : [ "id=" + dragged.el.id, "x=" + parseInt( dragged.el.style.left ), "y=" + parseInt ( dragged.el.style.top ), "z=" + parseInt ( dragged.el.style.zIndex ) ]
     	   });
     
-
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
     dragged = {};
@@ -97,6 +95,59 @@ function closeSave ( e ) {
     
 
 };
+
+function submitNote () {
+
+    var el = document.getElementById("content");
+    $ajax ({ "type" : "POST",
+	     "sync" : true,
+	     "dest" : "/notes",
+	     "fn" : function( resp ){
+		 if ( resp != "" && resp != null){
+		     var note = JSON.parse ( resp );
+		     var elm = document.createElement ( "div" );
+		     elm.className = "note";
+		     elm.id = note.id;
+		     elm.style.left = note.x + "px";
+		     elm.style.top = note.y + "px";
+		     elm.addEventListener( "mousedown", startDrag, true );
+		     //el.onmousedown="startDrag(event);";
+		     var h = document.createElement ( "div" );
+		     h.className = "note-header";
+		     var s = document.createElement ( "span" );
+		     s.addEventListener ( "dblclick", editText, true );
+		     //s.ondblclick="editText(event);";
+		     s.textContent = note.subject;
+		     var o = document.createElement ( "div" );
+		     o.className = "options";
+		     o.textContent = "^";
+		     h.appendChild ( s );
+		     h.appendChild ( o );
+		     elm.appendChild ( h );
+		     var c = document.createElement ( "div" );
+		     c.className = "note-content";
+		     var b = document.createElement ( "blockquote" );
+		     b.addEventListener ( "dblclick", editText, true );
+		     //b.ondblclick="editText(event);";
+		     b.textContent = note.content;
+		     c.appendChild ( b );
+		     elm.appendChild ( c );
+		     document.getElementById("notearea").appendChild ( elm );
+		     el.value = "";
+		     document.getElementById("form").style.display="none";
+		 } 
+	     },
+	     "data" : ["content=" + el.value]
+    });
+
+};
+
+function createNote() {
+
+    var eel = document.getElementById( "form" );
+    eel.style.display = "inline";
+
+}
 
 function $ajax ( o ) {
     var s = (o.type == "GET") ? "?" : "";
