@@ -205,7 +205,7 @@ function writeNote ( note ) {
     var h = $('<div />', {
     	class : "noteHeader"
     });
-
+    //h.css({'border-bottom' : '2px solid black'});
     var s = $('<span />');
     s.bind("dblclick", function(event) {
     	editText(event, $(this));
@@ -214,10 +214,11 @@ function writeNote ( note ) {
     var o = $('<div />', {
     	class : "options"
     });
-	o.text("^");
+    o.text("^");
     h.append( s );
     elm.append( o );
     elm.append( h );
+    elm.append( $("<hr/>" ) );
     var c = $('<div />', {
     	class : 'noteContent'
     });
