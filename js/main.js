@@ -82,11 +82,11 @@ function editText ( e ) {
     tx.addEventListener("mouseout", closeSave, true);
     //document.addEventListener("click", closeSave, true );
 
-    tx.value = el.textContent; //.replace ( /<br.+>/g, "\n" );
-
+    var val = el.textContent; //.replace ( /<br.+>/g, "\n" );
 
     el.parentNode.replaceChild ( tx, el );
     tx.focus();
+    tx.value = val;
 
 };
 
