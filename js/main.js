@@ -1,17 +1,16 @@
 var notes = new Array();
-if ( ! window.localStorage.getItem( "notes_" + username ) ){
-    getNotes();
-} else {
+var dragged = {};
+var z = 0;
+
+if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
 	writeNote ( arr[a] );
 	notes[arr[a].id] = arr[a];
     }
-    getNotes();
 }
-var dragged = {};
-var z = 0;
 
+getNotes();
 function getNotes () {
     $.ajax ({
 	"url" : "/notes",
