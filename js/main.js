@@ -106,9 +106,6 @@ function editText ( e, obj ) {
     //document.addEventListener("click", closeSave, true );
 
     el.replaceWith(tx);
-    tx.bind('blur', function(event) {
-		closeSave(event, tx);
-	});
 	tx.bind('mouseout', function(event) {
 		closeSave(event, tx);
 	});
@@ -129,19 +126,24 @@ function closeSave ( e, obj ) {
     var edd = $( "<blockquote />" );
     edd.text(obj.val());
     edd.bind('dblclick', function(event) {
-    	editText(event, this);
+    	editText(event, $(this));
     });
     var id = note.attr('id');
     obj.replaceWith(edd);
 
     var subject = note.find(".noteHeader").children().text();
     var content = note.find(".noteContent").children().text();
+    notes[id].subject = subject;
+    notes[id].content = content;
 
     $.ajax ({ "url" : "/notes/" + id,
     	     "async" : true,
     	     "type" : "PUT",
     	     "data" : {"content" : content,
-    	     			"subject" : subject}
+    	     			"subject" : subject},
+    	     "success" : function() {
+    	     	dumpNotes();
+    	     	}
     	   });
 
 };

@@ -53,7 +53,6 @@ class Note(webapp.RequestHandler):
 				x = vars.get( 'x' )
 				y = vars.get( 'y' )
 				z = vars.get( 'z' )
-
 				if content:
 					note.content = content
 				if subject:
