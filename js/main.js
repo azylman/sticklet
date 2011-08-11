@@ -4,8 +4,10 @@ function startDrag ( e ) {
 
     var el = e.currentTarget;
     if ( e.target.tagName == "TEXTAREA" ) return;
+    if ( e.button != 0 ) return;
     e.stopPropagation();
     e.preventDefault();
+
     dragged.el = el;
 
     el.style.zIndex = ++z;
