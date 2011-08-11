@@ -1,13 +1,14 @@
-$.ajax ({ "url" : "/notes",
-    	  "async" : true,
-    	  "type" : "GET",
-	  "success" : function( resp ) {
-	      var arr = JSON.parse ( resp );
-	      for ( var a in arr ) {
-		  writeNote ( arr[a] );
-	      }
-	  }
-    	});
+$.ajax ({
+	"url" : "/notes",
+	"async" : true,
+	"type" : "GET",
+	"dataType" : "json",
+	"success" : function( resp ) {
+		$.each(resp, function(index) {
+			writeNote ( resp[index] );
+		});
+	}
+});
 
 var dragged = {};
 var z = 0;
