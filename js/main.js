@@ -1,5 +1,17 @@
+$.ajax ({ "url" : "/notes",
+    	  "async" : true,
+    	  "type" : "GET",
+	  "success" : function( resp ) {
+	      var arr = JSON.parse ( resp );
+	      for ( var a in arr ) {
+		  writeNote ( arr[a] );
+	      }
+	  }
+    	});
+
 var dragged = {};
 var z = 0;
+
 function startDrag ( e ) {
 
     var el = e.currentTarget;
@@ -157,4 +169,4 @@ function writeNote ( note ) {
     c.appendChild ( b );
     elm.appendChild ( c );
     document.getElementById("notearea").appendChild ( elm );
-}
+};

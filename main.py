@@ -21,12 +21,11 @@ class MainPage(webapp.RequestHandler):
 			url = users.create_logout_url(self.request.uri)
 			url_linktext = 'Logout'
 
-			notes_query = stickynote.snModel.all().ancestor(
-				stickynote.key(user.email())).order('-date')
-			notes = notes_query.fetch(10)
+			# notes_query = stickynote.snModel.all().ancestor(
+			# 	stickynote.key(user.email())).order('-date')
+			# notes = notes_query.fetch(10)
 
 			template_values = {
-				'notes': notes,
 				'url': url,
 				'url_linktext': url_linktext,
 			}

@@ -5,18 +5,6 @@
 	</head>
 	<body>
               <div id="notearea" ondblclick="createNote(event)">
-		{% for note in notes %}
-		<div class="note" id="{{ note.key }}" style="left:{{ note.x }}px;top:{{ note.y }}px;" onmousedown="startDrag(event)">
-			<div class="note-header">
-				<span ondblclick="editText(event);">{{ note.subject }}:</span>
-				<div class="options">^</div>
-
-			</div>
-			<div class="note-content">
-				<blockquote ondblclick="editText(event);">{{ note.content|escape }}</blockquote>
-			</div>
-		</div>
-		{% endfor %}
              </div>
 		<div><a href="{{ url }}">{{ url_linktext }}</a></div>
 	</body>
