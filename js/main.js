@@ -146,7 +146,7 @@ function createNote( e ) {
 
 function writeNote ( note ) {
     var elm = document.createElement ( "div" );
-    elm.className = "note";
+    elm.classNam\e = "note";
     elm.id = note.id;
     elm.style.left = note.x + "px";
     elm.style.top = note.y + "px";
