@@ -195,7 +195,6 @@ function writeNote ( note ) {
     c.append ( b );
     elm.append ( c );
 	$("#notearea").append ( elm );
->>>>>>> rewrite writeNote to use query
 };
 
 $('#notearea').bind('dblclick', function(event) {
