@@ -18,16 +18,16 @@ body {
 	cursor:move;
 }
 
-.note-header span {
+.noteHeader span {
     cursor:text;
 }
 
-.note-content blockquote {
+.noteContent blockquote {
 	cursor: text;
 	padding: l5px;
 }
 
-#notearea {
+#noteArea {
     position:relative;
 	width:100%;
 	height:100%;

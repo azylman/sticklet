@@ -89,52 +89,59 @@ function stopDrag ( e ) {
 
 };
 
-function editText ( e ) {
+function editText ( e, obj ) {
     e.stopPropagation();
     e.preventDefault();
 
-    var el = e.currentTarget;
-    var tx = document.createElement("textarea");
-    tx.style.backgroundColor= el.style.backgroundColor;
-    tx.style.borderStyle="none";
-    tx.style.borderColor="transparent";
-    tx.style.overflow="auto";
-    tx.style.width = el.style.width;
-    tx.style.height = el.style.height;
-    //adjust cols and rows for amount of text
-
-    tx.addEventListener("blur", closeSave, true);
-    tx.addEventListener("mouseout", closeSave, true);
+    var el = obj;
+    var tx = $("<textarea />");
+    tx.css({
+    	"background-color" : el.css('background-color'),
+    	"border-style" : "none",
+    	"border-color" : "transparent",
+    	"overflow" : "auto"});
+	tx.width(el.width());
+	tx.height(el.height());
+	tx.text(el.text()); //.replace ( /<br.+>/g, "\n" );
     //document.addEventListener("click", closeSave, true );
 
-    var val = el.textContent; //.replace ( /<br.+>/g, "\n" );
-
-    el.parentNode.replaceChild ( tx, el );
+    el.replaceWith(tx);
+    tx.bind('blur', function(event) {
+		closeSave(event, tx);
+	});
+	tx.bind('mouseout', function(event) {
+		closeSave(event, tx);
+	});
     tx.focus();
-    tx.value = val;
-
 };
 
-function closeSave ( e ) {
+function closeSave ( e, obj ) {
 
     //fix this-> right now it only works for content. Same in notes.py.
     //forgot about subject when I made this.
 
-    var el = e.currentTarget;
-    el.removeEventListener("mouseout", closeSave, true);
-    el.removeEventListener("blur", closeSave, true);
+	var el = e.currentTarget;
+    var note = obj.parents(".note");
+    obj.unbind("mouseout");
+    obj.unbind("blur");
     //document.removeEventListener("click", closeSave, true );
 
-    var edd = document.createElement ( "blockquote" );
-    edd.textContent = el.value;
-    edd.ondblclick = editText;
-    var id = el.parentNode.parentNode.id;
-    el.parentNode.replaceChild ( edd, el );
+    var edd = $( "<blockquote />" );
+    edd.text(obj.val());
+    edd.bind('dblclick', function(event) {
+    	editText(event, this);
+    });
+    var id = note.attr('id');
+    obj.replaceWith(edd);
+
+    var subject = note.find(".noteHeader").children().text();
+    var content = note.find(".noteContent").children().text();
 
     $.ajax ({ "url" : "/notes/" + id,
     	     "async" : true,
     	     "type" : "PUT",
-    	     "data" : {"content" : el.value}
+    	     "data" : {"content" : content,
+    	     			"subject" : subject}
     	   });
 
 };
@@ -184,14 +191,14 @@ function writeNote ( note ) {
     });
 
     var h = $('<div />', {
-    	class : "note-header"
+    	class : "noteHeader"
     });
 
     var s = $('<span />');
     s.bind("dblclick", function(event) {
-    	editText(event)
+    	editText(event, $(this));
     });
-    s.text(note.subject + ":");
+    s.text(note.subject);
     var o = $('<div />', {
     	class : "options"
     });
@@ -200,18 +207,18 @@ function writeNote ( note ) {
     elm.append( o );
     elm.append( h );
     var c = $('<div />', {
-    	class : 'note-content'
+    	class : 'noteContent'
     });
     var b = $('<blockquote />');
     b.bind ( "dblclick", function(event) {
-    	editText(event);
+    	editText(event, $(this));
     });
     b.text(note.content);
     c.append ( b );
     elm.append ( c );
-	$("#notearea").append ( elm );
+	$("#noteArea").append ( elm );
 };
 
-$('#notearea').bind('dblclick', function(event) {
+$('#noteArea').bind('dblclick', function(event) {
 	createNote(event)
 });
