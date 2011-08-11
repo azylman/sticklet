@@ -38,7 +38,6 @@ class Note(webapp.RequestHandler):
 				stickynote.key(user.email())).order('-date')
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
 
-
 class uNote(webapp.RequestHandler):
 	def post(self):
 		user = users.get_current_user()

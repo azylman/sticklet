@@ -35,20 +35,20 @@ function dragging ( e ) {
 };
 
 function stopDrag ( e ) {
-    
+
     e.stopPropagation();
     e.preventDefault();
-    $ajax ({ "dest" : "note",
-    	     "sync" : true,
+    $.ajax ({ "url" : "/note",
+    	     "async" : true,
     	     "type" : "POST",
-    	     "fn" : function ( resp ) {
+    	     "success" : function ( resp ) {
     		 if ( resp != "true" ) {
     		     alert ( resp + "\nCould not save to db" );
     		 }
     	     },
-    	     "data" : [ "id=" + dragged.el.id, "x=" + parseInt( dragged.el.style.left ), "y=" + parseInt ( dragged.el.style.top ), "z=" + parseInt ( dragged.el.style.zIndex ) ]
+    	     "data" : {"id" : dragged.el.id, "x" : parseInt( dragged.el.style.left ), "y" : parseInt ( dragged.el.style.top ), "z" : parseInt ( dragged.el.style.zIndex )}
     	   });
-    
+
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
     dragged = {};
@@ -77,7 +77,7 @@ function editText ( e ) {
 
 
     el.parentNode.replaceChild ( tx, el );
-    
+
 };
 
 function closeSave ( e ) {
@@ -96,37 +96,37 @@ function closeSave ( e ) {
     var id = el.parentNode.parentNode.id;
     el.parentNode.replaceChild ( edd, el );
 
-    $ajax ({ "dest" : "note",
-    	     "sync" : true,
+    $.ajax ({ "url" : "/note",
+    	     "async" : true,
     	     "type" : "POST",
-    	     "fn" : function ( resp ) {
+    	     "success" : function ( resp ) {
     		 if ( resp != "true" ) {
     		     alert ( resp + "\nCould not save to db" );
     		 }
     	     },
-    	     "data" : [ "id=" + id, "content=" + el.value ]
-    	   });    
+    	     "data" : {"id" : id, "content" : el.value}
+    	   });
 
 };
 
 function submitNote (x, y, content) {
     if ( content == undefined || content == null ) content = "";
-    $ajax ({ "type" : "POST",
-	     "sync" : true,
-	     "dest" : "/notes",
-	     "fn" : function( resp ){
+    $.ajax ({ "type" : "POST",
+	     "async" : true,
+	     "url" : "/notes",
+	     "success" : function( resp ){
 		 if ( resp != "" && resp != null){
 		     var note = JSON.parse ( resp );
 		     writeNote ( note );
 		 }
 	     },
-	     "data" : ["content=" + content, "x=" + x, "y=" + y]
+	     "data" : {"content" : content, "x" : x, "y" : y}
     });
 
 };
 
 function createNote( e ) {
-    
+
     e.stopPropagation();
     e.preventDefault();
 
@@ -166,27 +166,3 @@ function writeNote ( note ) {
     elm.appendChild ( c );
     document.getElementById("notearea").appendChild ( elm );
 }
-
-function $ajax ( o ) {
-    var s = (o.type == "GET") ? "?" : "";
-    for ( var i = 0; i < o.data.length; i++ ){
-	s += o.data[i] + "&";
-    }
-    s = s.substring ( 0, s.length-1 );
-    var x = new XMLHttpRequest ( );
-    if ( o.sync ) {
-	x.onreadystatechange=function(){
-	    if ( x.readyState==4 && x.status==200 ) {
-		o.fn ( x.responseText );
-	    }
-	}
-    }
-    if ( o.type.toUpperCase() == "GET" ) {
-	x.open ( o.type, o.dest + s, o.sync );
-	x.send ( );
-    } else {
-	x.open( o.type, o.dest, o.sync );
-	x.setRequestHeader( "Content-Type", "application/x-www-form-urlencoded" );
-	x.send( s );
-    }
-};

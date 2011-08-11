@@ -1,6 +1,6 @@
 <html>
 	<head>
-	        <title>WebNotes</title>
+		<title>WebNotes</title>
 		<link type="text/css" rel="stylesheet" href="/css/main.css" />
 	</head>
 	<body>
@@ -10,7 +10,7 @@
 			<div class="note-header">
 				<span ondblclick="editText(event);">{{ note.subject }}:</span>
 				<div class="options">^</div>
-				
+
 			</div>
 			<div class="note-content">
 				<blockquote ondblclick="editText(event);">{{ note.content|escape }}</blockquote>
@@ -20,5 +20,6 @@
              </div>
 		<div><a href="{{ url }}">{{ url_linktext }}</a></div>
 	</body>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/main.js"></script>
 </html>
