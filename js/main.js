@@ -37,9 +37,9 @@ function stopDrag ( e ) {
 
     e.stopPropagation();
     e.preventDefault();
-    $.ajax ({ "url" : "/note",
+    $.ajax ({ "url" : "/notes",
     	     "async" : true,
-    	     "type" : "POST",
+    	     "type" : "PUT",
     	     "data" : {"id" : dragged.el.id,
     	     			"x" : parseInt( dragged.el.style.left ),
     	     			"y" : parseInt ( dragged.el.style.top ),
@@ -93,9 +93,9 @@ function closeSave ( e ) {
     var id = el.parentNode.parentNode.id;
     el.parentNode.replaceChild ( edd, el );
 
-    $.ajax ({ "url" : "/note",
+    $.ajax ({ "url" : "/notes",
     	     "async" : true,
-    	     "type" : "POST",
+    	     "type" : "PUT",
     	     "data" : {"id" : id, "content" : el.value}
     	   });
 

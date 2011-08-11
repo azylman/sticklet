@@ -6,6 +6,7 @@ use_library('django', '1.2')
 import logging
 import cgi
 import wsgiref.handlers
+import urlparse
 
 import stickynote
 
@@ -14,6 +15,7 @@ from django.utils import simplejson as json
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+from webob.multidict import MultiDict, UnicodeMultiDict, NestedMultiDict, NoVars
 
 class Note(webapp.RequestHandler):
 	def post(self):
@@ -39,38 +41,20 @@ class Note(webapp.RequestHandler):
 				stickynote.key(user.email())).order('-date')
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
 
-class uNote(webapp.RequestHandler):
-	def post(self):
-		user = users.get_current_user()
-		if user:
-			logging.critical("ID: " + self.request.get('id'))
-			note = stickynote.db.get( self.request.get('id') )
-			if note:
-				content = self.request.get( 'content' )
-				if content:
-					note.content = content
-				else:
-					note.x = int(self.request.get('x'))
-					note.y = int(self.request.get('y'))
-					note.z = int(self.request.get('z'))
-				note.put()
-				self.response.out.write ( "true" );
-			else:
-				self.response.out.write ("no id found")
-
 	def put(self):
 		user = users.get_current_user()
 		if user:
-			logging.critical("ID: " + self.request.get('id'))
-			note = stickynote.db.get( self.request.get('id') )
+			fs = cgi.FieldStorage()
+			vars = MultiDict.from_fieldstorage(fs)
+			note = stickynote.db.get( vars.get('id') )
 			if note:
 				content = self.request.get( 'content' )
 				if content:
 					note.content = content
 				else:
-					note.x = int(self.request.get('x'))
-					note.y = int(self.request.get('y'))
-					note.z = int(self.request.get('z'))
+					note.x = int(vars.get('x'))
+					note.y = int(vars.get('y'))
+					note.z = int(vars.get('z'))
 				note.put()
 				self.response.out.write ( "true" );
 			else:
@@ -78,7 +62,6 @@ class uNote(webapp.RequestHandler):
 
 application = webapp.WSGIApplication([
 	('/notes', Note),
-	('/note', uNote)
 ], debug=True)
 
 def main():
