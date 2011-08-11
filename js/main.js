@@ -137,12 +137,10 @@ function submitNote (x, y, content) {
 	     "async" : true,
 	     "url" : "/notes",
 	     "success" : function( resp ){
-		 if ( resp != "" && resp != null){
 		     var note = JSON.parse ( resp );
 		     writeNote ( note );
 		     notes[note.id] = note;
-		 }
-		 window.localStorage.setItem ( "notes", notes );
+			 window.localStorage.setItem ( "notes", notes );
 	     },
 	     "data" : {"content" : content, "x" : x, "y" : y}
     });
