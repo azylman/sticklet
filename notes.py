@@ -24,10 +24,6 @@ class Note(webapp.RequestHandler):
 			if note.content == "":
 				note.content = "Content here"
 				note.subject = "Subject"
-			if len(note.content) > 3:
-				note.subject = note.content[:4]
-			else:
-				note.subject = note.content
 			note.x = int ( self.request.get( 'x' ) )
 			note.y = int ( self.request.get( 'y' ) )
 			note.z = 0
@@ -41,7 +37,7 @@ class Note(webapp.RequestHandler):
 			notes_query = stickynote.snModel.all().ancestor(
 				stickynote.key(user.email())).order('-date')
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
-	
+
 
 class uNote(webapp.RequestHandler):
 	def post(self):
