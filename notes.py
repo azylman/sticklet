@@ -3,6 +3,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from google.appengine.dist import use_library
 use_library('django', '1.2')
 
+import logging
 import cgi
 import wsgiref.handlers
 
@@ -42,6 +43,25 @@ class uNote(webapp.RequestHandler):
 	def post(self):
 		user = users.get_current_user()
 		if user:
+			logging.critical("ID: " + self.request.get('id'))
+			note = stickynote.db.get( self.request.get('id') )
+			if note:
+				content = self.request.get( 'content' )
+				if content:
+					note.content = content
+				else:
+					note.x = int(self.request.get('x'))
+					note.y = int(self.request.get('y'))
+					note.z = int(self.request.get('z'))
+				note.put()
+				self.response.out.write ( "true" );
+			else:
+				self.response.out.write ("no id found")
+
+	def put(self):
+		user = users.get_current_user()
+		if user:
+			logging.critical("ID: " + self.request.get('id'))
 			note = stickynote.db.get( self.request.get('id') )
 			if note:
 				content = self.request.get( 'content' )

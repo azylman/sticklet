@@ -7,7 +7,6 @@ function startDrag ( e ) {
     if ( e.button != 0 ) return;
     e.stopPropagation();
     e.preventDefault();
-
     dragged.el = el;
 
     el.style.zIndex = ++z;
@@ -41,12 +40,10 @@ function stopDrag ( e ) {
     $.ajax ({ "url" : "/note",
     	     "async" : true,
     	     "type" : "POST",
-    	     "success" : function ( resp ) {
-    		 if ( resp != "true" ) {
-    		     alert ( resp + "\nCould not save to db" );
-    		 }
-    	     },
-    	     "data" : {"id" : dragged.el.id, "x" : parseInt( dragged.el.style.left ), "y" : parseInt ( dragged.el.style.top ), "z" : parseInt ( dragged.el.style.zIndex )}
+    	     "data" : {"id" : dragged.el.id,
+    	     			"x" : parseInt( dragged.el.style.left ),
+    	     			"y" : parseInt ( dragged.el.style.top ),
+    	     			"z" : parseInt ( dragged.el.style.zIndex )}
     	   });
 
     document.removeEventListener( "mousemove", dragging, true );
@@ -99,11 +96,6 @@ function closeSave ( e ) {
     $.ajax ({ "url" : "/note",
     	     "async" : true,
     	     "type" : "POST",
-    	     "success" : function ( resp ) {
-    		 if ( resp != "true" ) {
-    		     alert ( resp + "\nCould not save to db" );
-    		 }
-    	     },
     	     "data" : {"id" : id, "content" : el.value}
     	   });
 
