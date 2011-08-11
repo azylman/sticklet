@@ -48,13 +48,22 @@ class Note(webapp.RequestHandler):
 			vars = MultiDict.from_fieldstorage(fs)
 			note = stickynote.db.get( vars.get('id') )
 			if note:
-				content = self.request.get( 'content' )
+				content = vars.get( 'content' )
+				subject = vars.get( 'subject' )
+				x = vars.get( 'x' )
+				y = vars.get( 'y' )
+				z = vars.get( 'z' )
+
 				if content:
 					note.content = content
-				else:
-					note.x = int(vars.get('x'))
-					note.y = int(vars.get('y'))
-					note.z = int(vars.get('z'))
+				if subject:
+					note.subject = subject
+				if x:
+					note.x = int(x)
+				if y:
+					note.y = int(y)
+				if z:
+					note.z = int(z)
 				note.put()
 				self.response.out.write ( "true" );
 			else:
