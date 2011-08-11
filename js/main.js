@@ -86,6 +86,7 @@ function editText ( e ) {
 
 
     el.parentNode.replaceChild ( tx, el );
+    tx.focus();
 
 };
 
