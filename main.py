@@ -37,6 +37,15 @@ class GreetingPage(webapp.RequestHandler):
 		self.response.out.write("<h1>Greeting page here</h1>")
 		url = users.create_login_url('/')
 		self.response.out.write("<a href='" + url + "'>Log In</a>")
+		self.response.out.write( """
+<script type="text/javascript">
+for ( var a in window.localStorage ) {
+  if ( /^notes_.*/.test ( a ) ) {
+     window.localStorage.removeItem ( a );
+  }
+}
+</script>
+""")
 
 application = webapp.WSGIApplication([
 	('/', MainPage),
