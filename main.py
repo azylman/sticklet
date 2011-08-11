@@ -11,8 +11,6 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-import stickynote
-
 class MainPage(webapp.RequestHandler):
 	def get(self):
 
@@ -20,23 +18,29 @@ class MainPage(webapp.RequestHandler):
 		if user:
 			url = users.create_logout_url(self.request.uri)
 			url_linktext = 'Logout'
-
-			# notes_query = stickynote.snModel.all().ancestor(
-			# 	stickynote.key(user.email())).order('-date')
-			# notes = notes_query.fetch(10)
+			
 
 			template_values = {
 				'url': url,
 				'url_linktext': url_linktext,
+				'user' : user.nickname()
 			}
 
 			path = os.path.join(os.path.dirname(__file__), 'index.html')
 			self.response.out.write(template.render(path, template_values))
 		else:
-			self.redirect(users.create_login_url(self.request.uri))
+			#self.redirect(users.create_login_url(self.request.uri))
+			self.redirect("/greet")
+
+class GreetingPage(webapp.RequestHandler):
+	def get(self):
+		self.response.out.write("<h1>Greeting page here</h1>")
+		url = users.create_login_url('/')
+		self.response.out.write("<a href='" + url + "'>Log In</a>")
 
 application = webapp.WSGIApplication([
-	('/', MainPage)
+	('/', MainPage),
+	('/greet', GreetingPage)
 ], debug=True)
 
 def main():

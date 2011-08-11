@@ -1,7 +1,18 @@
 var notes = new Array();
-// TODO(alex): modify this so that, if you pull from localStorage, it also asynchronously retrieves
-// the latest ones from the server in case any changes have been made from a different location
-if ( ! window.localStorage.getItem( "notes" ) ){
+if ( ! window.localStorage.getItem( "notes_" + username ) ){
+    getNotes();
+} else {
+    var arr = JSON.parse ( window.localStorage['notes_' + username] );
+    for ( var a in arr ) {
+	writeNote ( arr[a] );
+	notes[arr[a].id] = arr[a];
+    }
+    getNotes();
+}
+var dragged = {};
+var z = 0;
+
+function getNotes () {
     $.ajax ({
 	"url" : "/notes",
 	"async" : true,
@@ -12,26 +23,18 @@ if ( ! window.localStorage.getItem( "notes" ) ){
 		    writeNote ( resp[index] );
 		    notes[resp[index].id] = resp[index];
 		});
-	    window.localStorage.setItem ( "notes", JSON.stringify( resp ) );
+	    window.localStorage.setItem ( "notes_" + username, JSON.stringify( resp ) );
 	}
     });
-} else {
-    var arr = JSON.parse ( window.localStorage.notes );
-    for ( var a in arr ) {
-	writeNote ( arr[a] );
-	notes[arr[a].id] = arr[a];
-    }
-}
-var dragged = {};
-var z = 0;
+};
 
 function dumpNotes ( ){
     var arr = new Array();
     for ( var a in notes ) {
 	arr.push ( notes[a] );
     }
-    window.localStorage.setItem ( "notes", JSON.stringify ( arr ) );
-}
+    window.localStorage.setItem ( "notes_" + username, JSON.stringify ( arr ) );
+};
 
 function startDrag ( e ) {
 
@@ -100,10 +103,10 @@ function editText ( e, obj ) {
     	"border-style" : "none",
     	"border-color" : "transparent",
     	"overflow" : "auto"});
+
 	tx.width(el.width());
 	tx.height(el.height());
-	tx.text(el.text()); //.replace ( /<br.+>/g, "\n" );
-    //document.addEventListener("click", closeSave, true );
+	tx.text(el.text());
 
     el.replaceWith(tx);
 	tx.bind('mouseout', function(event) {
@@ -117,11 +120,10 @@ function closeSave ( e, obj ) {
     //fix this-> right now it only works for content. Same in notes.py.
     //forgot about subject when I made this.
 
-	var el = e.currentTarget;
+    var el = e.currentTarget;
     var note = obj.parents(".note");
     obj.unbind("mouseout");
     obj.unbind("blur");
-    //document.removeEventListener("click", closeSave, true );
 
     var edd = $( "<blockquote />" );
     edd.text(obj.val());
@@ -180,7 +182,16 @@ function createNote( e ) {
 
 function writeNote ( note ) {
 	// TODO(alex): compare the objects and only remove them if they're different
-    $('.' + note.id).remove();
+    var no = $( "#" + note.id );
+    if ( no ){
+	//still need to check content and subject.  Is there a more jquery-y way to do this?
+	if ( no.css("left") != note.x || no.css("top") != note.y ||
+	     no.css("zIndex") != note.z ){
+	    $('#' + note.id).remove();
+	} else {
+	    return;
+	}
+    }
     var elm = $('<div />',  {
     	class : "note",
     	id : note.id
@@ -218,7 +229,7 @@ function writeNote ( note ) {
     b.text(note.content);
     c.append ( b );
     elm.append ( c );
-	$("#noteArea").append ( elm );
+    $("#noteArea").append ( elm );
 };
 
 $('#noteArea').bind('dblclick', function(event) {
