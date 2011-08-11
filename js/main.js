@@ -65,7 +65,8 @@ function editText ( e ) {
     tx.style.overflow="auto";
     tx.style.width = el.style.width;
     tx.style.height = el.style.height;
-    tx.rows = (parseInt(el.style.height) / parseInt(el.style.fontSize));
+    //adjust cols and rows for amount of text
+    //tx.rows = (parseInt(el.style.height) / parseInt(el.style.fontSize));
     //tx.onblur = closeSave
 
     tx.addEventListener("blur", closeSave, true);
@@ -96,7 +97,7 @@ function closeSave ( e ) {
 
 };
 
-function submitNote () {
+function submitNote (x, y) {
 
     var el = document.getElementById("content");
     $ajax ({ "type" : "POST",
@@ -110,7 +111,7 @@ function submitNote () {
 		     document.getElementById("form").style.display="none";
 		 }
 	     },
-	     "data" : ["content=" + el.value]
+	     "data" : ["content=" + el.value, "x=" + x, "y=" + y]
     });
 
 };
@@ -122,10 +123,12 @@ function createNote( e ) {
 
     //create note here
     // how do we get the id?
-    //writeNote ( {"x" : x, "y" : y } );
+    //writeNote ( {"x" : x, "y" : y, "subject" : "", "content" : "",
+	//	 "z" : z,} );
+    submitNote ( x, y );
 
-    var eel = document.getElementById( "form" );
-    eel.style.display = "inline";
+    //var eel = document.getElementById( "form" );
+    //eel.style.display = "inline";
 
 };
 
