@@ -160,7 +160,7 @@ function writeNote ( note ) {
     o.className = "options";
     o.textContent = "^";
     h.appendChild ( s );
-    h.appendChild ( o );
+    elm.appendChild ( o );
     elm.appendChild ( h );
     var c = document.createElement ( "div" );
     c.className = "note-content";
