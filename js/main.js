@@ -171,3 +171,7 @@ function writeNote ( note ) {
     elm.appendChild ( c );
     document.getElementById("notearea").appendChild ( elm );
 };
+
+$('#notearea').bind('dblclick', function(event) {
+	createNote(event)
+});
