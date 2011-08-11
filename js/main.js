@@ -162,34 +162,45 @@ function createNote( e ) {
 };
 
 function writeNote ( note ) {
-    if ( document.getElementById ( note.id ) != null ) {
-	document.removeChild ( document.getElementById( note.id ) );
-    }
-    var elm = document.createElement ( "div" );
-    elm.className = "note";
-    elm.id = note.id;
-    elm.style.left = note.x + "px";
-    elm.style.top = note.y + "px";
-    elm.addEventListener( "mousedown", startDrag, true );
-    var h = document.createElement ( "div" );
-    h.className = "note-header";
-    var s = document.createElement ( "span" );
-    s.addEventListener ( "dblclick", editText, true );
-    s.textContent = note.subject + ":";
-    var o = document.createElement ( "div" );
-    o.className = "options";
-    o.textContent = "^";
-    h.appendChild ( s );
-    elm.appendChild ( o );
-    elm.appendChild ( h );
-    var c = document.createElement ( "div" );
-    c.className = "note-content";
-    var b = document.createElement ( "blockquote" );
-    b.addEventListener ( "dblclick", editText, true );
-    b.textContent = note.content;
-    c.appendChild ( b );
-    elm.appendChild ( c );
-    document.getElementById("notearea").appendChild ( elm );
+    $('.' + note.id).remove();
+    var elm = $('<div />',  {
+    	class : "note",
+    	id : note.id
+    });
+    elm.css({
+    	'left' : note.x + 'px',
+    	'top' : note.y + 'px'});
+    elm.bind('mousedown', function(event) {
+    	startDrag(event);
+    });
+
+    var h = $('<div />', {
+    	class : "note-header"
+    });
+
+    var s = $('<span />');
+    s.bind("dblclick", function(event) {
+    	editText(event)
+    });
+    s.text(note.subject + ":");
+    var o = $('<div />', {
+    	class : "options"
+    });
+	o.text("^");
+    h.append( s );
+    elm.append( o );
+    elm.append( h );
+    var c = $('<div />', {
+    	class : 'note-content'
+    });
+    var b = $('<blockquote />');
+    b.bind ( "dblclick", function(event) {
+    	editText(event);
+    });
+    b.text(note.content);
+    c.append ( b );
+    elm.append ( c );
+	$("#notearea").append ( elm );
 };
 
 $('#notearea').bind('dblclick', function(event) {
