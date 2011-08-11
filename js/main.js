@@ -1,15 +1,25 @@
-$.ajax ({
+var notes = new Array();
+if ( ! window.localStorage.getItem( "notes" ) ){
+    $.ajax ({
 	"url" : "/notes",
 	"async" : true,
 	"type" : "GET",
 	"dataType" : "json",
 	"success" : function( resp ) {
 		$.each(resp, function(index) {
-			writeNote ( resp[index] );
+		    writeNote ( resp[index] );
+		    notes[resp[index].id] = resp[index];
 		});
+	    window.localStorage.setItem ( "notes", JSON.stringify( resp ) );
 	}
-});
-
+    });
+} else {
+    var arr = JSON.parse ( window.localStorage.notes );
+    for ( var a in arr ) {
+	writeNote ( arr[a] );
+	notes[arr[a].id] = arr[a];
+    }
+}
 var dragged = {};
 var z = 0;
 
@@ -123,6 +133,7 @@ function submitNote (x, y, content) {
 		 if ( resp != "" && resp != null){
 		     var note = JSON.parse ( resp );
 		     writeNote ( note );
+		     notes[note.id] = note;
 		 }
 	     },
 	     "data" : {"content" : content, "x" : x, "y" : y}
@@ -145,8 +156,11 @@ function createNote( e ) {
 };
 
 function writeNote ( note ) {
+    if ( document.getElementById ( note.id ) != null ) {
+	document.removeChild ( document.getElementById( note.id ) );
+    }
     var elm = document.createElement ( "div" );
-    elm.classNam\e = "note";
+    elm.className = "note";
     elm.id = note.id;
     elm.style.left = note.x + "px";
     elm.style.top = note.y + "px";
