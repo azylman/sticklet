@@ -25,6 +25,14 @@ if ( ! window.localStorage.getItem( "notes" ) ){
 var dragged = {};
 var z = 0;
 
+function dumpNotes ( ){
+    var arr = new Array();
+    for ( var a in notes ) {
+	arr.push ( notes[a] );
+    }
+    window.localStorage.setItem ( "notes", JSON.stringify ( arr ) );
+}
+
 function startDrag ( e ) {
 
     var el = e.currentTarget;
@@ -73,7 +81,7 @@ function stopDrag ( e ) {
     notes[dragged.el.id].x = parseInt( dragged.el.style.left );
     notes[dragged.el.id].y = parseInt( dragged.el.style.top );
     notes[dragged.el.id].z = parseInt( dragged.el.style.zIndex );
-    window.localStorage.setItem ( "notes", notes );
+    dumpNotes();
 
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
@@ -140,7 +148,7 @@ function submitNote (x, y, content) {
 		     var note = JSON.parse ( resp );
 		     writeNote ( note );
 		     notes[note.id] = note;
-			 window.localStorage.setItem ( "notes", notes );
+		     dumpNotes();
 	     },
 	     "data" : {"content" : content, "x" : x, "y" : y}
     });
