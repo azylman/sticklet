@@ -1,4 +1,6 @@
 var notes = new Array();
+// TODO(alex): modify this so that, if you pull from localStorage, it also asynchronously retrieves
+// the latest ones from the server in case any changes have been made from a different location
 if ( ! window.localStorage.getItem( "notes" ) ){
     $.ajax ({
 	"url" : "/notes",
@@ -162,6 +164,7 @@ function createNote( e ) {
 };
 
 function writeNote ( note ) {
+	// TODO(alex): compare the objects and only remove them if they're different
     $('.' + note.id).remove();
     var elm = $('<div />',  {
     	class : "note",
