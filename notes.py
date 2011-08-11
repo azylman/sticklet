@@ -49,9 +49,13 @@ class uNote(webapp.RequestHandler):
 		if user:
 			note = stickynote.db.get( self.request.get('id') )
 			if note:
-				note.x = int(self.request.get('x'))
-				note.y = int(self.request.get('y'))
-				note.z = int(self.request.get('z'))
+				content = self.request.get( 'content' )
+				if content:
+					note.content = content
+				else:
+					note.x = int(self.request.get('x'))
+					note.y = int(self.request.get('y'))
+					note.z = int(self.request.get('z'))
 				note.put()
 				self.response.out.write ( "true" );
 			else:

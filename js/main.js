@@ -2,11 +2,10 @@ var dragged = {};
 var z = 0;
 function startDrag ( e ) {
 
-    e.stopPropagation();
-    e.preventDefault();
-
     var el = e.currentTarget;
     if ( e.target.tagName == "TEXTAREA" ) return;
+    e.stopPropagation();
+    e.preventDefault();
     dragged.el = el;
 
     el.style.zIndex = ++z;
@@ -56,6 +55,7 @@ function stopDrag ( e ) {
 
 function editText ( e ) {
     e.stopPropagation();
+    e.preventDefault();
 
     var el = e.currentTarget;
     var tx = document.createElement("textarea");
@@ -66,14 +66,12 @@ function editText ( e ) {
     tx.style.width = el.style.width;
     tx.style.height = el.style.height;
     //adjust cols and rows for amount of text
-    //tx.rows = (parseInt(el.style.height) / parseInt(el.style.fontSize));
-    //tx.onblur = closeSave
 
     tx.addEventListener("blur", closeSave, true);
     tx.addEventListener("mouseout", closeSave, true);
-    document.addEventListener("click", closeSave, true );
+    //document.addEventListener("click", closeSave, true );
 
-    tx.value = el.textContent.replace ( /<br.+>/g, "\n" );
+    tx.value = el.textContent; //.replace ( /<br.+>/g, "\n" );
 
 
     el.parentNode.replaceChild ( tx, el );
@@ -82,24 +80,35 @@ function editText ( e ) {
 
 function closeSave ( e ) {
 
-    //console.log ( e );
+    //fix this-> right now it only works for content. Same in notes.py.
+    //forgot about subject when I made this.
+
     var el = e.currentTarget;
     el.removeEventListener("mouseout", closeSave, true);
     el.removeEventListener("blur", closeSave, true);
-    document.removeEventListener("click", closeSave, true );
+    //document.removeEventListener("click", closeSave, true );
 
     var edd = document.createElement ( "blockquote" );
     edd.textContent = el.value;
     edd.ondblclick = editText;
-
+    var id = el.parentNode.parentNode.id;
     el.parentNode.replaceChild ( edd, el );
-    
+
+    $ajax ({ "dest" : "note",
+    	     "sync" : true,
+    	     "type" : "POST",
+    	     "fn" : function ( resp ) {
+    		 if ( resp != "true" ) {
+    		     alert ( resp + "\nCould not save to db" );
+    		 }
+    	     },
+    	     "data" : [ "id=" + id, "content=" + el.value ]
+    	   });    
 
 };
 
-function submitNote (x, y) {
-
-    var el = document.getElementById("content");
+function submitNote (x, y, content) {
+    if ( content == undefined || content == null ) content = "";
     $ajax ({ "type" : "POST",
 	     "sync" : true,
 	     "dest" : "/notes",
@@ -107,28 +116,24 @@ function submitNote (x, y) {
 		 if ( resp != "" && resp != null){
 		     var note = JSON.parse ( resp );
 		     writeNote ( note );
-		     el.value = "";
-		     document.getElementById("form").style.display="none";
 		 }
 	     },
-	     "data" : ["content=" + el.value, "x=" + x, "y=" + y]
+	     "data" : ["content=" + content, "x=" + x, "y=" + y]
     });
 
 };
 
 function createNote( e ) {
+    
+    e.stopPropagation();
+    e.preventDefault();
+
+    if ( e.target != e.currentTarget ) return;
 
     var x = e.clientX + window.scrollX;
     var y = e.clientY + window.scrollY;
 
-    //create note here
-    // how do we get the id?
-    //writeNote ( {"x" : x, "y" : y, "subject" : "", "content" : "",
-	//	 "z" : z,} );
     submitNote ( x, y );
-
-    //var eel = document.getElementById( "form" );
-    //eel.style.display = "inline";
 
 };
 
