@@ -41,12 +41,12 @@ class Note(webapp.RequestHandler):
 				stickynote.key(user.email())).order('-date')
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
 
-	def put(self):
+	def put(self, id):
 		user = users.get_current_user()
 		if user:
 			fs = cgi.FieldStorage()
 			vars = MultiDict.from_fieldstorage(fs)
-			note = stickynote.db.get( vars.get('id') )
+			note = stickynote.db.get( id )
 			if note:
 				content = vars.get( 'content' )
 				subject = vars.get( 'subject' )
@@ -71,6 +71,7 @@ class Note(webapp.RequestHandler):
 
 application = webapp.WSGIApplication([
 	('/notes', Note),
+	('/notes/(.*)', Note)
 ], debug=True)
 
 def main():

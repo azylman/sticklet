@@ -50,7 +50,7 @@ function stopDrag ( e ) {
 
     e.stopPropagation();
     e.preventDefault();
-    $.ajax ({ "url" : "/notes",
+    $.ajax ({ "url" : "/notes/" + dragged.el.id,
     	     "async" : true,
     	     "type" : "PUT",
     	     "data" : {"id" : dragged.el.id,
@@ -106,7 +106,7 @@ function closeSave ( e ) {
     var id = el.parentNode.parentNode.id;
     el.parentNode.replaceChild ( edd, el );
 
-    $.ajax ({ "url" : "/notes",
+    $.ajax ({ "url" : "/notes/" + id,
     	     "async" : true,
     	     "type" : "PUT",
     	     "data" : {"id" : id, "content" : el.value}
