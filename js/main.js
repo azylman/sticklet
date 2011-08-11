@@ -53,10 +53,9 @@ function stopDrag ( e ) {
     $.ajax ({ "url" : "/notes/" + dragged.el.id,
     	     "async" : true,
     	     "type" : "PUT",
-    	     "data" : {"id" : dragged.el.id,
-    	     			"x" : parseInt( dragged.el.style.left ),
-    	     			"y" : parseInt ( dragged.el.style.top ),
-    	     			"z" : parseInt ( dragged.el.style.zIndex )}
+    	     "data" : {"x" : parseInt( dragged.el.style.left ),
+    	     		   "y" : parseInt ( dragged.el.style.top ),
+    	     		   "z" : parseInt ( dragged.el.style.zIndex )}
     	   });
 
     document.removeEventListener( "mousemove", dragging, true );
@@ -109,7 +108,7 @@ function closeSave ( e ) {
     $.ajax ({ "url" : "/notes/" + id,
     	     "async" : true,
     	     "type" : "PUT",
-    	     "data" : {"id" : id, "content" : el.value}
+    	     "data" : {"content" : el.value}
     	   });
 
 };
