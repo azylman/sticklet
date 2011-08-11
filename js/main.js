@@ -68,6 +68,11 @@ function stopDrag ( e ) {
     	     		   "z" : parseInt ( dragged.el.style.zIndex )}
     	   });
 
+    notes[dragged.el.id].x = parseInt( dragged.el.style.left );
+    notes[dragged.el.id].y = parseInt( dragged.el.style.top );
+    notes[dragged.el.id].z = parseInt( dragged.el.style.zIndex );
+    window.localStorage.setItem ( "notes", notes );
+
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
     dragged = {};
@@ -135,6 +140,7 @@ function submitNote (x, y, content) {
 		     writeNote ( note );
 		     notes[note.id] = note;
 		 }
+		 window.localStorage.setItem ( "notes", notes );
 	     },
 	     "data" : {"content" : content, "x" : x, "y" : y}
     });
