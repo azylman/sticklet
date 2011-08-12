@@ -292,6 +292,7 @@ function colorNote ( el, dd ) {
 		  notes[el.attr('id')].color = "#00FF00";
 		  dumpNotes();
 		  el.css({"backgroundColor" : "#00FF00"});
+		  dd.remove();
     	      }
     	    });
 }
