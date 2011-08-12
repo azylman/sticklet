@@ -133,7 +133,8 @@ function closeSave ( e, obj ) {
     obj.unbind("blur");
 
     var edd = $( "<blockquote />" );
-    edd.text(obj.val());
+    //edd.text(obj.val().replace ( /\n/g, "<br>") );
+    edd.text(obj.val() );
     edd.bind('dblclick', function(event) {
     	editText(event, $(this));
     });
