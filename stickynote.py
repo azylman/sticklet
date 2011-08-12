@@ -5,6 +5,8 @@ class StickyNoteModel(db.Model):
 	content = db.StringProperty(multiline=True)
 	date = db.DateTimeProperty(auto_now_add=True)
 	subject = db.StringProperty()
+	color = db.StringProperty()
+	trash = db.IntegerProperty()
 	x = db.IntegerProperty()
 	y = db.IntegerProperty()
 	z = db.IntegerProperty()
@@ -17,6 +19,8 @@ class snModel(StickyNoteModel):
 			"content" : self.content,
 			"date" : unicode(self.date),
 			"subject" : self.subject,
+			"color" : self.color,
+			"trash" : self.trash,
 			"x" : self.x,
 			"y" : self.y,
 			"z" : self.z})

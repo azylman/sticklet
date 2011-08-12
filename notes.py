@@ -27,18 +27,20 @@ class Note(webapp.RequestHandler):
 			if note.content == "":
 				note.content = "Content here"
 				note.subject = "Subject"
+			note.color = "#FF00FF"
+			note.trash = 0
 			note.x = int ( self.request.get( 'x' ) )
 			note.y = int ( self.request.get( 'y' ) )
 			note.z = 0
 			note.put()
 			self.response.out.write(json.dumps(note.to_dict()))
-		#self.redirect('/')
 
 	def get(self):
 		user = users.get_current_user()
 		if user:
 			notes_query = stickynote.snModel.all().ancestor(
 				stickynote.key(user.email())).order('-date')
+			notes_query.filter ( "trash = ", 0 )
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
 
 	def put(self, id):
@@ -50,6 +52,8 @@ class Note(webapp.RequestHandler):
 			if note:
 				content = vars.get( 'content' )
 				subject = vars.get( 'subject' )
+				color = vars.get( 'color' )
+				trash = vars.get( 'trash' )
 				x = vars.get( 'x' )
 				y = vars.get( 'y' )
 				z = vars.get( 'z' )
@@ -63,6 +67,10 @@ class Note(webapp.RequestHandler):
 					note.y = int(y)
 				if z:
 					note.z = int(z)
+				if color:
+					note.color = color
+				if trash:
+					note.trash = trash
 				note.put()
 				self.response.out.write ( "true" );
 			else:

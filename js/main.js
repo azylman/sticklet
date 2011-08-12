@@ -11,6 +11,7 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
 }
 
 getNotes();
+
 function getNotes () {
     $.ajax ({
 	"url" : "/notes",
@@ -18,10 +19,17 @@ function getNotes () {
 	"type" : "GET",
 	"dataType" : "json",
 	"success" : function( resp ) {
+	    var tmp = new Array ();
 		$.each(resp, function(index) {
 		    writeNote ( resp[index] );
-		    notes[resp[index].id] = resp[index];
+		    notes[resp[index].id] = null;
+		    tmp[resp[index].id] = resp[index];
 		});
+	    for ( var d in notes ) {
+		if ( notes[d] != null )
+		    $( "#" + notes[d].id ).remove();
+	    }
+	    notes = tmp;
 	    window.localStorage.setItem ( "notes_" + username, JSON.stringify( resp ) );
 	}
     });
@@ -76,8 +84,8 @@ function stopDrag ( e ) {
     	     "async" : true,
     	     "type" : "PUT",
     	     "data" : {"x" : parseInt( dragged.el.style.left ),
-    	     		   "y" : parseInt ( dragged.el.style.top ),
-    	     		   "z" : parseInt ( dragged.el.style.zIndex )}
+    	     	       "y" : parseInt ( dragged.el.style.top ),
+    	     	       "z" : parseInt ( dragged.el.style.zIndex )}
     	   });
 
     notes[dragged.el.id].x = parseInt( dragged.el.style.left );
@@ -197,7 +205,8 @@ function writeNote ( note ) {
     });
     elm.css({
     	'left' : note.x + 'px',
-    	'top' : note.y + 'px'});
+    	'top' : note.y + 'px',
+        'backgroundColor' : note.color});
     elm.bind('mousedown', function(event) {
     	startDrag(event);
     });

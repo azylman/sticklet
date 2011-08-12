@@ -33,3 +33,10 @@ indexes:
   properties:
   - name: date
     direction: desc
+
+- kind: snModel
+  ancestor: yes
+  properties:
+  - name: trash
+  - name: date
+    direction: desc
