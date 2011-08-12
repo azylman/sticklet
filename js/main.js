@@ -268,12 +268,33 @@ function dropDown ( el ) {
     link.bind ( "click", function ( event ) {
 	deleteNote ( $(el), dr );
     });
-
     dr.append ( link );
+
+    var link2 = $("<button />", {
+	type : "submit"
+    });
+    link2.text ( "Change Color" );
+    link2.bind ( "click", function ( event ) {
+	colorNote ( $(el), dr );
+    });
+    dr.append ( link2 );
 
     $("#noteArea").append ( dr );
 
 };
+
+function colorNote ( el, dd ) {
+    $.ajax ({ "url" : "/notes/" + el.attr('id'),
+    	      "async" : true,
+    	      "type" : "PUT",
+    	      "data" : {"color" : "#00FF00"},
+    	      "success" : function() {
+		  notes[el.attr('id')].color = "#00FF00";
+		  dumpNotes();
+		  el.css({"backgroundColor" : "#00FF00"});
+    	      }
+    	    });
+}
 
 function deleteNote ( el, dd ) {
 
