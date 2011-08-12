@@ -1,4 +1,4 @@
-var notes = new Array();
+var notes = new Object ();
 var dragged = {};
 var z = 0;
 
@@ -19,7 +19,7 @@ function getNotes () {
 	"type" : "GET",
 	"dataType" : "json",
 	"success" : function( resp ) {
-	    var tmp = new Array ();
+	    var tmp = new Object ();
 		$.each(resp, function(index) {
 		    writeNote ( resp[index] );
 		    notes[resp[index].id] = null;
@@ -146,15 +146,15 @@ function closeSave ( e, obj ) {
     notes[id].content = content;
 
     $.ajax ({ "url" : "/notes/" + id,
-    	     "async" : true,
-    	     "type" : "PUT",
-    	     "data" : {"content" : content,
-    	     			"subject" : subject},
-    	     "success" : function() {
-    	     	dumpNotes();
-    	     	}
-    	   });
-
+    	      "async" : true,
+    	      "type" : "PUT",
+    	      "data" : {"content" : content,
+    	     		"subject" : subject },
+    	      "success" : function() {
+    	     	  dumpNotes();
+    	      }
+    	    });
+    
 };
 
 function submitNote (x, y, content) {
@@ -223,6 +223,11 @@ function writeNote ( note ) {
     var o = $('<div />', {
     	class : "options"
     });
+    o.bind ( 'click', function(event) {
+	event.preventDefault();
+	event.stopPropagation();
+	dropDown( event.currentTarget.parentNode );
+    });
     o.text("^");
     h.append( s );
     elm.append( o );
@@ -239,6 +244,51 @@ function writeNote ( note ) {
     c.append ( b );
     elm.append ( c );
     $("#noteArea").append ( elm );
+};
+
+function dropDown ( el ) {
+
+    var dr = $('<div />', {
+	class : "menu",
+    });
+
+    dr.css ({ "width" : "200px",
+	      "height" : "200px",
+	      "position" : "absolute",
+	      "left" : parseInt ( $(el).css("left") ) + parseInt ( $(el).css("width") ) + "px",
+	      "top" : parseInt ( $(el).css("top") ) + "px",
+	      "backgroundColor" : "red",
+	      "zIndex" : "1000"
+	    });
+
+    var link = $("<button />", {
+	type : "submit"
+    });
+    link.text ( "Delete" );
+    link.bind ( "click", function ( event ) {
+	deleteNote ( $(el), dr );
+    });
+
+    dr.append ( link );
+
+    $("#noteArea").append ( dr );
+
+};
+
+function deleteNote ( el, dd ) {
+
+    $.ajax ({ "url" : "/notes/" + el.attr('id'),
+    	      "async" : true,
+    	      "type" : "PUT",
+    	      "data" : {"trash" : 1},
+    	      "success" : function() {
+		  delete notes[el.attr('id')];
+		  dumpNotes();
+		  dd.remove();
+		  el.remove();
+    	      }
+    	    });
+
 };
 
 $('#noteArea').bind('dblclick', function(event) {

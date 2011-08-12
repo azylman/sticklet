@@ -70,7 +70,7 @@ class Note(webapp.RequestHandler):
 				if color:
 					note.color = color
 				if trash:
-					note.trash = trash
+					note.trash = int(trash)
 				note.put()
 				self.response.out.write ( "true" );
 			else:
