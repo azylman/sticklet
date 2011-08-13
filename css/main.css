@@ -10,13 +10,17 @@ body {
 }
 
 .note {
-	width: 220px;
+        width: 220px;
+	/*min-width: 220px;
+	max-width: 400px;*/
+	min-height:200px;
 	padding: 15px;
 	border: 1px solid #000;
 	position: absolute;
 	background-color: yellow;
 	cursor: move;
         border-radius: 8px;
+	box-shadow: 5px 5px 8px #888888;
 }
 
 .noteHeader span {

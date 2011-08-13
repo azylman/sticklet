@@ -74,7 +74,7 @@ class Note(webapp.RequestHandler):
 				note.put()
 				self.response.out.write ( "true" );
 			else:
-				self.response.out.write ("no id found")
+				self.response.out.write ("Problem retrieving data from server.  Contact webmanager.")
 
 application = webapp.WSGIApplication([
 	('/notes', Note),

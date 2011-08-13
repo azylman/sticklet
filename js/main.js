@@ -43,13 +43,25 @@ function dumpNotes ( ){
     window.localStorage.setItem ( "notes_" + username, JSON.stringify ( arr ) );
 };
 
+function isChild ( l, str ) {
+    while ( l != null && l.tagName.toUpperCase() != str.toUpperCase() && l.nodeName != "BODY" )
+	l = l.parentNode;
+    return l.tagName.toUpperCase() == str.toUpperCase();
+};
+
 function startDrag ( e ) {
 
     var el = e.currentTarget;
-    if ( e.target.tagName == "TEXTAREA" ) return;
+    //if ( e.target.tagName == "TEXTAREA" ) return;
+    //if ( e.target.tagName == "BLOCKQUOTE" ) return;
+    //if ( e.target.tagName == "SPAN") return;
     if ( e.button != 0 ) return;
-    e.stopPropagation();
-    e.preventDefault();
+    if ( isChild ( e.target, "SPAN" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
+	return;
+    } else {
+	e.stopPropagation();
+	e.preventDefault();
+    }
     dragged.el = el;
 
     el.style.zIndex = ++z;
@@ -124,25 +136,22 @@ function editText ( e, obj ) {
 
 function closeSave ( e, obj ) {
 
-    //fix this-> right now it only works for content. Same in notes.py.
-    //forgot about subject when I made this.
-
-    var el = e.currentTarget;
+    //var el = e.currentTarget;
     var note = obj.parents(".note");
-    obj.unbind("mouseout");
-    obj.unbind("blur");
+    //obj.unbind("mouseout");
+    //obj.unbind("blur");
 
-    var edd = $( "<blockquote />" );
+    //var edd = $( "<blockquote />" );
     //edd.text(obj.val().replace ( /\n/g, "<br>") );
-    edd.text(obj.val() );
-    edd.bind('dblclick', function(event) {
-    	editText(event, $(this));
-    });
+    //edd.text(obj.val() );
+    //edd.bind('dblclick', function(event) {
+    //	editText(event, $(this));
+    //});
     var id = note.attr('id');
-    obj.replaceWith(edd);
+    //obj.replaceWith(edd);
 
-    var subject = note.find(".noteHeader").children().text();
-    var content = note.find(".noteContent").children().text();
+    var subject = note.find(".noteHeader").children().html();
+    var content = note.find(".noteContent").children().html();
     notes[id].subject = subject;
     notes[id].content = content;
 
@@ -207,6 +216,7 @@ function writeNote ( note ) {
     elm.css({
     	'left' : note.x + 'px',
     	'top' : note.y + 'px',
+	"zIndex" : note.z,
         'backgroundColor' : note.color});
     elm.bind('mousedown', function(event) {
     	startDrag(event);
@@ -215,12 +225,19 @@ function writeNote ( note ) {
     var h = $('<div />', {
     	class : "noteHeader"
     });
-    //h.css({'border-bottom' : '2px solid black'});
     var s = $('<span />');
-    s.bind("dblclick", function(event) {
-    	editText(event, $(this));
+    s.bind("blur", function(event) {
+    	closeSave(event, $(this));
     });
-    s.text(note.subject);
+    s.bind( "keypress", function ( event ) {
+	if (event.keyCode == 13 ) {
+	    event.preventDefault();
+	    event.stopPropagation();
+	    return;
+	}
+    });
+    s.attr({"contenteditable" : true});
+    s.html(note.subject);
     var o = $('<div />', {
     	class : "options"
     });
@@ -238,10 +255,11 @@ function writeNote ( note ) {
     	class : 'noteContent'
     });
     var b = $('<blockquote />');
-    b.bind ( "dblclick", function(event) {
-    	editText(event, $(this));
+    b.bind ( "blur", function(event) {
+    	closeSave(event, $(this));
     });
-    b.text(note.content);
+    b.attr({"contenteditable" : true});
+    b.html(note.content);
     c.append ( b );
     elm.append ( c );
     $("#noteArea").append ( elm );
