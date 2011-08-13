@@ -276,8 +276,10 @@ function dropDown ( el ) {
 	      "position" : "absolute",
 	      "left" : parseInt ( $(el).css("left") ) + parseInt ( $(el).css("width") ) + "px",
 	      "top" : parseInt ( $(el).css("top") ) + "px",
-	      "backgroundColor" : "red",
-	      "zIndex" : "1000"
+	      "backgroundColor" : "#00FFFF",
+	      "zIndex" : "1000",
+	      "opacity" : ".82",
+	      "border-radius" : "8px"
 	    });
 
     var link = $("<button />", {
@@ -297,9 +299,15 @@ function dropDown ( el ) {
 	colorNote ( $(el), dr );
     });
     dr.append ( link2 );
-
+    $("#noteArea").bind ( "click", function ( event ) {
+	$("#noteArea").unbind ( "click" );
+	dr.remove();
+    });
+    dr.bind ( "click", function ( event ) {
+	event.preventDefault();
+	event.stopPropagation();
+    });
     $("#noteArea").append ( dr );
-
 };
 
 function colorNote ( el, dd ) {
