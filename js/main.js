@@ -1,10 +1,10 @@
 var notes = new Object ();
 var dragged = {};
 var z = 0;
-
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
+	z = ( arr[a].z > z ) ? arr[a].z : z;
 	writeNote ( arr[a] );
 	notes[arr[a].id] = arr[a];
     }
@@ -21,6 +21,7 @@ function getNotes () {
 	"success" : function( resp ) {
 	    var tmp = new Object ();
 		$.each(resp, function(index) {
+		    z = ( resp[index].z > z ) ? resp[index].z : z;
 		    writeNote ( resp[index] );
 		    notes[resp[index].id] = null;
 		    tmp[resp[index].id] = resp[index];
@@ -41,12 +42,41 @@ function dumpNotes ( ){
 	arr.push ( notes[a] );
     }
     window.localStorage.setItem ( "notes_" + username, JSON.stringify ( arr ) );
+    //return arr;
 };
 
 function isChild ( l, str ) {
     while ( l != null && l.tagName.toUpperCase() != str.toUpperCase() && l.nodeName != "BODY" )
 	l = l.parentNode;
-    return l.tagName.toUpperCase() == str.toUpperCase();
+    if ( l.tagName.toUpperCase() == str.toUpperCase() ) {
+	return $(l).attr("contenteditable") == "true";
+    }
+    return false;
+};
+
+function reOrderZ ( e ) {
+    //$(e).css({"zIndex" : 5000});
+    var n = JSON.parse(window.localStorage['notes_' + username]);
+    n = n.sort ( function ( a, b ) {
+	if ( e.id == a.id ) a.z  = a.z + 15;
+	if ( e.id == b.id ) b.z = b.z + 15;
+	if ( a.z > b.z ) return 1;
+	if ( a.z < b.z ) return -1;
+	if ( a.z == b.z ) return 0;
+    });
+
+    for ( var i = 0; i < n.length; i++ ) {
+	notes[n[i].id].z = i;
+	$("#" + n[i].id ).css({"zIndex" : i});
+	$.ajax ({ "url" : "/notes/" + n[i].id,
+    		  "async" : true,
+    		  "type" : "PUT",
+    		  "data" : {"z" : i}
+    		});
+    }
+    //return n.length-1;
+    z = n.length;
+    dumpNotes();
 };
 
 function startDrag ( e ) {
@@ -58,13 +88,16 @@ function startDrag ( e ) {
     if ( e.button != 0 ) return;
     if ( isChild ( e.target, "SPAN" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
 	return;
-    } else {
-	e.stopPropagation();
-	e.preventDefault();
-    }
+    } 
+    e.stopPropagation();
+    e.preventDefault();
+
     dragged.el = el;
 
-    el.style.zIndex = ++z;
+    //el.style.zIndex = reOrderZ  ( el );
+    //el.style.zIndex = z.length + 5;
+    //notes[el.id].z = z.length + 5;
+    reOrderZ( el );
 
     dragged.x = e.clientX + window.scrollX;
     dragged.y = e.clientY + window.scrollY;
@@ -136,7 +169,8 @@ function editText ( e, obj ) {
 
 function closeSave ( e, obj ) {
 
-    //var el = e.currentTarget;
+    var el = e.currentTarget;
+    $(el).attr({"contenteditable" : false});
     var note = obj.parents(".note");
     //obj.unbind("mouseout");
     //obj.unbind("blur");
@@ -236,7 +270,11 @@ function writeNote ( note ) {
 	    return;
 	}
     });
-    s.attr({"contenteditable" : true});
+    //s.attr({"contenteditable" : true});
+    s.bind( "dblclick", function ( event ) {
+	s.attr({"contenteditable" : true});
+	s.focus();
+    });
     s.html(note.subject);
     var o = $('<div />', {
     	class : "options"
@@ -258,7 +296,11 @@ function writeNote ( note ) {
     b.bind ( "blur", function(event) {
     	closeSave(event, $(this));
     });
-    b.attr({"contenteditable" : true});
+    //b.attr({"contenteditable" : true});
+    b.bind ( "dblclick", function( event ) {
+	b.attr({"contenteditable" : true});
+	b.focus();
+    });
     b.html(note.content);
     c.append ( b );
     elm.append ( c );
