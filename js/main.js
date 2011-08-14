@@ -64,7 +64,8 @@ function startDrag ( e ) {
 
     var el = e.currentTarget;
     if ( e.button != 0 ) return;
-    if ( isChild ( e.target, "SPAN" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
+    //fix this
+    if ( isChild ( e.target, "DIV" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
 	return;
     } 
     e.stopPropagation();
@@ -201,7 +202,7 @@ function writeNote ( note ) {
     var h = $('<div />', {
     	class : "noteHeader"
     });
-    var s = $('<span />');
+    var s = $('<div />');
     s.bind("blur", function(event) {
     	closeSave(event, $(this));
     });
