@@ -1,6 +1,12 @@
 var notes = new Object ();
 var dragged = {};
 var z = 0;
+(function(){
+    z = 0;
+    for ( var a in notes ) {
+	z = (notes[a].z > z) ? notes[a].z : z;
+    }
+})(z);
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
@@ -54,37 +60,9 @@ function isChild ( l, str ) {
     return false;
 };
 
-function reOrderZ ( e ) {
-    //$(e).css({"zIndex" : 5000});
-    var n = JSON.parse(window.localStorage['notes_' + username]);
-    n = n.sort ( function ( a, b ) {
-	if ( e.id == a.id ) a.z  = a.z + 15;
-	if ( e.id == b.id ) b.z = b.z + 15;
-	if ( a.z > b.z ) return 1;
-	if ( a.z < b.z ) return -1;
-	if ( a.z == b.z ) return 0;
-    });
-
-    for ( var i = 0; i < n.length; i++ ) {
-	notes[n[i].id].z = i;
-	$("#" + n[i].id ).css({"zIndex" : i});
-	$.ajax ({ "url" : "/notes/" + n[i].id,
-    		  "async" : true,
-    		  "type" : "PUT",
-    		  "data" : {"z" : i}
-    		});
-    }
-    //return n.length-1;
-    z = n.length;
-    dumpNotes();
-};
-
 function startDrag ( e ) {
 
     var el = e.currentTarget;
-    //if ( e.target.tagName == "TEXTAREA" ) return;
-    //if ( e.target.tagName == "BLOCKQUOTE" ) return;
-    //if ( e.target.tagName == "SPAN") return;
     if ( e.button != 0 ) return;
     if ( isChild ( e.target, "SPAN" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
 	return;
@@ -94,10 +72,7 @@ function startDrag ( e ) {
 
     dragged.el = el;
 
-    //el.style.zIndex = reOrderZ  ( el );
-    //el.style.zIndex = z.length + 5;
-    //notes[el.id].z = z.length + 5;
-    reOrderZ( el );
+    dragged.el.style.zIndex = ++z;
 
     dragged.x = e.clientX + window.scrollX;
     dragged.y = e.clientY + window.scrollY;
@@ -144,45 +119,12 @@ function stopDrag ( e ) {
 
 };
 
-function editText ( e, obj ) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    var el = obj;
-    var tx = $("<textarea />");
-    tx.css({
-    	"background-color" : el.css('background-color'),
-    	"border-style" : "none",
-    	"border-color" : "transparent",
-    	"overflow" : "auto"});
-
-	tx.width(el.width());
-	tx.height(el.height());
-	tx.text(el.text());
-
-    el.replaceWith(tx);
-	tx.bind('mouseout', function(event) {
-		closeSave(event, tx);
-	});
-    tx.focus();
-};
-
 function closeSave ( e, obj ) {
 
     var el = e.currentTarget;
     $(el).attr({"contenteditable" : false});
     var note = obj.parents(".note");
-    //obj.unbind("mouseout");
-    //obj.unbind("blur");
-
-    //var edd = $( "<blockquote />" );
-    //edd.text(obj.val().replace ( /\n/g, "<br>") );
-    //edd.text(obj.val() );
-    //edd.bind('dblclick', function(event) {
-    //	editText(event, $(this));
-    //});
     var id = note.attr('id');
-    //obj.replaceWith(edd);
 
     var subject = note.find(".noteHeader").children().html();
     var content = note.find(".noteContent").children().html();
@@ -232,7 +174,7 @@ function createNote( e ) {
 };
 
 function writeNote ( note ) {
-	// TODO(alex): compare the objects and only remove them if they're different
+    // TODO(alex): compare the objects and only remove them if they're different
     var no = $( "#" + note.id );
     if ( no ){
 	//still need to check content and subject.  Is there a more jquery-y way to do this?
@@ -270,7 +212,6 @@ function writeNote ( note ) {
 	    return;
 	}
     });
-    //s.attr({"contenteditable" : true});
     s.bind( "dblclick", function ( event ) {
 	s.attr({"contenteditable" : true});
 	s.focus();
