@@ -13,9 +13,6 @@ handlers:
 - url: /notes
   script: notes.py
 
-- url: /notes/.*
-  script: notes.py
-
 - url: /manifest
   static_files: manifest.cfm
   mime_type: text/cache-manifest

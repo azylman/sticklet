@@ -43,42 +43,29 @@ class Note(webapp.RequestHandler):
 			notes_query.filter ( "trash = ", 0 )
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
 
-	def put(self, id):
+	def put(self):
 		user = users.get_current_user()
 		if user:
 			fs = cgi.FieldStorage()
 			vars = MultiDict.from_fieldstorage(fs)
-			note = stickynote.db.get( id )
-			if note:
-				content = vars.get( 'content' )
-				subject = vars.get( 'subject' )
-				color = vars.get( 'color' )
-				trash = vars.get( 'trash' )
-				x = vars.get( 'x' )
-				y = vars.get( 'y' )
-				z = vars.get( 'z' )
-				if content:
-					note.content = content
-				if subject:
-					note.subject = subject
-				if x:
-					note.x = int(x)
-				if y:
-					note.y = int(y)
-				if z:
-					note.z = int(z)
-				if color:
-					note.color = color
-				if trash:
-					note.trash = int(trash)
-				note.put()
-				self.response.out.write ( "true" );
-			else:
-				self.response.out.write ("Problem retrieving data from server.  Contact webmanager.")
+			dict =  json.loads ( vars.get('dict') ) 
+			for note in dict:
+				db_n = stickynote.db.get( note['id'] )
+				if db_n:
+					db_n.content = note['content']
+					db_n.subject = note['subject']
+					db_n.color = note['color']
+					db_n.trash = note['trash']
+					db_n.x = int(note['x'])
+					db_n.y = int(note['y'])
+					db_n.z = int(note['z'])
+					db_n.put()
+				else:
+					self.response.out.write ("Problem retrieving data from server.  Contact webmanager.")
+			self.response.out.write( "true" )
 
 application = webapp.WSGIApplication([
-	('/notes', Note),
-	('/notes/(.*)', Note)
+	('/notes', Note)
 ], debug=True)
 
 def main():

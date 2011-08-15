@@ -1,20 +1,12 @@
 var notes = {};
 var dragged = {};
 var z = 0;
-// (function(){
-//     z = 0;
-//     for ( var a in notes ) {
-// 	z = (notes[a].z > z) ? notes[a].z : z;
-//     }
-// })(z);
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
-	z = ( arr[a].z > z ) ? arr[a].z : z;
-	writeNote ( arr[a] );
+	writeNote( arr[a] );
 	notes[arr[a].id] = arr[a];
     }
-    //notes = arr;
 }
 
 getNotes();
@@ -34,8 +26,8 @@ function getNotes () {
 		    tmp[resp[index].id] = resp[index];
 		});
 	    for ( var d in notes ) {
-		if ( notes[d] != null )
-		    $( "#" + notes[d].id ).remove();
+	    	if ( notes[d] != null )
+	    	    $( "#" + notes[d].id ).remove();
 	    }
 	    notes = tmp;
 	    window.localStorage.setItem ( "notes_" + username, JSON.stringify( resp ) );
@@ -44,11 +36,7 @@ function getNotes () {
 };
 
 function dumpNotes ( ){
-    var arr = new Array();
-    for ( var a in notes ) {
-	arr.push ( notes[a] );
-    }
-    window.localStorage.setItem ( "notes_" + username, JSON.stringify ( arr ) );
+    window.localStorage.setItem ( "notes_" + username, JSON.stringify ( notes ) );
 };
 
 function isChild ( l, str ) {
@@ -109,7 +97,6 @@ function stopDrag ( e ) {
     note.z = parseInt( dragged.el.style.zIndex );
 
     saveNote ( note, true, function ( resp ) {
-	//dumpNotes();
 	document.removeEventListener( "mousemove", dragging, true );
 	document.removeEventListener( "mouseup", stopDrag, true );
 	dragged = {};
@@ -129,9 +116,7 @@ function closeSave ( e, obj ) {
     notes[id].subject = subject;
     notes[id].content = content;
 
-    saveNote ( notes[id], true, function ( resp ) {
-	//dumpNotes();
-    });
+    saveNote ( notes[id], true );
     
 };
 
@@ -153,7 +138,7 @@ function createNote( e ) {
 		     var note = JSON.parse ( resp );
 		     writeNote ( note );
 		     notes[note.id] = note;
-		     //dumpNotes();
+		     dumpNotes();
 	     },
 	     "data" : {"content" : content, "x" : x, "y" : y}
     });
@@ -223,7 +208,6 @@ function writeNote ( note ) {
     b.bind ( "blur", function(event) {
     	closeSave(event, $(this));
     });
-    //b.attr({"contenteditable" : true});
     b.bind ( "dblclick", function( event ) {
 	b.attr({"contenteditable" : true});
 	b.focus();
@@ -283,7 +267,6 @@ function colorNote ( el, dd ) {
     var n = notes[el.attr( 'id' )];
     n.color = "#00FF00";
     saveNote ( n, true, function ( resp ) {
-	//umpNotes();
 	el.css({"backgroundColor" : "#00FF00"});
 	dd.remove();
     });
@@ -295,7 +278,6 @@ function deleteNote ( el, dd ) {
     n.trash = 1;
     saveNote ( n, true, function ( resp ) {
 	delete notes[ n.id ];
-	//dumpNotes();
 	dd.remove();
 	el.remove();
     });
@@ -305,16 +287,12 @@ function deleteNote ( el, dd ) {
 
 function saveNote ( note, sync, fn ) {
 
-    $.ajax ({ "url" : "/notes/" + note.id,
+    var dict = JSON.stringify ( [note] );
+
+    $.ajax ({ "url" : "/notes",
 	      "async" : sync,
 	      "type" : "PUT",
-	      "data" : {"z" : note.z,
-			"x" : note.x,
-			"y" : note.y,
-			"content" : note.content,
-			"subject" : note.subject,
-			"color" : note.color,
-			"trash" : note.trash},
+	      "data" : {"dict" : dict },
 	      "success" : function ( resp ) {
 		  fn ( resp );
 		  dumpNotes();
@@ -329,14 +307,28 @@ $('#noteArea').bind('dblclick', function(event) {
 $(window).unload(function(event){
 
     var n = JSON.parse(window.localStorage['notes_' + username]);
-    n = n.sort ( function ( a, b ) {
+    var arr = [];
+    for ( var a in n ) {
+	arr.push ( n[a] );
+    }
+    arr = arr.sort ( function ( a, b ) {
 	if ( a.z > b.z ) return 1;
 	if ( a.z < b.z ) return -1;
 	if ( a.z == b.z ) return 0;
     });
-    for ( var i = 0; i < n.length; i++ ) {
-	var cn = notes[n[i].id];
-	cn.z = i;
-	saveNote ( cn, false );
+    for ( var i = 0; i < arr.length; i++ ) {
+	arr[i].z = i;
+	notes[n[i].id].z = i;
     }
+    var dict = JSON.stringify ( arr );
+    $.ajax ({ "url" : "/notes",
+	      "async" : false,
+	      "type" : "PUT",
+	      "data" : {"dict" : dict},
+	      "success" : function ( resp ) {
+		  if ( resp != "true" )
+		      alert ( "failed to save!" );
+	      }
+            });
+    dumpNotes();
 });
