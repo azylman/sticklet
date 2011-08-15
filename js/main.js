@@ -1,12 +1,12 @@
-var notes = new Object ();
+var notes = {};
 var dragged = {};
 var z = 0;
-(function(){
-    z = 0;
-    for ( var a in notes ) {
-	z = (notes[a].z > z) ? notes[a].z : z;
-    }
-})(z);
+// (function(){
+//     z = 0;
+//     for ( var a in notes ) {
+// 	z = (notes[a].z > z) ? notes[a].z : z;
+//     }
+// })(z);
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
@@ -14,6 +14,7 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
 	writeNote ( arr[a] );
 	notes[arr[a].id] = arr[a];
     }
+    //notes = arr;
 }
 
 getNotes();
@@ -25,7 +26,7 @@ function getNotes () {
 	"type" : "GET",
 	"dataType" : "json",
 	"success" : function( resp ) {
-	    var tmp = new Object ();
+	    var tmp = {};
 		$.each(resp, function(index) {
 		    z = ( resp[index].z > z ) ? resp[index].z : z;
 		    writeNote ( resp[index] );
@@ -48,7 +49,6 @@ function dumpNotes ( ){
 	arr.push ( notes[a] );
     }
     window.localStorage.setItem ( "notes_" + username, JSON.stringify ( arr ) );
-    //return arr;
 };
 
 function isChild ( l, str ) {
@@ -63,6 +63,7 @@ function isChild ( l, str ) {
 function startDrag ( e ) {
 
     var el = e.currentTarget;
+
     if ( e.button != 0 ) return;
     //fix this
     if ( isChild ( e.target, "DIV" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
@@ -101,22 +102,18 @@ function stopDrag ( e ) {
 
     e.stopPropagation();
     e.preventDefault();
-    $.ajax ({ "url" : "/notes/" + dragged.el.id,
-    	     "async" : true,
-    	     "type" : "PUT",
-    	     "data" : {"x" : parseInt( dragged.el.style.left ),
-    	     	       "y" : parseInt ( dragged.el.style.top ),
-    	     	       "z" : parseInt ( dragged.el.style.zIndex )}
-    	   });
 
-    notes[dragged.el.id].x = parseInt( dragged.el.style.left );
-    notes[dragged.el.id].y = parseInt( dragged.el.style.top );
-    notes[dragged.el.id].z = parseInt( dragged.el.style.zIndex );
-    dumpNotes();
+    var note = notes[dragged.el.id];
+    note.x = parseInt( dragged.el.style.left );
+    note.y = parseInt( dragged.el.style.top );
+    note.z = parseInt( dragged.el.style.zIndex );
 
-    document.removeEventListener( "mousemove", dragging, true );
-    document.removeEventListener( "mouseup", stopDrag, true );
-    dragged = {};
+    saveNote ( note, true, function ( resp ) {
+	//dumpNotes();
+	document.removeEventListener( "mousemove", dragging, true );
+	document.removeEventListener( "mouseup", stopDrag, true );
+	dragged = {};
+    });
 
 };
 
@@ -132,32 +129,10 @@ function closeSave ( e, obj ) {
     notes[id].subject = subject;
     notes[id].content = content;
 
-    $.ajax ({ "url" : "/notes/" + id,
-    	      "async" : true,
-    	      "type" : "PUT",
-    	      "data" : {"content" : content,
-    	     		"subject" : subject },
-    	      "success" : function() {
-    	     	  dumpNotes();
-    	      }
-    	    });
-    
-};
-
-function submitNote (x, y, content) {
-    if ( content == undefined || content == null ) content = "";
-    $.ajax ({ "type" : "POST",
-	     "async" : true,
-	     "url" : "/notes",
-	     "success" : function( resp ){
-		     var note = JSON.parse ( resp );
-		     writeNote ( note );
-		     notes[note.id] = note;
-		     dumpNotes();
-	     },
-	     "data" : {"content" : content, "x" : x, "y" : y}
+    saveNote ( notes[id], true, function ( resp ) {
+	//dumpNotes();
     });
-
+    
 };
 
 function createNote( e ) {
@@ -170,8 +145,18 @@ function createNote( e ) {
     var x = e.clientX + window.scrollX;
     var y = e.clientY + window.scrollY;
 
-    submitNote ( x, y );
-
+    content = "";
+    $.ajax ({ "type" : "POST",
+	     "async" : true,
+	     "url" : "/notes",
+	     "success" : function( resp ){
+		     var note = JSON.parse ( resp );
+		     writeNote ( note );
+		     notes[note.id] = note;
+		     //dumpNotes();
+	     },
+	     "data" : {"content" : content, "x" : x, "y" : y}
+    });
 };
 
 function writeNote ( note ) {
@@ -295,35 +280,63 @@ function dropDown ( el ) {
 };
 
 function colorNote ( el, dd ) {
-    $.ajax ({ "url" : "/notes/" + el.attr('id'),
-    	      "async" : true,
-    	      "type" : "PUT",
-    	      "data" : {"color" : "#00FF00"},
-    	      "success" : function() {
-		  notes[el.attr('id')].color = "#00FF00";
-		  dumpNotes();
-		  el.css({"backgroundColor" : "#00FF00"});
-		  dd.remove();
-    	      }
-    	    });
+    var n = notes[el.attr( 'id' )];
+    n.color = "#00FF00";
+    saveNote ( n, true, function ( resp ) {
+	//umpNotes();
+	el.css({"backgroundColor" : "#00FF00"});
+	dd.remove();
+    });
 }
 
 function deleteNote ( el, dd ) {
 
-    $.ajax ({ "url" : "/notes/" + el.attr('id'),
-    	      "async" : true,
-    	      "type" : "PUT",
-    	      "data" : {"trash" : 1},
-    	      "success" : function() {
-		  delete notes[el.attr('id')];
-		  dumpNotes();
-		  dd.remove();
-		  el.remove();
-    	      }
-    	    });
+    var n = notes[el.attr('id')];
+    n.trash = 1;
+    saveNote ( n, true, function ( resp ) {
+	delete notes[ n.id ];
+	//dumpNotes();
+	dd.remove();
+	el.remove();
+    });
 
+};
+
+
+function saveNote ( note, sync, fn ) {
+
+    $.ajax ({ "url" : "/notes/" + note.id,
+	      "async" : sync,
+	      "type" : "PUT",
+	      "data" : {"z" : note.z,
+			"x" : note.x,
+			"y" : note.y,
+			"content" : note.content,
+			"subject" : note.subject,
+			"color" : note.color,
+			"trash" : note.trash},
+	      "success" : function ( resp ) {
+		  fn ( resp );
+		  dumpNotes();
+	      }
+            });
 };
 
 $('#noteArea').bind('dblclick', function(event) {
 	createNote(event)
+});
+
+$(window).unload(function(event){
+
+    var n = JSON.parse(window.localStorage['notes_' + username]);
+    n = n.sort ( function ( a, b ) {
+	if ( a.z > b.z ) return 1;
+	if ( a.z < b.z ) return -1;
+	if ( a.z == b.z ) return 0;
+    });
+    for ( var i = 0; i < n.length; i++ ) {
+	var cn = notes[n[i].id];
+	cn.z = i;
+	saveNote ( cn, false );
+    }
 });
