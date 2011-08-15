@@ -39,11 +39,11 @@ function dumpNotes ( ){
     window.localStorage.setItem ( "notes_" + username, JSON.stringify ( notes ) );
 };
 
-function isChild ( l, str ) {
-    while ( l != null && l.tagName.toUpperCase() != str.toUpperCase() && l.nodeName != "BODY" )
+function isEditable ( l ) {
+    while ( l != null && l.nodeName != "BODY" ) {
+	if ( $(l).attr('contenteditable') == "true" )
+	    return true;
 	l = l.parentNode;
-    if ( l.tagName.toUpperCase() == str.toUpperCase() ) {
-	return $(l).attr("contenteditable") == "true";
     }
     return false;
 };
@@ -52,11 +52,8 @@ function startDrag ( e ) {
 
     var el = e.currentTarget;
 
-    if ( e.button != 0 ) return;
-    //fix this
-    if ( isChild ( e.target, "DIV" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
-	return;
-    } 
+    if ( e.button != 0 || isEditable ( e.target ) ) return;
+
     e.stopPropagation();
     e.preventDefault();
 
@@ -231,8 +228,8 @@ function dropDown ( el ) {
 	      "top" : parseInt ( $(el).css("top") ) + "px",
 	      "backgroundColor" : "#00FFFF",
 	      "zIndex" : "1000",
-	      "opacity" : ".82",
-	      "border-radius" : "8px"
+	      "opacity" : "1",
+	      "border-radius" : "5px"
 	    });
 
     var link = $("<button />", {
@@ -243,7 +240,8 @@ function dropDown ( el ) {
 	deleteNote ( $(el), dr );
     });
     dr.append ( link );
-
+    var ss = $("<br />")
+    dr.append ( ss );
     var link2 = $("<button />", {
 	type : "submit"
     });
@@ -284,7 +282,6 @@ function deleteNote ( el, dd ) {
 
 };
 
-
 function saveNote ( note, sync, fn ) {
 
     var dict = JSON.stringify ( [note] );
@@ -294,7 +291,8 @@ function saveNote ( note, sync, fn ) {
 	      "type" : "PUT",
 	      "data" : {"dict" : dict },
 	      "success" : function ( resp ) {
-		  fn ( resp );
+		  if ( fn != undefined )
+		      fn ( resp );
 		  dumpNotes();
 	      }
             });
@@ -318,7 +316,7 @@ $(window).unload(function(event){
     });
     for ( var i = 0; i < arr.length; i++ ) {
 	arr[i].z = i;
-	notes[n[i].id].z = i;
+	notes[arr[i].id].z = i;
     }
     var dict = JSON.stringify ( arr );
     $.ajax ({ "url" : "/notes",

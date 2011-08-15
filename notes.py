@@ -27,7 +27,7 @@ class Note(webapp.RequestHandler):
 			if note.content == "":
 				note.content = "Content here"
 				note.subject = "Subject"
-			note.color = "#FF00FF"
+			note.color = ""
 			note.trash = 0
 			note.x = int ( self.request.get( 'x' ) )
 			note.y = int ( self.request.get( 'y' ) )
