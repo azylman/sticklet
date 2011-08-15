@@ -91,8 +91,10 @@ function stopDrag ( e ) {
     note.x = parseInt( dragged.el.style.left );
     note.y = parseInt( dragged.el.style.top );
     note.z = parseInt( dragged.el.style.zIndex );
+    
+    var n = { "x" : note.x, "z" : note.z, "y" : note.y, "id" : note.id };
 
-    saveNote ( note, true );
+    saveNote ( n, true );
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
     dragged = {};
@@ -111,7 +113,9 @@ function closeSave ( e, obj ) {
     notes[id].subject = subject;
     notes[id].content = content;
 
-    saveNote ( notes[id], true );
+    var n = { "subject" : subject, "content" : content, "id" : id }
+
+    saveNote ( n, true );
     
 };
 
@@ -269,7 +273,8 @@ function dropDown ( el ) {
 function colorNote ( el, dd, color ) {
     var n = notes[el.attr( 'id' )];
     n.color = color;
-    saveNote ( n, true );
+    var note = { "id" : n.id, "color" : color };
+    saveNote ( note, true );
     el.css({"backgroundColor" : color});
     dd.remove();
 }
@@ -278,7 +283,8 @@ function deleteNote ( el, dd ) {
 
     var n = notes[el.attr('id')];
     n.trash = 1;
-    saveNote ( n, true );
+    var note = { "id" : n.id, "trash" : n.trash };
+    saveNote ( note, true );
     delete notes[ n.id ];
     dd.remove();
     el.remove();

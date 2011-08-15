@@ -50,13 +50,20 @@ class Note(webapp.RequestHandler):
 			for note in dict:
 				db_n = stickynote.db.get( note['id'] )
 				if db_n:
-					db_n.content = note['content']
-					db_n.subject = note['subject']
-					db_n.color = note['color']
-					db_n.trash = note['trash']
-					db_n.x = int(note['x'])
-					db_n.y = int(note['y'])
-					db_n.z = int(note['z'])
+					if 'content' in note:
+						db_n.content = note['content']
+					if 'subject' in note:
+						db_n.subject = note['subject']
+					if 'color' in note:
+						db_n.color = note['color']
+					if 'trash' in note:
+						db_n.trash = note['trash']
+					if 'x' in note:
+						db_n.x = int(note['x'])
+					if 'y' in note:
+						db_n.y = int(note['y'])
+					if 'z' in note:
+						db_n.z = int(note['z'])
 					db_n.put()
 				else:
 					self.response.out.write ("Problem retrieving data from server.  Contact webmanager.")
