@@ -198,7 +198,7 @@ function writeNote ( note ) {
     o.bind ( 'click', function(event) {
 	event.preventDefault();
 	event.stopPropagation();
-	dropDown( event.currentTarget.parentNode );
+	dropDown( elm );
     });
     o.text("^");
     h.append( s );
