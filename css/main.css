@@ -10,15 +10,14 @@ body {
 }
 
 .note {
-        width: 220px;
-	min-height:200px;
+    width: 220px;
+	min-height: 200px;
 	padding: 15px;
-	border: 1px solid #000;
 	position: absolute;
-	background-color: yellow;
+	background-color: #FFF046;
 	cursor: move;
-        border-radius: 8px;
-	box-shadow: 5px 5px 8px #888888;
+    border-radius: 5px;
+	box-shadow: 0px 5px 10px rgba(0, 0, 0, .5);
 }
 
 .noteHeader div {
