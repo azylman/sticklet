@@ -30,7 +30,7 @@ function getNotes () {
 	    	    $( "#" + notes[d].id ).remove();
 	    }
 	    notes = tmp;
-	    window.localStorage.setItem ( "notes_" + username, JSON.stringify( resp ) );
+	    dumpNotes();
 	}
     });
 };
@@ -133,9 +133,9 @@ function createNote( e ) {
 	     "url" : "/notes",
 	     "success" : function( resp ){
 		     var note = JSON.parse ( resp );
+		     var con = writeNote ( note );
 		     notes[note.id] = note;
 		     dumpNotes();
-		     var con = writeNote ( note );
 		     con.attr({"contenteditable" : true});
 		     con.focus();
 	     },
@@ -143,18 +143,22 @@ function createNote( e ) {
     });
 };
 
-function writeNote ( note ) {
-    // TODO(alex): compare the objects and only remove them if they're different
-    var no = $( "#" + note.id );
-    if ( no ){
-	//still need to check content and subject.  Is there a more jquery-y way to do this?
-	if ( no.css("left") != note.x || no.css("top") != note.y ||
-	     no.css("zIndex") != note.z ){
-	    $('#' + note.id).remove();
-	} else {
-	    return;
+function compare ( note ) {
+    var nA = notes[note.id];
+    if ( notes[note.id] ) {
+	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
+	     nA.subject == note.subject && nA.color == note.color && nA.trash == note.trash ) {
+	    return true;
 	}
     }
+    return false;
+};
+
+function writeNote ( note ) {
+
+    if ( compare ( note ) )
+	return;
+    
     var elm = $('<div />',  {
     	class : "note",
     	id : note.id
