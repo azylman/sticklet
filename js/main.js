@@ -297,7 +297,7 @@ function saveNote ( note, sync, fn ) {
     $.ajax ({ "url" : "/notes",
 	      "async" : sync,
 	      "type" : "PUT",
-	      "data" : {"dict" : dict },
+	      "data" : dict,
 	      "success" : function ( resp ) {
 		  if ( fn != undefined )
 		      fn ( resp );
@@ -330,7 +330,7 @@ $(window).unload(function(event){
     $.ajax ({ "url" : "/notes",
 	      "async" : false,
 	      "type" : "PUT",
-	      "data" : {"dict" : dict},
+	      "data" : dict,
 	      "success" : function ( resp ) {
 		  if ( resp != "true" )
 		      alert ( "failed to save!" );

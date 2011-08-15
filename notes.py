@@ -44,9 +44,9 @@ class Note(webapp.RequestHandler):
 	def put(self):
 		user = users.get_current_user()
 		if user:
-			fs = cgi.FieldStorage()
-			vars = MultiDict.from_fieldstorage(fs)
-			dict =  json.loads ( vars.get('dict') ) 
+			#fs = cgi.FieldStorage()
+			#vars = MultiDict.from_fieldstorage(fs)
+			dict =  json.loads ( self.request.body ) 
 			for note in dict:
 				db_n = stickynote.db.get( note['id'] )
 				if db_n:
