@@ -89,6 +89,7 @@ function stopDrag ( e ) {
     e.preventDefault();
 
     var note = notes[dragged.el.id];
+    if ( note == undefined ) alert ( "Note not found in array. You, sir, have a bug." );
     note.x = parseInt( dragged.el.style.left );
     note.y = parseInt( dragged.el.style.top );
     note.z = parseInt( dragged.el.style.zIndex );
