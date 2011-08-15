@@ -133,11 +133,13 @@ function createNote( e ) {
 	     "url" : "/notes",
 	     "success" : function( resp ){
 		     var note = JSON.parse ( resp );
-		     writeNote ( note );
 		     notes[note.id] = note;
 		     dumpNotes();
+		     var con = writeNote ( note );
+		     con.attr({"contenteditable" : true});
+		     con.focus();
 	     },
-	     "data" : {"content" : content, "x" : x, "y" : y}
+	      "data" : {"x" : x, "y" : y, "z" : ++z}
     });
 };
 
@@ -213,6 +215,7 @@ function writeNote ( note ) {
     c.append ( b );
     elm.append ( c );
     $("#noteArea").append ( elm );
+    return b;
 };
 
 function dropDown ( el ) {
@@ -221,8 +224,8 @@ function dropDown ( el ) {
 	class : "menu",
     });
 
-    dr.css ({ "width" : "200px",
-	      "height" : "200px",
+    dr.css ({ "width" : "100px",
+	      "height" : "100px",
 	      "position" : "absolute",
 	      "left" : parseInt ( $(el).css("left") ) + parseInt ( $(el).css("width") ) + "px",
 	      "top" : parseInt ( $(el).css("top") ) + "px",
@@ -247,7 +250,7 @@ function dropDown ( el ) {
     });
     link2.text ( "Change Color" );
     link2.bind ( "click", function ( event ) {
-	colorNote ( $(el), dr );
+	colorNote ( $(el), dr, "rgb(0,255,0)" );
     });
     dr.append ( link2 );
     $("#noteArea").bind ( "click", function ( event ) {
@@ -261,11 +264,11 @@ function dropDown ( el ) {
     $("#noteArea").append ( dr );
 };
 
-function colorNote ( el, dd ) {
+function colorNote ( el, dd, color ) {
     var n = notes[el.attr( 'id' )];
-    n.color = "#00FF00";
+    n.color = color;
     saveNote ( n, true, function ( resp ) {
-	el.css({"backgroundColor" : "#00FF00"});
+	el.css({"backgroundColor" : color});
 	dd.remove();
     });
 }

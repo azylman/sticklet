@@ -23,15 +23,13 @@ class Note(webapp.RequestHandler):
 		if user:
 			note = stickynote.snModel(parent=stickynote.key(user.email()))
 			note.author = users.get_current_user()
-			note.content = self.request.get('content')
-			if note.content == "":
-				note.content = "Content here"
-				note.subject = "Subject"
+			note.content = ""
+			note.subject = "Note"
 			note.color = ""
 			note.trash = 0
 			note.x = int ( self.request.get( 'x' ) )
 			note.y = int ( self.request.get( 'y' ) )
-			note.z = 0
+			note.z = int ( self.request.get( 'z' ) )
 			note.put()
 			self.response.out.write(json.dumps(note.to_dict()))
 
