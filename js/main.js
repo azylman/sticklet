@@ -22,13 +22,11 @@ function getNotes () {
 		$.each(resp, function(index) {
 		    z = ( resp[index].z > z ) ? resp[index].z : z;
 		    writeNote ( resp[index] );
-		    notes[resp[index].id] = null;
+		    delete notes[resp[index].id];
 		    tmp[resp[index].id] = resp[index];
 		});
-	    for ( var d in notes ) {
-	    	if ( notes[d] != null )
+	    for ( var d in notes )
 	    	    $( "#" + notes[d].id ).remove();
-	    }
 	    notes = tmp;
 	    dumpNotes();
 	}
