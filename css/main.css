@@ -31,6 +31,7 @@ body {
 .noteContent blockquote {
 	cursor: text;
 	padding: l5px;
+	min-height: 20px;
 }
 
 #noteArea {
