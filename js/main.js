@@ -92,11 +92,10 @@ function stopDrag ( e ) {
     note.y = parseInt( dragged.el.style.top );
     note.z = parseInt( dragged.el.style.zIndex );
 
-    saveNote ( note, true, function ( resp ) {
-	document.removeEventListener( "mousemove", dragging, true );
-	document.removeEventListener( "mouseup", stopDrag, true );
-	dragged = {};
-    });
+    saveNote ( note, true );
+    document.removeEventListener( "mousemove", dragging, true );
+    document.removeEventListener( "mouseup", stopDrag, true );
+    dragged = {};
 
 };
 
@@ -270,21 +269,19 @@ function dropDown ( el ) {
 function colorNote ( el, dd, color ) {
     var n = notes[el.attr( 'id' )];
     n.color = color;
-    saveNote ( n, true, function ( resp ) {
-	el.css({"backgroundColor" : color});
-	dd.remove();
-    });
+    saveNote ( n, true );
+    el.css({"backgroundColor" : color});
+    dd.remove();
 }
 
 function deleteNote ( el, dd ) {
 
     var n = notes[el.attr('id')];
     n.trash = 1;
-    saveNote ( n, true, function ( resp ) {
-	delete notes[ n.id ];
-	dd.remove();
-	el.remove();
-    });
+    saveNote ( n, true );
+    delete notes[ n.id ];
+    dd.remove();
+    el.remove();
 
 };
 
@@ -297,6 +294,10 @@ function saveNote ( note, sync, fn ) {
 	      "type" : "PUT",
 	      "data" : dict,
 	      "success" : function ( resp ) {
+		  if ( resp != "true" ) {
+		      throw new Error();
+		      return;
+		  }
 		  if ( fn != undefined )
 		      fn ( resp );
 		  dumpNotes();
