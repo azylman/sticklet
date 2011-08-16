@@ -67,7 +67,7 @@ function startDrag ( e ) {
     //fix this
     if ( isChild ( e.target, "DIV" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
 	return;
-    } 
+    }
     e.stopPropagation();
     e.preventDefault();
 
@@ -141,7 +141,7 @@ function closeSave ( e, obj ) {
     	     	  dumpNotes();
     	      }
     	    });
-    
+
 };
 
 function submitNote (x, y, content) {
