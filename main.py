@@ -16,7 +16,7 @@ class MainPage(webapp.RequestHandler):
 
 		user = users.get_current_user()
 		if user:
-			url = users.create_logout_url(self.request.uri)
+			url = users.create_logout_url("/greeting")
 			url_linktext = 'Logout'
 			
 			template_values = {
@@ -28,18 +28,23 @@ class MainPage(webapp.RequestHandler):
 			path = os.path.join(os.path.dirname(__file__), 'index.html')
 			self.response.out.write(template.render(path, template_values))
 		else:
-			url = users.create_login_url('/')
-			url_linktext = "Log In"
-			template_values = {
-				'url': url,
-				'url_linktext': url_linktext,
+			self.redirect("/greeting")
+
+class Greeting(webapp.RequestHandler):
+	def get(self):
+		url = users.create_login_url('/')
+		url_linktext = "Log In"
+		template_values = {
+			'url': url,
+			'url_linktext': url_linktext,
 			}
-
-			path = os.path.join(os.path.dirname(__file__), 'greeting.html')
-			self.response.out.write(template.render(path, template_values))
-
+		
+		path = os.path.join(os.path.dirname(__file__), 'greeting.html')
+		self.response.out.write(template.render(path, template_values))
+			
 application = webapp.WSGIApplication([
-	('/', MainPage)
+		('/', MainPage),
+		('/greeting', Greeting)
 ], debug=True)
 
 def main():

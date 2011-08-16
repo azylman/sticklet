@@ -316,31 +316,31 @@ $('#noteArea').bind('dblclick', function(event) {
 	createNote(event)
 });
 
-$(window).unload(function(event){
+// $(window).unload(function(event){
 
-    var n = JSON.parse(window.localStorage['notes_' + username]);
-    var arr = [];
-    for ( var a in n ) {
-	arr.push ( {"id" : n[a].id, "z" : n[a].z });
-    }
-    arr = arr.sort ( function ( a, b ) {
-	if ( a.z > b.z ) return 1;
-	if ( a.z < b.z ) return -1;
-	if ( a.z == b.z ) return 0;
-    });
-    for ( var i = 0; i < arr.length; i++ ) {
-	arr[i].z = i;
-	notes[arr[i].id].z = i;
-    }
-    var dict = JSON.stringify ( arr );
-    $.ajax ({ "url" : "/notes",
-	      "async" : false,
-	      "type" : "PUT",
-	      "data" : dict,
-	      "success" : function ( resp ) {
-		  if ( resp != "true" )
-		      alert ( "failed to save!" );
-	      }
-            });
-    dumpNotes();
-});
+//     var n = JSON.parse(window.localStorage['notes_' + username]);
+//     var arr = [];
+//     for ( var a in n ) {
+// 	arr.push ( {"id" : n[a].id, "z" : n[a].z });
+//     }
+//     arr = arr.sort ( function ( a, b ) {
+// 	if ( a.z > b.z ) return 1;
+// 	if ( a.z < b.z ) return -1;
+// 	if ( a.z == b.z ) return 0;
+//     });
+//     for ( var i = 0; i < arr.length; i++ ) {
+// 	arr[i].z = i;
+// 	notes[arr[i].id].z = i;
+//     }
+//     var dict = JSON.stringify ( arr );
+//     // $.ajax ({ "url" : "/notes",
+//     // 	      "async" : false,
+//     // 	      "type" : "PUT",
+//     // 	      "data" : dict,
+//     // 	      "success" : function ( resp ) {
+//     // 		  if ( resp != "true" )
+//     // 		      alert ( "failed to save!" );
+//     // 	      }
+//     //         });
+//     dumpNotes();
+// });
