@@ -49,17 +49,9 @@ function isEditable ( l ) {
 function startDrag ( e ) {
 
     var el = e.currentTarget;
-<<<<<<< HEAD
-    if ( e.button != 0 ) return;
-    //fix this
-    if ( isChild ( e.target, "DIV" ) || isChild ( e.target, "BLOCKQUOTE" ) ) {
-	return;
-    }
-=======
 
     if ( e.button != 0 || isEditable ( e.target ) ) return;
 
->>>>>>> 02c7600c29c88b61ac6a8281abb1747a5323c5a8
     e.stopPropagation();
     e.preventDefault();
 
@@ -99,7 +91,7 @@ function stopDrag ( e ) {
     note.x = parseInt( dragged.el.style.left );
     note.y = parseInt( dragged.el.style.top );
     note.z = parseInt( dragged.el.style.zIndex );
-    
+
     var n = { "x" : note.x, "z" : note.z, "y" : note.y, "id" : note.id };
 
     saveNote ( n, true );
@@ -121,38 +113,10 @@ function closeSave ( e, obj ) {
     notes[id].subject = subject;
     notes[id].content = content;
 
-<<<<<<< HEAD
-    $.ajax ({ "url" : "/notes/" + id,
-    	      "async" : true,
-    	      "type" : "PUT",
-    	      "data" : {"content" : content,
-    	     		"subject" : subject },
-    	      "success" : function() {
-    	     	  dumpNotes();
-    	      }
-    	    });
-
-};
-
-function submitNote (x, y, content) {
-    if ( content == undefined || content == null ) content = "";
-    $.ajax ({ "type" : "POST",
-	     "async" : true,
-	     "url" : "/notes",
-	     "success" : function( resp ){
-		     var note = JSON.parse ( resp );
-		     writeNote ( note );
-		     notes[note.id] = note;
-		     dumpNotes();
-	     },
-	     "data" : {"content" : content, "x" : x, "y" : y}
-    });
-=======
     var n = { "subject" : subject, "content" : content, "id" : id }
->>>>>>> 02c7600c29c88b61ac6a8281abb1747a5323c5a8
 
     saveNote ( n, true );
-    
+
 };
 
 function createNote( e ) {
@@ -196,7 +160,7 @@ function writeNote ( note ) {
 
     if ( compare ( note ) )
 	return;
-    
+
     var elm = $('<div />',  {
     	class : "note",
     	id : note.id
