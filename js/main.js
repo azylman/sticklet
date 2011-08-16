@@ -220,6 +220,7 @@ function writeNote ( note ) {
     b.html(note.content);
     c.append ( b );
     elm.append ( c );
+    $( "#" + note.id ).remove();
     $("#noteArea").append ( elm );
     return b;
 };
@@ -320,7 +321,7 @@ $(window).unload(function(event){
     var n = JSON.parse(window.localStorage['notes_' + username]);
     var arr = [];
     for ( var a in n ) {
-	arr.push ( n[a] );
+	arr.push ( {"id" : n[a].id, "z" : n[a].z });
     }
     arr = arr.sort ( function ( a, b ) {
 	if ( a.z > b.z ) return 1;
