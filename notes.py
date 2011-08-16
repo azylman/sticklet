@@ -23,15 +23,13 @@ class Note(webapp.RequestHandler):
 		if user:
 			note = stickynote.snModel(parent=stickynote.key(user.email()))
 			note.author = users.get_current_user()
-			note.content = self.request.get('content')
-			if note.content == "":
-				note.content = "Content here"
-				note.subject = "Subject"
-			note.color = "#FF00FF"
+			note.content = ""
+			note.subject = "Note"
+			note.color = ""
 			note.trash = 0
 			note.x = int ( self.request.get( 'x' ) )
 			note.y = int ( self.request.get( 'y' ) )
-			note.z = 0
+			note.z = int ( self.request.get( 'z' ) )
 			note.put()
 			self.response.out.write(json.dumps(note.to_dict()))
 
@@ -43,42 +41,36 @@ class Note(webapp.RequestHandler):
 			notes_query.filter ( "trash = ", 0 )
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
 
-	def put(self, id):
+	def put(self):
 		user = users.get_current_user()
 		if user:
-			fs = cgi.FieldStorage()
-			vars = MultiDict.from_fieldstorage(fs)
-			note = stickynote.db.get( id )
-			if note:
-				content = vars.get( 'content' )
-				subject = vars.get( 'subject' )
-				color = vars.get( 'color' )
-				trash = vars.get( 'trash' )
-				x = vars.get( 'x' )
-				y = vars.get( 'y' )
-				z = vars.get( 'z' )
-				if content:
-					note.content = content
-				if subject:
-					note.subject = subject
-				if x:
-					note.x = int(x)
-				if y:
-					note.y = int(y)
-				if z:
-					note.z = int(z)
-				if color:
-					note.color = color
-				if trash:
-					note.trash = int(trash)
-				note.put()
-				self.response.out.write ( "true" );
-			else:
-				self.response.out.write ("Problem retrieving data from server.  Contact webmanager.")
+			#fs = cgi.FieldStorage()
+			#vars = MultiDict.from_fieldstorage(fs)
+			dict =  json.loads ( self.request.body ) 
+			for note in dict:
+				db_n = stickynote.db.get( note['id'] )
+				if db_n:
+					if 'content' in note:
+						db_n.content = note['content']
+					if 'subject' in note:
+						db_n.subject = note['subject']
+					if 'color' in note:
+						db_n.color = note['color']
+					if 'trash' in note:
+						db_n.trash = note['trash']
+					if 'x' in note:
+						db_n.x = int(note['x'])
+					if 'y' in note:
+						db_n.y = int(note['y'])
+					if 'z' in note:
+						db_n.z = int(note['z'])
+					db_n.put()
+				else:
+					self.response.out.write ("Problem retrieving data from server.  Contact webmanager.")
+			self.response.out.write( "true" )
 
 application = webapp.WSGIApplication([
-	('/notes', Note),
-	('/notes/(.*)', Note)
+	('/notes', Note)
 ], debug=True)
 
 def main():
