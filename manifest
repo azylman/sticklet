@@ -1,0 +1,15 @@
+CACHE MANIFEST
+# version: 1.1
+
+CACHE:
+/
+/css/main.css
+/js/main.js
+/js/jquery.js
+
+NETWORK:
+/
+/notes
+
+#FALLBACK:
+#/ /offline

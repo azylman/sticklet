@@ -14,9 +14,9 @@ handlers:
   script: notes.py
 
 - url: /manifest
-  static_files: manifest.cfm
+  static_files: manifest
   mime_type: text/cache-manifest
-  upload: manifest.cfm
+  upload: manifest
 
 - url: /.*
   script: main.py
