@@ -7,11 +7,11 @@ var undoStack = new Array();
 var redoStack = new Array();
 var trash = {};
 var online = window.navigator.onLine;
+
 window.applicationCache.onerror=function( event ){
     event.preventDefault();
     event.stopPropagation();
     online = false;
-    console.log ( event );
 };
 
 if ( window.localStorage.getItem( "notes_" + username ) ){
@@ -56,6 +56,7 @@ function getTrash () {
 	"type" : "GET",
 	"dataType" : "json",
 	"success" : function( resp ) {
+	    trash = {};
 	    $.each(resp, function(index) {
 		trash[resp[index].id] = resp[index];
 	    });
@@ -81,8 +82,6 @@ function startDrag ( e ) {
     var el = e.currentTarget;
 
     if ( e.button != 0 || isEditable ( e.target ) ) return;
-
-    undoStack.push ( e );
 
     e.stopPropagation();
     e.preventDefault();
@@ -118,13 +117,18 @@ function stopDrag ( e ) {
     e.stopPropagation();
     e.preventDefault();
     
-    undoStack.push ( e );
+    var act = new Action();
 
     var note = notes[dragged.el.id];
+    act.setBefore ( note );
+
     if ( note == undefined ) alert ( "Note not found in array. You, sir, have a bug." );
     note.x = parseInt( dragged.el.style.left );
     note.y = parseInt( dragged.el.style.top );
     note.z = parseInt( dragged.el.style.zIndex );
+
+    act.setAfter ( note );
+    act.push ( );
 
     var n = { "x" : note.x, "z" : note.z, "y" : note.y, "id" : note.id };
 
@@ -155,8 +159,6 @@ function createNote( e ) {
 
     if ( ! online ) return;
 
-    undoStack.push ( e );
-
     e.stopPropagation();
     e.preventDefault();
 
@@ -170,19 +172,22 @@ function createNote( e ) {
 	     "async" : true,
 	     "url" : "/notes",
 	     "success" : function( resp ){
-		     var note = JSON.parse ( resp );
-		     var con = writeNote ( note );
-		     notes[note.id] = note;
-		     dumpNotes();
-		     con.attr({"contenteditable" : true});
-		     con.focus();
+		 var note = JSON.parse ( resp );
+		 var con = writeNote ( note );
+		 notes[note.id] = note;
+		 var act = new Action ();
+		 act.setAfter ( note );
+  		 act.push ( );
+		 dumpNotes();
+		 con.attr({"contenteditable" : true});
+		 con.focus();
 	     },
 	      "data" : {"x" : x, "y" : y, "z" : ++z}
     });
 };
 
-function compare ( note ) {
-    var nA = notes[note.id];
+function compare ( note, note2 ) {
+    var nA = (note2 == undefined ) ? notes[note.id] : note2;
     if ( !!nA ) {
 	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
 	     nA.subject == note.subject && nA.color == note.color && nA.trash == note.trash ) {
@@ -297,7 +302,6 @@ function dropDown ( el ) {
     });
     link.text ( "Delete" );
     link.bind ( "click", function ( event ) {
-	undoStack.push ( event );
 	deleteNote ( el, dr );
     });
     dr.append ( link );
@@ -313,7 +317,6 @@ function dropDown ( el ) {
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
 	l.bind ( "click", function ( event ) {
-	    undoStack.push ( event );
 	    colorNote ( el, dr, event );
 	});
 	dr.append ( l );
@@ -332,7 +335,11 @@ function dropDown ( el ) {
 function colorNote ( el, dd, event ) {
     color = $(event.currentTarget).css("backgroundColor");
     var n = notes[el.attr( 'id' )];
+    var act = new Action ();
+    act.setBefore ( n );
     n.color = color;
+    act.setAfter ( n );
+    act.push ( );
     var note = { "id" : n.id, "color" : color };
     if ( online )
 	saveNote ( note, true );
@@ -343,11 +350,16 @@ function colorNote ( el, dd, event ) {
 function deleteNote ( el, dd ) {
 
     var n = notes[el.attr('id')];
+    var act = new Action();
+    act.setBefore ( n );
     n.trash = 1;
+    act.setAfter ( n );
+    act.push ( );
     var note = { "id" : n.id, "trash" : n.trash };
     if ( online )
 	saveNote ( note, true );
     delete notes[ n.id ];
+    trash[n.id] = n;
     dd.remove();
     el.remove();
 
@@ -376,6 +388,56 @@ $('#noteArea').bind('dblclick', function(event) {
     if ( online )
 	createNote(event)
 });
+
+function Action (){
+
+    this.b;
+    this.a;
+
+    this.setBefore = function ( before ) {
+	this.b = jQuery.extend ( true, {}, before );
+    }
+    this.setAfter = function ( after ) {
+	this.a = jQuery.extend ( true, {}, after );
+    }
+    this.push = function () {
+	if ( ! compare ( this.a, this.b ) )
+	    undoStack.push ( this );
+    }
+
+};
+
+function undoAction () {
+
+    if ( undoStack.length == 0 ) return;
+
+    var act = undoStack.pop();
+
+    if ( act.b != undefined ){
+
+	writeNote ( act.b );
+	notes[act.b.id] = act.b;
+	saveNote ( act.b, true );
+
+    }
+		 
+    redoStack.push ( act );
+};
+
+function redoAction () {
+
+    if ( redoStack.length == 0 ) return;
+
+    var act = redoStack.pop();
+
+    if ( act.a != undefined ) {
+
+	writeNote ( act.a );
+	notes[act.a.id] = act.a;
+	saveNote ( act.a, true )
+
+    }
+};
 
 // $(window).unload(function(event){
 
