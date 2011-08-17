@@ -13,6 +13,9 @@ handlers:
 - url: /notes
   script: notes.py
 
+- url: /notes/trash
+  script: notes.py
+
 - url: /greeting
   script: main.py
 

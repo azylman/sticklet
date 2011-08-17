@@ -4,7 +4,7 @@ var z = 0;
 var colorsArr = [ "#FF5555", "#92CCA6", "#C1F0F6", 
 		  "#FFF046", "#FDC68A", "#FF00FF" ];
 var eventStack = new Array();
-
+var trash = {};
 var online = window.navigator.onLine;
 window.applicationCache.onerror=function( event ){
     event.preventDefault();
@@ -42,6 +42,20 @@ function getNotes () {
 	    	    $( "#" + notes[d].id ).remove();
 	    notes = tmp;
 	    dumpNotes();
+	}
+    });
+};
+
+function getTrash () {
+    $.ajax ({
+	"url" : "/notes/trash",
+	"async" : true,
+	"type" : "GET",
+	"dataType" : "json",
+	"success" : function( resp ) {
+	    $.each(resp, function(index) {
+		trash[resp[index].id] = resp[index];
+	    });
 	}
     });
 };

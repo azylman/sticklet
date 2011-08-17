@@ -78,8 +78,23 @@ class Note(webapp.RequestHandler):
 			self.error(401)
 			self.response.out.write("Not logged in.")
 
+class Trash(webapp.RequestHandler):
+	def get(self):
+		user = users.get_current_user()
+		if user:
+			notes_query = stickynote.snModel.all().ancestor(
+				stickynote.key(user.email())).order('-date')
+			notes_query.filter ( "trash = ", 1 )
+			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
+		else:
+			self.error(401)
+			self.response.out.write("Not logged in.")
+
+
+
 application = webapp.WSGIApplication([
-	('/notes', Note)
+	('/notes', Note),
+	('/notes/trash', Trash)
 ], debug=True)
 
 def main():
