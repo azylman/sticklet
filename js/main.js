@@ -449,13 +449,12 @@ function redoAction () {
 
 	writeNote ( act.a, false );
 	notes[act.a.id] = act.a;
+	delete trash[act.b.id];
 	saveNote ( act.a, true )
 
     } else {
-
-	writeNote ( act.b, false );
-	notes[act.b.id] = act.b;
-	saveNote ( act.b, true )
+	console.log ( "hi" );
+	deleteNote ( $(act.b.id) );
 
     }
 
