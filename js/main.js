@@ -146,10 +146,16 @@ function closeSave ( e, obj ) {
     var note = obj.parents(".note");
     var id = note.attr('id');
 
+    var act = new Action ();
+    act.setBefore( notes[id] );
+
     var subject = note.find(".noteHeader").children().html();
     var content = note.find(".noteContent").children().html();
     notes[id].subject = subject;
     notes[id].content = content;
+
+    act.setAfter ( notes[id] );
+    act.push();
 
     var n = { "subject" : subject, "content" : content, "id" : id }
     if( online )
