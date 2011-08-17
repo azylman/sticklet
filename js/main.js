@@ -1,6 +1,8 @@
 var notes = {};
 var dragged = {};
 var z = 0;
+var colorsArr = [ "#FF0000", "#00FF00", "#0000FF", 
+		  "#FFF046", "#00FFFF", "#FF00FF" ];
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
@@ -256,14 +258,21 @@ function dropDown ( el ) {
     dr.append ( link );
     var ss = $("<br />")
     dr.append ( ss );
-    var link2 = $("<button />", {
-	type : "submit"
-    });
-    link2.text ( "Change Color" );
-    link2.bind ( "click", function ( event ) {
-	colorNote ( $(el), dr, "rgb(0,255,0)" );
-    });
-    dr.append ( link2 );
+    var ss = $("<br />")
+    dr.append ( ss );
+
+    for ( var i = 0; i < colorsArr.length; i++ ){
+	var l = $("<div />", {
+	    class : "colorSq"
+	});
+	var col = colorsArr[i];
+	l.css({"backgroundColor" : col});
+	l.bind ( "click", function ( event ) {
+	    colorNote ( $(el), dr, event );
+	});
+	dr.append ( l );
+	
+    }
     $("#noteArea").bind ( "click", function ( event ) {
 	$("#noteArea").unbind ( "click" );
 	dr.remove();
@@ -275,7 +284,8 @@ function dropDown ( el ) {
     $("#noteArea").append ( dr );
 };
 
-function colorNote ( el, dd, color ) {
+function colorNote ( el, dd, event ) {
+    color = $(event.currentTarget).css("backgroundColor");
     var n = notes[el.attr( 'id' )];
     n.color = color;
     var note = { "id" : n.id, "color" : color };
