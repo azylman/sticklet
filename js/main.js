@@ -308,7 +308,7 @@ function saveNote ( note, sync, fn ) {
 		  if ( fn != undefined )
 		      fn ( resp );
 		  dumpNotes();
-	      }
+	      },
 	      "error" : function( resp ) {
 	      	alert(resp);
 	      }
