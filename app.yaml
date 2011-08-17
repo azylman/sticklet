@@ -20,6 +20,7 @@ handlers:
   static_files: manifest
   mime_type: text/cache-manifest
   upload: manifest
+  expiration: "0s"
 
 - url: /.*
   script: main.py

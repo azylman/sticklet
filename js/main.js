@@ -3,15 +3,25 @@ var dragged = {};
 var z = 0;
 var colorsArr = [ "#FF5555", "#92CCA6", "#C1F0F6", 
 		  "#FFF046", "#FDC68A", "#FF00FF" ];
+
+var online = window.navigator.onLine;
+window.applicationCache.onerror=function( event ){
+    event.preventDefault();
+    event.stopPropagation();
+    online = false;
+    console.log ( event );
+};
+
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
+	z = ( arr[a].z > z ) ? arr[a].z : z;
 	writeNote( arr[a] );
 	notes[arr[a].id] = arr[a];
     }
 }
-
-getNotes();
+if ( online )
+    getNotes();
 
 function getNotes () {
     $.ajax ({
@@ -96,7 +106,8 @@ function stopDrag ( e ) {
 
     var n = { "x" : note.x, "z" : note.z, "y" : note.y, "id" : note.id };
 
-    saveNote ( n, true );
+    if ( online )
+	saveNote ( n, true );
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
     dragged = {};
@@ -114,11 +125,13 @@ function closeSave ( e, obj ) {
     notes[id].content = content;
 
     var n = { "subject" : subject, "content" : content, "id" : id }
-
-    saveNote ( n, true );
+    if( online )
+	saveNote ( n, true );
 };
 
 function createNote( e ) {
+
+    if ( ! online ) return;
 
     e.stopPropagation();
     e.preventDefault();
@@ -189,11 +202,13 @@ function writeNote ( note ) {
 	}
     });
     s.bind( "dblclick", function ( event ) {
+	if ( ! online ) return;
 	s.attr({"contenteditable" : true});
 	s.focus();
 	$(document).bind ( "click", function( event ) {
 	    if ( isEditable ( event.target ) ) return;
 	    event.stopPropagation();
+	    s.attr({"contenteditable" : false});
 	    $(document).unbind( "click" );
     	    closeSave( event, s );
 	});
@@ -221,11 +236,13 @@ function writeNote ( note ) {
     // 	b.attr({"contenteditable" : false});
     // });
     b.bind ( "dblclick", function( event ) {
+	if ( ! online ) return;
 	b.attr({"contenteditable" : true});
 	b.focus();
 	$(document).bind ( "click", function( event ) {
 	    if ( isEditable ( event.target ) ) return;
 	    event.stopPropagation();
+	    b.attr({"contenteditable" : false});
 	    $(document).unbind( "click" );
     	    closeSave( event, b );
 	});
@@ -291,7 +308,8 @@ function colorNote ( el, dd, event ) {
     var n = notes[el.attr( 'id' )];
     n.color = color;
     var note = { "id" : n.id, "color" : color };
-    saveNote ( note, true );
+    if ( online )
+	saveNote ( note, true );
     el.css({"backgroundColor" : color});
     dd.remove();
 }
@@ -301,7 +319,8 @@ function deleteNote ( el, dd ) {
     var n = notes[el.attr('id')];
     n.trash = 1;
     var note = { "id" : n.id, "trash" : n.trash };
-    saveNote ( note, true );
+    if ( online )
+	saveNote ( note, true );
     delete notes[ n.id ];
     dd.remove();
     el.remove();
@@ -328,6 +347,7 @@ function saveNote ( note, sync, fn ) {
 };
 
 $('#noteArea').bind('dblclick', function(event) {
+    if ( online )
 	createNote(event)
 });
 
