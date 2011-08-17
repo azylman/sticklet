@@ -305,13 +305,12 @@ function saveNote ( note, sync, fn ) {
 	      "type" : "PUT",
 	      "data" : dict,
 	      "success" : function ( resp ) {
-		  if ( resp != "true" ) {
-		      throw new Error();
-		      return;
-		  }
 		  if ( fn != undefined )
 		      fn ( resp );
 		  dumpNotes();
+	      }
+	      "error" : function( resp ) {
+	      	alert(resp);
 	      }
             });
 };
