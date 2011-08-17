@@ -18,7 +18,7 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
 	z = ( arr[a].z > z ) ? arr[a].z : z;
-	writeNote( arr[a] );
+	writeNote( arr[a], false );
 	notes[arr[a].id] = arr[a];
     }
 }
@@ -37,7 +37,7 @@ function getNotes () {
 	    var tmp = {};
 		$.each(resp, function(index) {
 		    z = ( resp[index].z > z ) ? resp[index].z : z;
-		    writeNote ( resp[index] );
+		    writeNote ( resp[index], false );
 		    delete notes[resp[index].id];
 		    tmp[resp[index].id] = resp[index];
 		});
@@ -173,7 +173,7 @@ function createNote( e ) {
 	     "url" : "/notes",
 	     "success" : function( resp ){
 		 var note = JSON.parse ( resp );
-		 var con = writeNote ( note );
+		 var con = writeNote ( note, true );
 		 notes[note.id] = note;
 		 var act = new Action ();
 		 act.setAfter ( note );
@@ -197,7 +197,7 @@ function compare ( note, note2 ) {
     return false;
 };
 
-function writeNote ( note ) {
+function writeNote ( note, fade ) {
 
     if ( compare ( note ) )
 	return;
@@ -280,7 +280,12 @@ function writeNote ( note ) {
     c.append ( b );
     elm.append ( c );
     $( "#" + note.id ).remove();
+    if ( fade )
+	elm.css({"display":"none"});
     $("#noteArea").append ( elm );
+    if ( fade ) {
+	elm.fadeIn( 350 );
+    }
     return b;
 };
 
@@ -361,7 +366,9 @@ function deleteNote ( el, dd ) {
     delete notes[ n.id ];
     trash[n.id] = n;
     dd.remove();
-    el.remove();
+    el.fadeOut ( 350, function () {
+	el.remove();
+    });
 
 };
 
@@ -417,8 +424,9 @@ function undoAction () {
 
     if ( act.b != undefined ){
 
-	writeNote ( act.b );
+	writeNote ( act.b, false );
 	notes[act.b.id] = act.b;
+	delete trash[act.b.id];
 	saveNote ( act.b, true );
 
     }
@@ -434,7 +442,7 @@ function redoAction () {
 
     if ( act.a != undefined ) {
 
-	writeNote ( act.a );
+	writeNote ( act.a, false );
 	notes[act.a.id] = act.a;
 	saveNote ( act.a, true )
 
