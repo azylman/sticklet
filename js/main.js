@@ -177,7 +177,7 @@ function createNote( e ) {
 		 notes[note.id] = note;
 		 var act = new Action ();
 		 act.setAfter ( note );
-  		 act.push ( );
+  		 act.push ();
 		 dumpNotes();
 		 con.attr({"contenteditable" : true});
 		 con.focus();
@@ -187,6 +187,7 @@ function createNote( e ) {
 };
 
 function compare ( note, note2 ) {
+    if ( note2 == null ) return false;
     var nA = (note2 == undefined ) ? notes[note.id] : note2;
     if ( !!nA ) {
 	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
@@ -308,6 +309,7 @@ function dropDown ( el ) {
     link.text ( "Delete" );
     link.bind ( "click", function ( event ) {
 	deleteNote ( el, dr );
+	dr.remove();
     });
     dr.append ( link );
     var ss = $("<br />")
@@ -323,6 +325,7 @@ function dropDown ( el ) {
 	l.css({"backgroundColor" : col});
 	l.bind ( "click", function ( event ) {
 	    colorNote ( el, dr, event );
+	    dr.remove();
 	});
 	dr.append ( l );
     }
@@ -337,7 +340,7 @@ function dropDown ( el ) {
     $("#noteArea").append ( dr );
 };
 
-function colorNote ( el, dd, event ) {
+function colorNote ( el, event ) {
     color = $(event.currentTarget).css("backgroundColor");
     var n = notes[el.attr( 'id' )];
     var act = new Action ();
@@ -349,10 +352,9 @@ function colorNote ( el, dd, event ) {
     if ( online )
 	saveNote ( note, true );
     el.css({"backgroundColor" : color});
-    dd.remove();
 }
 
-function deleteNote ( el, dd ) {
+function deleteNote ( el ) {
 
     var n = notes[el.attr('id')];
     var act = new Action();
@@ -365,7 +367,6 @@ function deleteNote ( el, dd ) {
 	saveNote ( note, true );
     delete notes[ n.id ];
     trash[n.id] = n;
-    dd.remove();
     el.fadeOut ( 350, function () {
 	el.remove();
     });
@@ -398,8 +399,8 @@ $('#noteArea').bind('dblclick', function(event) {
 
 function Action (){
 
-    this.b;
-    this.a;
+    this.b = null;
+    this.a = null;
 
     this.setBefore = function ( before ) {
 	this.b = jQuery.extend ( true, {}, before );
@@ -422,12 +423,16 @@ function undoAction () {
 
     var act = undoStack.pop();
 
-    if ( act.b != undefined ){
+    if ( act.b != null ){
 
 	writeNote ( act.b, false );
 	notes[act.b.id] = act.b;
 	delete trash[act.b.id];
 	saveNote ( act.b, true );
+
+    } else {
+
+	deleteNote ( $(act.a.id) );
 
     }
 		 
@@ -440,13 +445,20 @@ function redoAction () {
 
     var act = redoStack.pop();
 
-    if ( act.a != undefined ) {
+    if ( act.a != null ) {
 
 	writeNote ( act.a, false );
 	notes[act.a.id] = act.a;
 	saveNote ( act.a, true )
 
+    } else {
+
+	writeNote ( act.b, false );
+	notes[act.b.id] = act.b;
+	saveNote ( act.b, true )
+
     }
+
     undoStack.push ( act );
 };
 
