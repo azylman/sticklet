@@ -324,7 +324,7 @@ function dropDown ( el ) {
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
 	l.bind ( "click", function ( event ) {
-	    colorNote ( el, dr, event );
+	    colorNote ( el, event );
 	    dr.remove();
 	});
 	dr.append ( l );
