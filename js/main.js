@@ -88,7 +88,8 @@ function startDrag ( e ) {
 
     dragged.el = el;
 
-    dragged.el.style.zIndex = ++z;
+    if ( dragged.el.style.zIndex < z )
+	dragged.el.style.zIndex = ++z;
 
     dragged.x = e.clientX + window.scrollX;
     dragged.y = e.clientY + window.scrollY;
