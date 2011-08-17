@@ -1,8 +1,8 @@
 var notes = {};
 var dragged = {};
 var z = 0;
-var colorsArr = [ "#FF5555", "#92CCA6", "#C1F0F6", 
-		  "#FFF046", "#FDC68A", "#FF00FF" ];
+var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6", 
+		  "#FFF046", "#FDC68A", "#d8bfd8" ];
 var undoStack = new Array();
 var redoStack = new Array();
 var trash = {};
