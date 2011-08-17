@@ -147,7 +147,7 @@ function createNote( e ) {
 
 function compare ( note ) {
     var nA = notes[note.id];
-    if ( notes[note.id] ) {
+    if ( !!nA ) {
 	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
 	     nA.subject == note.subject && nA.color == note.color && nA.trash == note.trash ) {
 	    return true;
@@ -212,12 +212,12 @@ function writeNote ( note ) {
     	class : 'noteContent'
     });
     var b = $('<blockquote />');
-    b.bind ( "keypress", function(event) {
+    b.bind ( "keypress", function( event ) {
     	closeSave(event, $(this));
     });
-    b.bind ( "blur", function(event) {
-    	closeSave(event, $(this));
-	$(this).attr({"contenteditable" : false});
+    b.bind ( "blur", function( event ) {
+    	closeSave(event, b);
+	this.attr({"contenteditable" : false});
     });
     b.bind ( "dblclick", function( event ) {
 	b.attr({"contenteditable" : true});
@@ -237,9 +237,11 @@ function dropDown ( el ) {
 	class : "menu",
     });
 
+    var el = $(el);
+
     dr.css ({ 
-	      "left" : parseInt ( $(el).css("left") ) + parseInt ( $(el).css("width") ) + "px",
-	      "top" : parseInt ( $(el).css("top") ) + "px"
+	      "left" : parseInt ( el.css("left") ) + parseInt ( el.css("width") ) + "px",
+	      "top" : parseInt ( el.css("top") ) + "px"
 	    });
 
     var link = $("<button />", {
@@ -247,7 +249,7 @@ function dropDown ( el ) {
     });
     link.text ( "Delete" );
     link.bind ( "click", function ( event ) {
-	deleteNote ( $(el), dr );
+	deleteNote ( el, dr );
     });
     dr.append ( link );
     var ss = $("<br />")
@@ -262,10 +264,9 @@ function dropDown ( el ) {
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
 	l.bind ( "click", function ( event ) {
-	    colorNote ( $(el), dr, event );
+	    colorNote ( el, dr, event );
 	});
 	dr.append ( l );
-	
     }
     $("#noteArea").bind ( "click", function ( event ) {
 	$("#noteArea").unbind ( "click" );
