@@ -103,7 +103,6 @@ function stopDrag ( e ) {
 
 function closeSave ( e, obj ) {
 
-    obj.attr({"contenteditable" : false});
     var note = obj.parents(".note");
     var id = note.attr('id');
 
@@ -179,6 +178,7 @@ function writeNote ( note ) {
     var s = $('<div />');
     s.bind("blur", function(event) {
     	closeSave(event, $(this));
+	$(this).attr({"contenteditable" : false});
     });
     s.bind( "keypress", function ( event ) {
 	if (event.keyCode == 13 ) {
@@ -186,6 +186,7 @@ function writeNote ( note ) {
 	    event.stopPropagation();
 	    return;
 	}
+	closeSave(event, $(this));
     });
     s.bind( "dblclick", function ( event ) {
 	s.attr({"contenteditable" : true});
@@ -209,14 +210,16 @@ function writeNote ( note ) {
     	class : 'noteContent'
     });
     var b = $('<blockquote />');
+    b.bind ( "keypress", function(event) {
+    	closeSave(event, $(this));
+    });
+    b.bind ( "blur", function(event) {
+    	closeSave(event, $(this));
+	$(this).attr({"contenteditable" : false});
+    });
     b.bind ( "dblclick", function( event ) {
-	event.preventDefault();
-	event.stopPropagation();
 	b.attr({"contenteditable" : true});
 	b.focus();
-	b.bind ( "blur", function(event) {
-    	    closeSave(event, $(this));
-	});
     });
     b.html(note.content);
     c.append ( b );
