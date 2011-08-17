@@ -220,10 +220,10 @@ function writeNote ( note, fade ) {
     	class : "noteHeader"
     });
     var s = $('<div />');
-    // s.bind("blur", function(event) {
-    // 	closeSave(event, $(this));
-    // 	$(this).attr({"contenteditable" : false});
-    // });
+    s.bind("blur", function(event) {
+    	closeSave(event, $(this));
+    	$(this).attr({"contenteditable" : false});
+    });
     s.bind( "keypress", function ( event ) {
 	if (event.keyCode == 13 ) {
 	    event.preventDefault();
@@ -261,10 +261,10 @@ function writeNote ( note, fade ) {
     	class : 'noteContent'
     });
     var b = $('<blockquote />');
-    // b.bind ( "blur", function( event ) {
-    // 	closeSave(event, b);
-    // 	b.attr({"contenteditable" : false});
-    // });
+    b.bind ( "blur", function( event ) {
+    	closeSave(event, b);
+    	b.attr({"contenteditable" : false});
+    });
     b.bind ( "dblclick", function( event ) {
 	if ( ! online ) return;
 	b.attr({"contenteditable" : true});
