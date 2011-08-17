@@ -3,6 +3,7 @@ var dragged = {};
 var z = 0;
 var colorsArr = [ "#FF5555", "#92CCA6", "#C1F0F6", 
 		  "#FFF046", "#FDC68A", "#FF00FF" ];
+var eventStack = new Array();
 
 var online = window.navigator.onLine;
 window.applicationCache.onerror=function( event ){
@@ -64,6 +65,8 @@ function startDrag ( e ) {
 
     if ( e.button != 0 || isEditable ( e.target ) ) return;
 
+    eventStack.push ( e );
+
     e.stopPropagation();
     e.preventDefault();
 
@@ -97,6 +100,8 @@ function stopDrag ( e ) {
 
     e.stopPropagation();
     e.preventDefault();
+    
+    eventStack.push ( e );
 
     var note = notes[dragged.el.id];
     if ( note == undefined ) alert ( "Note not found in array. You, sir, have a bug." );
@@ -132,6 +137,8 @@ function closeSave ( e, obj ) {
 function createNote( e ) {
 
     if ( ! online ) return;
+
+    eventStack ( e );
 
     e.stopPropagation();
     e.preventDefault();
@@ -273,6 +280,7 @@ function dropDown ( el ) {
     });
     link.text ( "Delete" );
     link.bind ( "click", function ( event ) {
+	eventStack.push ( event );
 	deleteNote ( el, dr );
     });
     dr.append ( link );
@@ -288,6 +296,7 @@ function dropDown ( el ) {
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
 	l.bind ( "click", function ( event ) {
+	    eventStack.push ( event );
 	    colorNote ( el, dr, event );
 	});
 	dr.append ( l );
