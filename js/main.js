@@ -237,15 +237,9 @@ function dropDown ( el ) {
 	class : "menu",
     });
 
-    dr.css ({ "width" : "100px",
-	      "height" : "100px",
-	      "position" : "absolute",
+    dr.css ({ 
 	      "left" : parseInt ( $(el).css("left") ) + parseInt ( $(el).css("width") ) + "px",
-	      "top" : parseInt ( $(el).css("top") ) + "px",
-	      "backgroundColor" : "#00FFFF",
-	      "zIndex" : "1000",
-	      "opacity" : "1",
-	      "border-radius" : "5px"
+	      "top" : parseInt ( $(el).css("top") ) + "px"
 	    });
 
     var link = $("<button />", {
