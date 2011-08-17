@@ -116,7 +116,6 @@ function closeSave ( e, obj ) {
     var n = { "subject" : subject, "content" : content, "id" : id }
 
     saveNote ( n, true );
-
 };
 
 function createNote( e ) {
@@ -178,21 +177,26 @@ function writeNote ( note ) {
     	class : "noteHeader"
     });
     var s = $('<div />');
-    s.bind("blur", function(event) {
-    	closeSave(event, $(this));
-	$(this).attr({"contenteditable" : false});
-    });
+    // s.bind("blur", function(event) {
+    // 	closeSave(event, $(this));
+    // 	$(this).attr({"contenteditable" : false});
+    // });
     s.bind( "keypress", function ( event ) {
 	if (event.keyCode == 13 ) {
 	    event.preventDefault();
 	    event.stopPropagation();
 	    return;
 	}
-	closeSave(event, $(this));
     });
     s.bind( "dblclick", function ( event ) {
 	s.attr({"contenteditable" : true});
 	s.focus();
+	$(document).bind ( "click", function( event ) {
+	    if ( isEditable ( event.target ) ) return;
+	    event.stopPropagation();
+	    $(document).unbind( "click" );
+    	    closeSave( event, s );
+	});
     });
     s.html(note.subject);
     var o = $('<div />', {
@@ -212,16 +216,19 @@ function writeNote ( note ) {
     	class : 'noteContent'
     });
     var b = $('<blockquote />');
-    b.bind ( "keypress", function( event ) {
-    	closeSave(event, $(this));
-    });
-    b.bind ( "blur", function( event ) {
-    	closeSave(event, b);
-	this.attr({"contenteditable" : false});
-    });
+    // b.bind ( "blur", function( event ) {
+    // 	closeSave(event, b);
+    // 	b.attr({"contenteditable" : false});
+    // });
     b.bind ( "dblclick", function( event ) {
 	b.attr({"contenteditable" : true});
 	b.focus();
+	$(document).bind ( "click", function( event ) {
+	    if ( isEditable ( event.target ) ) return;
+	    event.stopPropagation();
+	    $(document).unbind( "click" );
+    	    closeSave( event, b );
+	});
     });
     b.html(note.content);
     c.append ( b );
