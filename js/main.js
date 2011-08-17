@@ -3,7 +3,8 @@ var dragged = {};
 var z = 0;
 var colorsArr = [ "#FF5555", "#92CCA6", "#C1F0F6", 
 		  "#FFF046", "#FDC68A", "#FF00FF" ];
-var eventStack = new Array();
+var undoStack = new Array();
+var redoStack = new Array();
 var trash = {};
 var online = window.navigator.onLine;
 window.applicationCache.onerror=function( event ){
@@ -21,8 +22,10 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
 	notes[arr[a].id] = arr[a];
     }
 }
-if ( online )
+if ( online ) {
     getNotes();
+    getTrash();
+}
 
 function getNotes () {
     $.ajax ({
@@ -79,7 +82,7 @@ function startDrag ( e ) {
 
     if ( e.button != 0 || isEditable ( e.target ) ) return;
 
-    eventStack.push ( e );
+    undoStack.push ( e );
 
     e.stopPropagation();
     e.preventDefault();
@@ -115,7 +118,7 @@ function stopDrag ( e ) {
     e.stopPropagation();
     e.preventDefault();
     
-    eventStack.push ( e );
+    undoStack.push ( e );
 
     var note = notes[dragged.el.id];
     if ( note == undefined ) alert ( "Note not found in array. You, sir, have a bug." );
@@ -152,7 +155,7 @@ function createNote( e ) {
 
     if ( ! online ) return;
 
-    eventStack.push ( e );
+    undoStack.push ( e );
 
     e.stopPropagation();
     e.preventDefault();
@@ -294,7 +297,7 @@ function dropDown ( el ) {
     });
     link.text ( "Delete" );
     link.bind ( "click", function ( event ) {
-	eventStack.push ( event );
+	undoStack.push ( event );
 	deleteNote ( el, dr );
     });
     dr.append ( link );
@@ -310,7 +313,7 @@ function dropDown ( el ) {
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
 	l.bind ( "click", function ( event ) {
-	    eventStack.push ( event );
+	    undoStack.push ( event );
 	    colorNote ( el, dr, event );
 	});
 	dr.append ( l );
