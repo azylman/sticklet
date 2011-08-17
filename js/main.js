@@ -103,8 +103,7 @@ function stopDrag ( e ) {
 
 function closeSave ( e, obj ) {
 
-    var el = e.currentTarget;
-    $(el).attr({"contenteditable" : false});
+    obj.attr({"contenteditable" : false});
     var note = obj.parents(".note");
     var id = note.attr('id');
 
@@ -210,12 +209,14 @@ function writeNote ( note ) {
     	class : 'noteContent'
     });
     var b = $('<blockquote />');
-    b.bind ( "blur", function(event) {
-    	closeSave(event, $(this));
-    });
     b.bind ( "dblclick", function( event ) {
+	event.preventDefault();
+	event.stopPropagation();
 	b.attr({"contenteditable" : true});
 	b.focus();
+	b.bind ( "blur", function(event) {
+    	    closeSave(event, $(this));
+	});
     });
     b.html(note.content);
     c.append ( b );
