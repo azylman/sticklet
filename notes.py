@@ -32,6 +32,9 @@ class Note(webapp.RequestHandler):
 			note.z = int ( self.request.get( 'z' ) )
 			note.put()
 			self.response.out.write(json.dumps(note.to_dict()))
+		else:
+			self.error(401)
+			self.response.out.write("Not logged in.")
 
 	def get(self):
 		user = users.get_current_user()
@@ -40,13 +43,16 @@ class Note(webapp.RequestHandler):
 				stickynote.key(user.email())).order('-date')
 			notes_query.filter ( "trash = ", 0 )
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
+		else:
+			self.error(401)
+			self.response.out.write("Not logged in.")
 
 	def put(self):
 		user = users.get_current_user()
 		if user:
 			#fs = cgi.FieldStorage()
 			#vars = MultiDict.from_fieldstorage(fs)
-			dict =  json.loads ( self.request.body ) 
+			dict =  json.loads ( self.request.body )
 			for note in dict:
 				db_n = stickynote.db.get( note['id'] )
 				if db_n:
@@ -66,8 +72,11 @@ class Note(webapp.RequestHandler):
 						db_n.z = int(note['z'])
 					db_n.put()
 				else:
-					self.response.out.write ("Problem retrieving data from server.  Contact webmanager.")
-			self.response.out.write( "true" )
+					self.error(400)
+					self.response.out.write ("Note for the given id does not exist.")
+		else:
+			self.error(401)
+			self.response.out.write("Not logged in.")
 
 application = webapp.WSGIApplication([
 	('/notes', Note)
