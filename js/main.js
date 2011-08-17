@@ -1,8 +1,8 @@
 var notes = {};
 var dragged = {};
 var z = 0;
-var colorsArr = [ "#FF0000", "#00FF00", "#0000FF", 
-		  "#FFF046", "#00FFFF", "#FF00FF" ];
+var colorsArr = [ "#FF5555", "#92CCA6", "#C1F0F6", 
+		  "#FFF046", "#FDC68A", "#FF00FF" ];
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
