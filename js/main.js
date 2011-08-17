@@ -401,8 +401,10 @@ function Action (){
 	this.a = jQuery.extend ( true, {}, after );
     }
     this.push = function () {
-	if ( ! compare ( this.a, this.b ) )
+	if ( ! compare ( this.a, this.b ) ) {
 	    undoStack.push ( this );
+	    redoStack = new Array ();
+	}
     }
 
 };
@@ -437,6 +439,7 @@ function redoAction () {
 	saveNote ( act.a, true )
 
     }
+    undoStack.push ( act );
 };
 
 // $(window).unload(function(event){
