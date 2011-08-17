@@ -138,7 +138,7 @@ function createNote( e ) {
 
     if ( ! online ) return;
 
-    eventStack ( e );
+    eventStack.push ( e );
 
     e.stopPropagation();
     e.preventDefault();
