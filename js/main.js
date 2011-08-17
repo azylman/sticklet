@@ -2,7 +2,7 @@ var notes = {};
 var dragged = {};
 var z = 0;
 var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6", 
-		  "#FFF046", "#FDC68A", "#d8bfd8" ];
+		  "#FFF79A", "#FDC68A", "#d8bfd8" ];
 var undoStack = new Array();
 var redoStack = new Array();
 var trash = {};
@@ -395,6 +395,17 @@ function saveNote ( note, sync, fn ) {
 $('#noteArea').bind('dblclick', function(event) {
     if ( online )
 	createNote(event)
+});
+
+$(document).bind("keypress", function( event ) {
+
+    if ( event.ctrlKey ) {
+	if ( event.keyCode == 26 ) {
+	    undoAction();
+	} else if ( event.keyCode == 25 ) {
+	    redoAction();
+	}
+    }
 });
 
 function Action (){
