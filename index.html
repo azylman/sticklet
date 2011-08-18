@@ -10,9 +10,15 @@
 		<link type="text/css" rel="stylesheet" href="/css/main.css" />
 	</head>
 	<body>
-    	<div id="noteArea">
-        </div>
-		<a href="{{ url }}" id="logout" class="button">{{ url_linktext }}</a>
+	  <div id="toolbar">
+	    <div id="lefties">
+	    <a href="javascript:;" onclick="undoAction();" class="button" id="undo">Undo</a>
+	    <a href="javascript:;" onclick="redoAction();" class="button" id="redo">Redo</a>
+	    </div>
+	    <a href="{{ url }}" id="logout" class="button">{{ url_linktext }}</a>
+	  </div>
+    	  <div id="noteArea">
+          </div>
 	</body>
 	<script type="text/javascript">
 	  var username = "{{ user }}";
