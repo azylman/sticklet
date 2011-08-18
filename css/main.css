@@ -56,15 +56,15 @@ html,body {
 	cursor:pointer;
 	width: 13px;
 	height: 13px;
-	opacity: .8;
+	opacity: 1;
 	z-index: 500;
 	display: none;
 }
 
-.options:hover {
-	/*background-image: url(/images/context_hover.png);*/
+/*.options:hover {
+	background-image: url(/images/context_hover.png);
 	opacity: 1;
-}
+}*/
 
 #logout {
 	position: absolute;
