@@ -374,11 +374,11 @@ function dropDown ( el ) {
 	    big.bind( "mouseout", function ( event ) {
 		big.remove();
 	    });
+	    big.bind ( "click", function ( event ) {
+		colorNote ( el, event );
+		dr.remove();
+	    });
 	    dr.append ( big );
-	});
-	l.bind ( "click", function ( event ) {
-	    colorNote ( el, event );
-	    dr.remove();
 	});
 	dr.append ( l );
     }
