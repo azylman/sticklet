@@ -135,16 +135,16 @@ function stopDrag ( e ) {
     document.removeEventListener( "mouseup", stopDrag, true );
     dragged = {};
 
-	if (note.x == newX && note.y == newY) {
+	if (note.x == newX && note.y == newY) { // If only the z-index has changed
 		var overlap = false;
 		for(var n in notes) {
-			if ($("#" + note.id).overlaps("#" + notes[n].id)) {
-				if (note.z < notes[n].z) {
+			if ($("#" + note.id).overlaps("#" + notes[n].id)) { // Check if the note overlaps with any others
+				if (note.z < notes[n].z) { // If it overlaps and it's not on top
 					overlap = true;
 				}
 			}
 		}
-		if (!overlap)
+		if (!overlap) // If we didn't find any overlap, that means that there was no visual change - stop everything
 			return;
 	}
 
