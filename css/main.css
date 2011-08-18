@@ -61,11 +61,6 @@ html,body {
 	display: none;
 }
 
-/*.options:hover {
-	background-image: url(/images/context_hover.png);
-	opacity: 1;
-}*/
-
 #logout {
 	position: absolute;
 	top: 15px;
@@ -79,9 +74,16 @@ html,body {
 	display: inline-block;
 }
 
+.bigSq {
+    position: absolute;
+    height: 26px;
+    width: 26px;
+    border:1px solid black;
+}
+
 .menu {
     width: 80px;
-    height: 104px;
+    height: 106px;
     position: absolute;
     z-index: 1000;
     opacity: 1;
@@ -116,6 +118,7 @@ a.button {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     margin-right: 10px;
+    cursor:pointer;
 }
 
 a.button:hover {

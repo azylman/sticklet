@@ -330,16 +330,13 @@ function writeNote ( note, fade ) {
 function dropDown ( el ) {
 
     var dr = $('<div />', {
-		class : "menu",
+	class : "menu",
     });
-
     var el = $(el);
-
     dr.css ({
 	      "left" : parseInt ( el.css("left") ) + parseInt ( el.css("width") ) + "px",
 	      "top" : parseInt ( el.css("top") ) + "px"
 	    });
-
     var link = $("<a />", {
 		class : "button",
     });
@@ -362,6 +359,21 @@ function dropDown ( el ) {
 	});
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
+	l.bind( "mouseover", function ( event ) {
+	    var df = $(event.currentTarget);
+	    var big = $("<div />", {
+		class: "bigSq"
+	    });
+	    var pos = df.position();
+	    big.css ({ "top" : pos.top-3,
+		       "left" : pos.left-3,
+		       "background-color" : df.css("background-color")
+		     });
+	    big.bind( "mouseout", function ( event ) {
+		big.remove();
+	    });
+	    dr.append ( big );
+	});
 	l.bind ( "click", function ( event ) {
 	    colorNote ( el, event );
 	    dr.remove();
