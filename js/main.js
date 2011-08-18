@@ -1,7 +1,7 @@
 var notes = {};
 var dragged = {};
 var z = 0;
-var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6", 
+var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
 		  "#FFF79A", "#FDC68A", "#d8bfd8" ];
 var undoStack = new Array();
 var redoStack = new Array();
@@ -117,7 +117,7 @@ function stopDrag ( e ) {
 
     e.stopPropagation();
     e.preventDefault();
-    
+
     var act = new Action();
 
     var note = notes[dragged.el.id];
@@ -259,7 +259,6 @@ function writeNote ( note, fade ) {
 	event.stopPropagation();
 	dropDown( elm );
     });
-    o.text("^");
     h.append( s );
     elm.append( o );
     elm.append( h );
@@ -305,7 +304,7 @@ function dropDown ( el ) {
 
     var el = $(el);
 
-    dr.css ({ 
+    dr.css ({
 	      "left" : parseInt ( el.css("left") ) + parseInt ( el.css("width") ) + "px",
 	      "top" : parseInt ( el.css("top") ) + "px"
 	    });
@@ -453,7 +452,7 @@ function undoAction () {
 	deleteNote ( $(act.a.id) );
 
     }
-		 
+
     redoStack.push ( act );
 };
 

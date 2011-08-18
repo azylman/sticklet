@@ -46,13 +46,18 @@ html,body {
 	overflow:auto;
 }
 .options {
-        float: right;
+	background-image: url(/images/context.png);
+    float: right;
 	position: relative;
-	top: -10px;
-	right: -10px;
+	top: 3px;
 	line-height: .9em;
 	cursor:pointer;
-	border:1px solid black;
+	width: 13px;
+	height: 13px;
+}
+
+.options:hover {
+	background-image: url(/images/context_hover.png);
 }
 
 #logout {
