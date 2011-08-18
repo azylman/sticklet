@@ -312,8 +312,14 @@ function dropDown ( el ) {
 	      "top" : parseInt ( el.css("top") ) + "px"
 	    });
 
-    var link = $("<button />", {
-	type : "submit"
+    var link = $("<a />", {
+		class : "button",
+    });
+    link.css ({
+    	"margin-left" : "auto",
+    	"margin-right" : "auto",
+    	"margin-top" : "10px",
+    	"margin-bottom" : "10px",
     });
     link.text ( "Delete" );
     link.bind ( "click", function ( event ) {
@@ -321,10 +327,6 @@ function dropDown ( el ) {
 	dr.remove();
     });
     dr.append ( link );
-    var ss = $("<br />")
-    dr.append ( ss );
-    var ss = $("<br />")
-    dr.append ( ss );
 
     for ( var i = 0; i < colorsArr.length; i++ ){
 	var l = $("<div />", {
