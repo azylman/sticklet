@@ -48,18 +48,21 @@ html,body {
 
 .options {
 	background-image: url(/images/context_hover.png);
-    float: right;
-	position: relative;
-	top: 3px;
+	float: right;
+	position: absolute;
+	top: 8px;
+	right: 8px;
 	line-height: .9em;
 	cursor:pointer;
 	width: 13px;
 	height: 13px;
-	opacity: .6;
+	opacity: .8;
+	z-index: 500;
+	display: none;
 }
 
 .options:hover {
-	background-image: url(/images/context_hover.png);
+	/*background-image: url(/images/context_hover.png);*/
 	opacity: 1;
 }
 
@@ -90,7 +93,7 @@ html,body {
 }
 
 hr {
-	opacity: .2;
+	opacity: .4;
 }
 
 a.button {

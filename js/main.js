@@ -239,7 +239,7 @@ function writeNote ( note, fade ) {
     elm.css({
     	'left' : note.x + 'px',
     	'top' : note.y + 'px',
-		"zIndex" : note.z,
+	"zIndex" : note.z,
         'backgroundColor' : note.color
     });
 
@@ -278,13 +278,20 @@ function writeNote ( note, fade ) {
     var o = $('<div />', {
     	class : "options"
     });
-    o.bind ( 'click', function(event) {
+    o.bind( "click", function(event) {
 	event.preventDefault();
 	event.stopPropagation();
 	dropDown( elm );
     });
-    h.append( s );
     elm.append( o );
+    elm.bind( "mouseover", function( event ) {
+	o.css({"display":"inline"});
+	elm.bind( "mouseout", function ( event ) {
+	    o.css({"display":"none"});
+	    elm.unbind( "mouseout" );
+	});
+    });
+    h.append( s );
     elm.append( h );
     elm.append( $("<hr/>" ) );
     var c = $('<div />', {
