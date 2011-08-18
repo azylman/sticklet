@@ -13,11 +13,11 @@
 	  <div id="toolbar">
 	    <div id="lefties">
 	      <a href="javascript:;" onclick="trash();" class="button">Trash</a>
-	      <a href="javascript:;" onclick="undoAction();" class="button left">Undo</a>
-	      <a href="javascript:;" onclick="redoAction();" class="button right">Redo</a>
+	      <a id="undo" class="button left">Undo</a>
+	      <a id="redo" class="button right">Redo</a>
 	    </div>
 	    <div id="righties">
-	      <a href="javascript:;" class="button">Help</a>
+	      <a id="help" class="button">Help</a>
 	      <a href="{{ url }}" class="button">{{ url_linktext }}</a>
 	    </div>
 	  </div>

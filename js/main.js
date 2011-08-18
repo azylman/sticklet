@@ -445,22 +445,6 @@ function saveNote ( note, sync, fn ) {
             });
 };
 
-$('#noteArea').bind('dblclick', function(event) {
-    if ( online )
-	createNote(event)
-});
-
-$(document).bind("keypress", function( event ) {
-
-    if ( event.ctrlKey ) {
-	if ( event.keyCode == 26 ) {
-	    undoAction();
-	} else if ( event.keyCode == 25 ) {
-	    redoAction();
-	}
-    }
-});
-
 function Action (){
 
     this.b = null;
@@ -553,3 +537,27 @@ function redoAction () {
 //     //         });
 //     dumpNotes();
 // });
+
+
+$('#noteArea').bind('dblclick', function(event) {
+    if ( online )
+	createNote(event)
+});
+
+$(document).bind("keypress", function( event ) {
+
+    if ( event.ctrlKey ) {
+	if ( event.keyCode == 26 ) {
+	    undoAction();
+	} else if ( event.keyCode == 25 ) {
+	    redoAction();
+	}
+    }
+});
+
+$('#undo').bind('click', function( event ) {
+	undoAction()
+});
+$('#redo').bind('click', function( event ) {
+	redoAction()
+});
