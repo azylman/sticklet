@@ -12,10 +12,14 @@
 	<body>
 	  <div id="toolbar">
 	    <div id="lefties">
-	    <a href="javascript:;" onclick="undoAction();" class="button" id="undo">Undo</a>
-	    <a href="javascript:;" onclick="redoAction();" class="button" id="redo">Redo</a>
+	      <a href="javascript:;" onclick="trash();" class="button">Trash</a>
+	      <a href="javascript:;" onclick="undoAction();" class="button">Undo</a>
+	      <a href="javascript:;" onclick="redoAction();" class="button">Redo</a>
 	    </div>
-	    <a href="{{ url }}" id="logout" class="button">{{ url_linktext }}</a>
+	    <div id="righties">
+	      <a href="javascript:;" class="button">Help</a>
+	      <a href="{{ url }}" class="button">{{ url_linktext }}</a>
+	    </div>
 	  </div>
     	  <div id="noteArea">
           </div>
