@@ -192,8 +192,10 @@ function createNote( e ) {
 
     if ( e.target != e.currentTarget ) return;
 
-    var x = e.clientX + window.scrollX;
-    var y = e.clientY + window.scrollY;
+    var pos = $("#noteArea").position();
+
+    var x = e.clientX + window.scrollX - pos.left;
+    var y = e.clientY + window.scrollY - pos.top;
 
     content = "";
     $.ajax ({ "type" : "POST",
