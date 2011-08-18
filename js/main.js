@@ -123,10 +123,34 @@ function stopDrag ( e ) {
     var note = notes[dragged.el.id];
     act.setBefore ( note );
 
-    if ( note == undefined ) alert ( "Note not found in array. You, sir, have a bug." );
-    note.x = parseInt( dragged.el.style.left );
-    note.y = parseInt( dragged.el.style.top );
-    note.z = parseInt( dragged.el.style.zIndex );
+    if ( note == undefined ) {
+    	alert ( "Note not found in array. You, sir, have a bug." );
+    }
+
+	var newX = parseInt( dragged.el.style.left );
+	var newY = parseInt( dragged.el.style.top );
+	var newZ = parseInt( dragged.el.style.zIndex );
+
+    document.removeEventListener( "mousemove", dragging, true );
+    document.removeEventListener( "mouseup", stopDrag, true );
+    dragged = {};
+
+	if (note.x == newX && note.y == newY) {
+		var overlap = false;
+		for(var n in notes) {
+			if ($("#" + note.id).overlaps("#" + notes[n].id)) {
+				if (note.z < notes[n].z) {
+					overlap = true;
+				}
+			}
+		}
+		if (!overlap)
+			return;
+	}
+
+    note.x = newX;
+    note.y = newY;
+    note.z = newZ;
 
     act.setAfter ( note );
     act.push ( );
@@ -135,9 +159,6 @@ function stopDrag ( e ) {
 
     if ( online )
 	saveNote ( n, true );
-    document.removeEventListener( "mousemove", dragging, true );
-    document.removeEventListener( "mouseup", stopDrag, true );
-    dragged = {};
 
 };
 
