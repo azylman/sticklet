@@ -214,13 +214,16 @@ function writeNote ( note, fade ) {
     	class : "note",
     	id : note.id
     });
+
     elm.css({
     	'left' : note.x + 'px',
     	'top' : note.y + 'px',
-	"zIndex" : note.z,
-        'backgroundColor' : note.color});
-    elm.bind('mousedown', function(event) {
-    	startDrag(event);
+		"zIndex" : note.z,
+        'backgroundColor' : note.color
+    });
+
+	elm.bind('mousedown', function(event) {
+    		startDrag(event);
     });
 
     var h = $('<div />', {
@@ -299,7 +302,7 @@ function writeNote ( note, fade ) {
 function dropDown ( el ) {
 
     var dr = $('<div />', {
-	class : "menu",
+		class : "menu",
     });
 
     var el = $(el);

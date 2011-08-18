@@ -45,6 +45,7 @@ html,body {
 	min-height: 100%;
 	overflow:auto;
 }
+
 .options {
 	background-image: url(/images/context.png);
     float: right;
@@ -79,7 +80,9 @@ html,body {
     position: absolute;
     z-index: 1000;
     opacity: 1;
-    border-radius: 5px;
-    background-color: #00FFFF;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     text-align:center;
+    background-color: rgba(255, 255, 255, .8);
 }
