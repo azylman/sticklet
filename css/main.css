@@ -79,6 +79,7 @@ html,body {
     height: 26px;
     width: 26px;
     border:1px solid black;
+    cursor: pointer;
 }
 
 .menu {
