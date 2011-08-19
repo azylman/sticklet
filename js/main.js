@@ -311,6 +311,7 @@ function restoreTrash( cs ) {
 	    unToggle( $("#managemenu") );
 	},
 	"error" : function( err ) {
+	    console.log ( err );
 	    alert ( err );
 	}
     });
@@ -340,6 +341,7 @@ function permDelete( cs ){
 		unToggle( $("#managemenu") );
 	    },
 	    "error" : function( err ) {
+		console.log ( err );
 		alert ( err );
 	    }
 	});
@@ -636,35 +638,6 @@ function colorNote ( el, event ) {
     if ( online )
 	saveNote ( note, true );
     el.css({"backgroundColor" : color});
-};
-
-function deleteNote ( el ) {
-
-    var n = notes[el.attr('id')];
-    var act = new Action();
-    act.setBefore ( n );
-    n.trash = 1;
-    act.setAfter ( n );
-    act.push ( );
-    var note = { "id" : n.id };
-    if ( online ) {
-	$.ajax ({ "url" : "/notes",
-	  "type" : "DELETE",
-	  "data" : JSON.stringify ( [note] ),
-	  "success" : function ( resp ) {
-		dumpNotes();
-	  },
-	  "error" : function( resp ) {
-		  alert(resp);
-	  }
-		});
-	}
-    delete notes[ n.id ];
-    trash[n.id] = n;
-    el.fadeOut ( 350, function () {
-	el.remove();
-    });
-
 };
 
 function Action (){
