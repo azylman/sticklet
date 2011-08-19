@@ -91,8 +91,9 @@ class Note(webapp.RequestHandler):
 			for note in dict:
 				db_n = stickynote.db.get( note['id'] )
 				if db_n:
-					db_n.trash = 1;
-					db_n.delete_date = datetime.now()
+					db_n.trash = 1
+					db_n.delete_date = datetime.datetime.now()
+					db_n.put();
 				else:
 					self.error(400)
 					self.response.out.write ("Note for the given id does not exist.")

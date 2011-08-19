@@ -420,23 +420,18 @@ function deleteNote ( el ) {
     act.setAfter ( n );
     act.push ( );
     var note = { "id" : n.id };
-    if ( online )
-	saveNote ( note, true );
-
+    if ( online ) {
 	$.ajax ({ "url" : "/notes",
-	  "async" : sync,
 	  "type" : "DELETE",
 	  "data" : JSON.stringify ( [note] ),
 	  "success" : function ( resp ) {
-	  if ( fn != undefined )
-		  fn ( resp );
-	  dumpNotes();
+		dumpNotes();
 	  },
 	  "error" : function( resp ) {
 		  alert(resp);
 	  }
 		});
-
+	}
     delete notes[ n.id ];
     trash[n.id] = n;
     el.fadeOut ( 350, function () {
