@@ -58,7 +58,8 @@ html,body {
     z-index:1010;
     border-top-right-radius:3px;
     border-bottom-right-radius:3px;
-    overflow-x:hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     color: #DDD;
     padding: 15px;
 }
