@@ -35,8 +35,8 @@ if ( online ) {
     getTrash();
 }
 
-$("#managemenu").height($(window).height() - $("#toolbar").height() - 30);
 // the 30 is the padding on the menu*2. For some reason, it doesn't count that towards the height...
+$("#managemenu").height($(window).height() - $("#toolbar").height() - 30);
 
 function getNotes () {
     $.ajax ({
@@ -201,13 +201,36 @@ $('#redo').bind('click', function( event ) {
 $("#manage").bind('click', function( event ){
     var el = $("#managemenu");
     if ( el.is(":hidden") ){
+	var j = $("<div />");
+	var k = $("<h3 />");
+	k.text("Trashed Items:");
+	j.append ( k );
+	var l = $("<input />", {
+	    type : "checkbox",
+	    class : "trash_checkbox"
+	});
+	l.bind ( "click", function (event){
+	    var s = l.attr("checked");
+	    var child = el.children(".trash_item").children(".trash_checkbox");
+	    if ( s == "checked" ){
+		el.children(".trash_item").children(".trash_checkbox").attr({"checked" : "checked" });
+	    } else {
+		el.children(".trash_item").children(".trash_checkbox").removeAttr("checked");
+	    }
+	});
+	j.append ( l );
+	var ty = $("<span />");
+	ty.text ( "Check/Uncheck All" );
+	j.append ( ty );
+	el.append ( j );
 	for ( var a in trash ) {
 	    var div = $("<div />",{
 		class : "trash_item"
 	    });
 	    var ch = $("<input />", {
 		type : "checkbox",
-		class : "trash_checkbox"
+		class : "trash_checkbox",
+		name : trash[a].id
 	    });
 	    div.append ( ch );
 	    var sp = $("<span />", {
@@ -234,13 +257,23 @@ $("#manage").bind('click', function( event ){
 	    div.append ( sp );
 		el.append( div );
 	}
+	$("#noteArea").bind("click", function( event ) {
+	    if( event.target != el.get() ) {
+		unToggle ( el );
+	    }
+	});
 	el.slideDown( "slow" );
     } else {
-	el.slideToggle( 'slow', function() {
-	    el.html("");
-	});
+	unToggle ( el );
     }
 });
+
+function unToggle( el ) {
+    $("#noteArea").unbind("click");
+    el.slideToggle( 'slow', function() {
+	el.html("");
+    });
+};
 
 function isEditable ( l ) {
     while ( l != null && l.nodeName != "BODY" ) {
