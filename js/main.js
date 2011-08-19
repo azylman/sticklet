@@ -37,8 +37,10 @@ function getNotes () {
 	    var tmp = {};
 		$.each(resp, function(index) {
 		    z = resp[index].z;
-		    notes[resp[index].id].z = z;
-		    $("#" + resp[index].id).css('z-index', z);
+		    if ( !!notes[resp[index].id] ){
+			notes[resp[index].id].z = z;
+			$("#" + resp[index].id).css('z-index', z);
+		    }
 		    writeNote ( resp[index], false );
 		    delete notes[resp[index].id];
 		    tmp[resp[index].id] = resp[index];
