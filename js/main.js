@@ -36,7 +36,9 @@ function getNotes () {
 	"success" : function( resp ) {
 	    var tmp = {};
 		$.each(resp, function(index) {
-		    z = ( resp[index].z > z ) ? resp[index].z : z;
+		    z = resp[index].z;
+		    notes[resp[index].id].z = z;
+		    $("#" + resp[index].id).css('z-index', z);
 		    writeNote ( resp[index], false );
 		    delete notes[resp[index].id];
 		    tmp[resp[index].id] = resp[index];
@@ -440,7 +442,7 @@ function saveNote ( note, sync, fn ) {
 		  dumpNotes();
 	      },
 	      "error" : function( resp ) {
-	      	alert(resp);
+	          alert(resp);
 	      }
             });
 };
