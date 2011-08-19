@@ -27,6 +27,9 @@ if ( online ) {
     getTrash();
 }
 
+$("#managemenu").height($(window).height() - $("#toolbar").height() - 30);
+// the 30 is the padding on the menu*2. For some reason, it doesn't count that towards the height...
+
 function getNotes () {
     $.ajax ({
 	"url" : "/notes",
