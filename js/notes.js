@@ -39,10 +39,11 @@ function getNotes () {
 	"success" : function( resp ) {
 	    var tmp = {};
 		$.each(resp, function(index) {
-		    z = resp[index].z;
+		    z = ( resp[index].z > z ) ? resp[index].z : z;
+		    var new_Z = resp[index].z;
 		    if ( !!notes[resp[index].id] ){
-			notes[resp[index].id].z = z;
-			$("#" + resp[index].id).css('z-index', z);
+			notes[resp[index].id].z = new_Z;
+			$("#" + resp[index].id).css('z-index', new_Z);
 		    }
 		    writeNote ( resp[index], false );
 		    delete notes[resp[index].id];
