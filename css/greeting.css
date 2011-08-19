@@ -11,12 +11,6 @@ body {
 
 .login {
     display:block;
-    height:85px;
-    width:300px;
-    background-color:black;
-    margin:auto;
-    font-size:30px;
-    font-weight:bold;
     border-radius:15px;
 }
 
