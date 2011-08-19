@@ -112,6 +112,16 @@ class Trash(webapp.RequestHandler):
 		else:
 			self.error(401)
 			self.response.out.write("Not logged in.")
+	def delete(self):
+		user = users.get_current_user()
+		if user:
+			dict =  json.loads ( self.request.body )
+			for note in dict:
+				db_n = stickynote.db.get( note['id'] )
+				db_n.delete()
+		else:
+			self.error(401)
+			self.response.out.write("Not logged in.")
 
 
 

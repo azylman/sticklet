@@ -254,8 +254,16 @@ $("#manage").bind('click', function( event ){
 	    sp.append(subj);
 	    sp.append(snippet);
 	    div.append ( sp );
-		el.append( div );
+	    el.append( div );
 	}
+	var but = $("<a />", {
+	    class : "button"
+	});
+	but.text( "Delete From Trash" );
+	but.bind( "click", function( event ){
+	    permDelete( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
+	});
+	el.append ( but );
 	$("#noteArea").bind("click", function( event ) {
 	    if( event.target != el.get() ) {
 		unToggle ( el );
@@ -266,6 +274,33 @@ $("#manage").bind('click', function( event ){
 	unToggle ( el );
     }
 });
+
+function permDelete( cs ){
+
+    var idArr = new Array();
+    for( var a = 0; a < cs.length; a++) {
+	idArr.push ( {"id" : cs[a].name });
+	delete trash[cs[a].name];
+    }
+    var dict = JSON.stringify(idArr);
+
+    var c = confirm ( "Are you sure you wish to permanently delete these notes?" );
+    if ( c ) {
+	$.ajax({
+	    "url" : "/notes/trash",
+	    "type" : "DELETE",
+	    "data" : dict,
+	    "async" : true,
+	    "success" : function( resp ){
+		unToggle( $("#managemenu") );
+	    },
+	    "error" : function( err ) {
+		alert ( err );
+	    }
+	});
+    }
+    //call to trash
+};
 
 function unToggle( el ) {
     $("#noteArea").unbind("click");
