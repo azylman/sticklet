@@ -598,8 +598,18 @@ $("#manage").bind('click', function( event ){
 	    	class: "trash_subject"
 	    });
 	    var snippet = $("<div />");
-	    subj.text( trash[a].subject );
-	    snippet.text( trash[a].content );
+	    var subject = trash[a].subject;
+		if (subject != "") {
+			subj.text(subject);
+		} else {
+			subj.html("&nbsp;");
+		}
+	    var content = trash[a].content;
+		if (content != "") {
+			snippet.text(content);
+		} else {
+			snippet.html("&nbsp;");
+		}
 	    sp.append(subj);
 	    sp.append(snippet);
 	    div.append ( sp );
