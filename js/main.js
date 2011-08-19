@@ -1,4 +1,5 @@
-var notes = {};
+if ( notes == undefined )
+    var notes = {};
 var dragged = {};
 var z = 0;
 var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
@@ -6,13 +7,20 @@ var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
 var undoStack = new Array();
 var redoStack = new Array();
 var trash = {};
-var online = window.navigator.onLine;
-
-window.applicationCache.onerror=function( event ){
-    event.preventDefault();
-    event.stopPropagation();
+try { 
+    if ( online == undefined ){
+	var online = window.navigator.onLine;
+	window.applicationCache.onerror=function( event ){
+	    event.preventDefault();
+	    event.stopPropagation();
+	    online = false;
+	};
+    } else {
+	online = false;
+    }
+}catch ( err ) {
     online = false;
-};
+}
 
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );

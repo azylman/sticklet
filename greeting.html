@@ -7,20 +7,29 @@
    <meta name="description" content="Notes you can take anywhere"/>
    <title>WebNotes</title>
    <link type="text/css" rel="stylesheet" href="/css/main.css" />
-   <link rel="stylesheet" type="text/css" href="/css/greeting.css"/>
+   <!--<link rel="stylesheet" type="text/css" href="/css/greeting.css"/>-->
  </head>
   <body>
-    <h1>Greeting Page</h1>
-    <a href="{{ url }}" class="login">{{ url_linktext }}</a>
+    <div id="noteArea">
+      <h1>Greeting Page</h1>
+      <a href="{{ url }}" class="login">{{ url_linktext }}</a>
+    </div>
   </body>
+  <script type="text/javascript" src="/js/jquery.js"></script>
+  <script type="text/javascript" src="/js/jquery.overlaps.min.js"></script>
   <script type="text/javascript">
   for ( var a in window.localStorage ) {
     if ( /^notes_.*/.test ( a ) ) {
       window.localStorage.removeItem ( a );
     } 
   }
+  var note = { "id" : "demo_note", "x" : 250, "y" : 250, "z" : 100,
+  "subject" : "Click Subject here", "content" : "Click Content here" };
+  var online = false;
+  var notes = {};
+  notes[note.id] = note;
+  username = "demo";
   </script>
-  <script type="text/javascript" src="/js/jquery.js"></script>
-  <script type="text/javascript" src="/js/jquery.overlaps.min.js"></script>
   <script type="text/javascript" src="/js/main.js"></script>
+  <script type="text/javascript"> writeNote( note, false );</script>
 </html>
