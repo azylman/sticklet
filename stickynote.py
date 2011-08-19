@@ -10,6 +10,8 @@ class StickyNoteModel(db.Model):
 	x = db.IntegerProperty()
 	y = db.IntegerProperty()
 	z = db.IntegerProperty()
+	modify_date = db.DateTimeProperty()
+	delete_date = db.DateTimeProperty()
 
 class snModel(StickyNoteModel):
 	def to_dict(self):

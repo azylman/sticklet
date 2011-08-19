@@ -5,6 +5,7 @@ use_library('django', '1.2')
 
 import logging
 import cgi
+import datetime
 import sys
 import wsgiref.handlers
 import urlparse
@@ -68,15 +69,30 @@ class Note(webapp.RequestHandler):
 						db_n.subject = note['subject']
 					if 'color' in note:
 						db_n.color = note['color']
-					if 'trash' in note:
-						db_n.trash = note['trash']
 					if 'x' in note:
 						db_n.x = int(note['x'])
 					if 'y' in note:
 						db_n.y = int(note['y'])
 					if 'z' in note:
 						db_n.z = int(note['z'])
+					db_n.modify_date = datetime.now()
 					db_n.put()
+				else:
+					self.error(400)
+					self.response.out.write ("Note for the given id does not exist.")
+		else:
+			self.error(401)
+			self.response.out.write("Not logged in.")
+
+	def delete(self):
+		user = users.get_current_user()
+		if user:
+			dict =  json.loads ( self.request.body )
+			for note in dict:
+				db_n = stickynote.db.get( note['id'] )
+				if db_n:
+					db_n.trash = 1;
+					db_n.delete_date = datetime.now()
 				else:
 					self.error(400)
 					self.response.out.write ("Note for the given id does not exist.")
