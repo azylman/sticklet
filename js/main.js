@@ -35,9 +35,6 @@ if ( online ) {
     getTrash();
 }
 
-// the 30 is the padding on the menu*2. For some reason, it doesn't count that towards the height...
-$("#managemenu").height($(window).height() - $("#toolbar").height() - 30);
-
 function getNotes () {
     $.ajax ({
 	"url" : "/notes",
@@ -201,6 +198,8 @@ $('#redo').bind('click', function( event ) {
 $("#manage").bind('click', function( event ){
     var el = $("#managemenu");
     if ( el.is(":hidden") ){
+	// the 30 is the padding on the menu*2. For some reason, it doesn't count that towards the height...
+	el.height($(window).height() - $("#toolbar").height() - 30);
 	var j = $("<div />");
 	var k = $("<h3 />");
 	k.text("Trashed Items:");
