@@ -5,6 +5,7 @@ use_library('django', '1.2')
 
 import logging
 import cgi
+import sys
 import wsgiref.handlers
 import urlparse
 
@@ -42,6 +43,13 @@ class Note(webapp.RequestHandler):
 			notes_query = stickynote.snModel.all().ancestor(
 				stickynote.key(user.email())).order('-date')
 			notes_query.filter ( "trash = ", 0 )
+			min_z = sys.maxint
+			for note in notes_query:
+				if note.z < min_z:
+					min_z = note.z
+			for note in notes_query:
+				note.z = note.z - min_z
+				note.put()
 			self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
 		else:
 			self.error(401)
@@ -50,8 +58,6 @@ class Note(webapp.RequestHandler):
 	def put(self):
 		user = users.get_current_user()
 		if user:
-			#fs = cgi.FieldStorage()
-			#vars = MultiDict.from_fieldstorage(fs)
 			dict =  json.loads ( self.request.body )
 			for note in dict:
 				db_n = stickynote.db.get( note['id'] )
