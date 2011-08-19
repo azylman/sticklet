@@ -578,3 +578,31 @@ $('#undo').bind('click', function( event ) {
 $('#redo').bind('click', function( event ) {
 	redoAction()
 });
+
+$("#manage").bind('click', function( event ){
+    var el = $("#managemenu");
+    if ( el.is(":hidden") ){
+	var ul = $("<ul />");
+	for ( var a in trash ) {
+	    var div = $("<li />",{
+		class : "trash_item"
+	    });
+	    var ch = $("<input />", {
+		type : "checkbox"
+	    });
+	    div.append ( ch );
+	    var sp = $("<span />", {
+		class : "sub"
+	    });
+	    sp.text( trash[a].subject + "- " + trash[a].content );
+	    div.append ( sp );
+	    ul.append(div);
+	}
+	el.append ( ul );
+	el.slideDown( "slow" );
+    } else {
+	el.slideToggle( 'slow', function() {
+	    el.html("");
+	});
+    }
+});
