@@ -582,23 +582,29 @@ $('#redo').bind('click', function( event ) {
 $("#manage").bind('click', function( event ){
     var el = $("#managemenu");
     if ( el.is(":hidden") ){
-	var ul = $("<ul />");
 	for ( var a in trash ) {
-	    var div = $("<li />",{
+	    var div = $("<div />",{
 		class : "trash_item"
 	    });
 	    var ch = $("<input />", {
-		type : "checkbox"
+		type : "checkbox",
+		class : "trash_checkbox"
 	    });
 	    div.append ( ch );
 	    var sp = $("<span />", {
-		class : "sub"
+		class : "trash_content"
 	    });
-	    sp.text( trash[a].subject + "- " + trash[a].content );
+	    var subj = $("<div />", {
+	    	class: "trash_subject"
+	    });
+	    var snippet = $("<div />");
+	    subj.text( trash[a].subject );
+	    snippet.text( trash[a].content );
+	    sp.append(subj);
+	    sp.append(snippet);
 	    div.append ( sp );
-	    ul.append(div);
+		el.append( div );
 	}
-	el.append ( ul );
 	el.slideDown( "slow" );
     } else {
 	el.slideToggle( 'slow', function() {
