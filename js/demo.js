@@ -10,3 +10,20 @@ var notes = {};
 notes[note.id] = note;
 window.localStorage.setItem ( "notes_demo", JSON.stringify(notes) );
 username = "demo";
+
+$(document).ready(function(){
+
+    var el = $("#demo_note");
+    var s = el.children(".noteHeader");
+    var c = el.children(".noteContent");
+    s.bind("dblclick", function( event ) {
+
+	s.attr({"contenteditable" : true});
+
+    });
+
+    c.bind("dblclick", function ( event ) {
+	c.attr({"contenteditable":true});
+    });
+
+});
