@@ -201,6 +201,7 @@ $("#manage").bind('click', function( event ){
 	// the 30 is the padding on the menu*2. For some reason, it doesn't count that towards the height...
 	el.height($(window).height() - $("#toolbar").height() - 30);
 	var j = $("<div />");
+	j.css({"text-align" : "center"});
 	var k = $("<h3 />");
 	k.text("Trashed Items:");
 	j.append ( k );
@@ -257,8 +258,11 @@ $("#manage").bind('click', function( event ){
 	    el.append( div );
 	}
 	var but = $("<a />", {
-	    class : "button"
+	    class : "trash_button button"
 	});
+	but.css({"position" : "absolute",
+		 "bottom" : "0px",
+		 "margin-left" : "65px"});
 	but.text( "Delete From Trash" );
 	but.bind( "click", function( event ){
 	    permDelete( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
@@ -282,6 +286,7 @@ function permDelete( cs ){
 	idArr.push ( {"id" : cs[a].name });
 	delete trash[cs[a].name];
     }
+    if ( idArr.length < 1 ) return;
     var dict = JSON.stringify(idArr);
 
     var c = confirm ( "Are you sure you wish to permanently delete these notes?" );
@@ -299,7 +304,6 @@ function permDelete( cs ){
 	    }
 	});
     }
-    //call to trash
 };
 
 function unToggle( el ) {
