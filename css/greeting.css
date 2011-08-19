@@ -1,3 +1,13 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: url(/images/rodin.png);
+	background-repeat: no-repeat;
+	padding-top: 50px
+}
 
 .login {
     display:block;
@@ -10,3 +20,13 @@
     border-radius:15px;
 }
 
+#page {
+	color: #DDD;
+	width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 30px;
+	border-radius: 5px;
+	background: rgba(0, 0, 0, .5);
+	text-align: center;
+}
