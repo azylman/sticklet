@@ -75,7 +75,7 @@ class Note(webapp.RequestHandler):
 						db_n.y = int(note['y'])
 					if 'z' in note:
 						db_n.z = int(note['z'])
-					db_n.modify_date = datetime.now()
+					db_n.modify_date = datetime.datetime.now()
 					db_n.put()
 				else:
 					self.error(400)

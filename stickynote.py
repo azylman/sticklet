@@ -25,7 +25,9 @@ class snModel(StickyNoteModel):
 			"trash" : self.trash,
 			"x" : self.x,
 			"y" : self.y,
-			"z" : self.z})
+			"z" : self.z,
+			"modified" : unicode(self.modify_date),
+			"deleted" : unicode(self.delete_date)})
 
 def key(email):
 	return db.Key.from_path('StickyNote', email)
