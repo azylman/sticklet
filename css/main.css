@@ -220,5 +220,7 @@ a.right {
 }
 
 .trash_button {
-
+    position: absolute;
+    bottom: 0px;
+    margin:auto;
 }

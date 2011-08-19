@@ -123,7 +123,20 @@ class Trash(webapp.RequestHandler):
 		else:
 			self.error(401)
 			self.response.out.write("Not logged in.")
-
+	def put(self):
+		user = users.get_current_user()
+		if user:
+			dict =  json.loads ( self.request.body )
+			for note in dict:
+				db_n = stickynote.db.get( note['id'] )
+				if db_n:
+					db_n.trash = 0
+					db_n.delete_date = None
+					db_n.put()
+		else:
+			self.error(401)
+			self.response.out.write("Not logged in.")
+					
 
 
 application = webapp.WSGIApplication([

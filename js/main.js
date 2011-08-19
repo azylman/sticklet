@@ -257,17 +257,26 @@ $("#manage").bind('click', function( event ){
 	    div.append ( sp );
 	    el.append( div );
 	}
-	var but = $("<a />", {
-	    class : "trash_button button"
+	var ds = $("<div />", {
+	    class : "trash_button"
 	});
-	but.css({"position" : "absolute",
-		 "bottom" : "0px",
-		 "margin-left" : "65px"});
-	but.text( "Delete From Trash" );
+	var but = $("<a />", {
+	    class : "button left"
+	});
+	but.text( "Delete" );
 	but.bind( "click", function( event ){
 	    permDelete( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
 	});
-	el.append ( but );
+	ds.append ( but );
+	var buts = $("<a />", {
+	    class : "button right"
+	});
+	buts.text( "Restore" );
+	buts.bind ( "click", function( event ){
+	    restoreTrash( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
+	});
+	ds.append ( buts );
+	el.append ( ds );
 	$("#noteArea").bind("click", function( event ) {
 	    if( event.target != el.get() ) {
 		unToggle ( el );
@@ -279,12 +288,40 @@ $("#manage").bind('click', function( event ){
     }
 });
 
+function restoreTrash( cs ) {
+
+    var idArr = new Array();
+    for( var a = 0; a < cs.length; a++) {
+	idArr.push ( {"id" : cs[a].name} );
+    }
+    if ( idArr.length < 1 ) return;
+    var dict = JSON.stringify(idArr);
+    $.ajax({
+	"url" : "/notes/trash",
+	"type" : "PUT",
+	"data" : dict,
+	"async" : true,
+	"success" : function( resp ){
+	    for( var a = 0; a < cs.length; a++) {
+		writeNote( trash[cs[a].name] );
+		notes[cs[a].name] = trash[cs[a].name];
+		delete trash[cs[a].name];
+		dumpNotes();
+	    }
+	    unToggle( $("#managemenu") );
+	},
+	"error" : function( err ) {
+	    alert ( err );
+	}
+    });
+
+};
+
 function permDelete( cs ){
 
     var idArr = new Array();
     for( var a = 0; a < cs.length; a++) {
 	idArr.push ( {"id" : cs[a].name });
-	delete trash[cs[a].name];
     }
     if ( idArr.length < 1 ) return;
     var dict = JSON.stringify(idArr);
@@ -297,6 +334,9 @@ function permDelete( cs ){
 	    "data" : dict,
 	    "async" : true,
 	    "success" : function( resp ){
+		for( var a = 0; a < cs.length; a++) {
+		    delete trash[cs[a].name];
+		}
 		unToggle( $("#managemenu") );
 	    },
 	    "error" : function( err ) {
