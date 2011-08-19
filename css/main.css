@@ -58,7 +58,7 @@ html,body {
     z-index:1010;
     border-top-right-radius:3px;
     border-bottom-right-radius:3px;
-    overflow:hidden;
+    overflow-x:hidden;
 }
 
 .options {
