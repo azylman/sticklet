@@ -18,7 +18,7 @@ html,body {
     background-color: #FFF79A;
     cursor: move;
     border-radius: 5px;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, .5);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, .3);
 }
 
 .noteHeader div {
@@ -173,4 +173,5 @@ a.right {
     height: 41px;
     background-color: #FFF;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, .5);
+    z-index: 5000;
 }
