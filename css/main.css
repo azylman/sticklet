@@ -49,8 +49,7 @@ html,body {
     position:absolute;
     left:0px;
     top:42px;
-    /*min-height:100%; slide doesn't work with min-height */
-    height:90%;
+    bottom:0px;
     width:300px;
     display:none;
     background-color: rgba(0, 0, 0, .7);
@@ -58,14 +57,16 @@ html,body {
     z-index:1010;
     border-top-right-radius:3px;
     border-bottom-right-radius:3px;
-    overflow-x: hidden;
-    overflow-y: auto;
     color: #DDD;
     padding: 15px;
+    padding-right:0px;
 }
 
-#managemenu ul {
-	list-style-type: none;
+#archived_content {
+    position:relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height:100%;
 }
 
 .options {
@@ -223,7 +224,10 @@ a.right {
 .trash_button {
     position: absolute;
     bottom: 0px;
+    left:0px;
     margin:auto;
+    width:100%;
+    text-align:center;
 }
 
 .centered {
