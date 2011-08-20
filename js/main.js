@@ -192,20 +192,19 @@ $('#noteArea').bind('dblclick', function(event) {
 $("#check_all").bind ( "click", function (event){
     var s = $("#check_all").attr("checked");
     var el = $("#archived_content");
-    var child = el.children(".trash_item").children(".trash_checkbox");
     if ( s == "checked" ){
-	el.children(".trash_item").children(".trash_checkbox").attr({"checked" : "checked" });
+	el.find(".trash_checkbox").attr({"checked":"checked"});
     } else {
-	el.children(".trash_item").children(".trash_checkbox").removeAttr("checked");
+	el.find(".trash_checkbox").removeAttr("checked");
     }
 });
 
 $("#archive_delete").bind( "click", function( event ){
-    permDelete( $("#archived_content").children(".trash_item").children(":checked") );
+    permDelete( $("#archived_content").find(":checked") );
 });
 
 $("#archive_restore").bind ( "click", function( event ){
-    restoreTrash( $("#archived_content").children(".trash_item").children(":checked") );
+    restoreTrash( $("#archived_content").find(":checked") );
 });
 
 $('#undo').bind('click', function( event ) {
