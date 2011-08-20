@@ -6,6 +6,7 @@ var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
 		  "#FFF79A", "#FDC68A", "#d8bfd8" ];
 var undoStack = new Array();
 var redoStack = new Array();
+var current;
 var trash = {};
 try {
     if ( online == undefined ){
@@ -563,10 +564,13 @@ function dropDown ( el ) {
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
 	l.bind( "mouseover", function ( event ) {
+	    if ( !! current )
+		current.remove();
 	    var df = $(event.currentTarget);
 	    var big = $("<div />", {
 		class: "bigSq"
 	    });
+	    current = big;
 	    var pos = df.position();
 	    big.css ({ "top" : pos.top-3,
 		       "left" : pos.left-3,
