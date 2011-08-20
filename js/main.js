@@ -189,7 +189,8 @@ $('#noteArea').bind('dblclick', function(event) {
 });
 
 $("#check_all").bind ( "click", function (event){
-    var s = l.attr("checked");
+    var s = $("#check_all").attr("checked");
+    var el = $("#archived_content");
     var child = el.children(".trash_item").children(".trash_checkbox");
     if ( s == "checked" ){
 	el.children(".trash_item").children(".trash_checkbox").attr({"checked" : "checked" });
