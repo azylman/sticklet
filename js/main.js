@@ -7,7 +7,7 @@ var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
 var undoStack = new Array();
 var redoStack = new Array();
 var trash = {};
-try { 
+try {
     if ( online == undefined ){
 	var online = window.navigator.onLine;
 	window.applicationCache.onerror=function( event ){
@@ -145,8 +145,8 @@ function deleteNote ( el ) {
     act.push ( );
     var note = { "id" : n.id };
     if ( online ) {
-	$.ajax ({ "url" : "/notes",
-	  "type" : "DELETE",
+	$.ajax ({ "url" : "/notes/delete",
+	  "type" : "PUT",
 	  "data" : JSON.stringify ( [note] ),
 	  "success" : function ( resp ) {
 		dumpNotes();
@@ -330,8 +330,8 @@ function permDelete( cs ){
     var c = confirm ( "Are you sure you wish to permanently delete these notes?" );
     if ( c ) {
 	$.ajax({
-	    "url" : "/notes/trash",
-	    "type" : "DELETE",
+	    "url" : "/notes/trash/delete",
+	    "type" : "PUT",
 	    "data" : dict,
 	    "async" : true,
 	    "success" : function( resp ){

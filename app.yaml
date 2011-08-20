@@ -19,6 +19,12 @@ handlers:
 - url: /notes/trash
   script: notes.py
 
+- url: /notes/delete
+  script: delete.py
+
+- url: /notes/trash/delete
+  script: delete.py
+
 - url: /greeting
   script: main.py
 
