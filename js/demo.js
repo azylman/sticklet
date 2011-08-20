@@ -1,9 +1,10 @@
 for ( var a in window.localStorage ) {
     if ( /^notes_.*/.test ( a ) ) {
 	window.localStorage.removeItem ( a );
-    } 
+    }
 }
-var note = { "id" : "demo_note", "x" : 250, "y" : 250, "z" : 100,
+
+var note = { "id" : "demo_note", "x" : $(document).width()/2 - 110, "y" : $(document).height()/2 - 110, "z" : 100,
 	     "subject" : "Click Subject here", "content" : "Click Content here" };
 var online = false;
 var notes = {};

@@ -6,7 +6,7 @@
 body {
 	background: url(/images/rodin.png);
 	background-repeat: no-repeat;
-	padding-top: 50px
+	padding-top: 75px;
 }
 
 .login {
@@ -16,11 +16,21 @@ body {
 
 #page {
 	color: #DDD;
-	width: 960px;
+	width: 800px;
 	margin-left: auto;
 	margin-right: auto;
-	padding: 30px;
-	border-radius: 5px;
+	padding: 50px;
+	border-radius: 25px;
 	background: rgba(0, 0, 0, .5);
 	text-align: center;
+}
+
+h1 {
+	font-size: 600%;
+	font-style: italic;
+}
+
+h2 {
+	font-size: 300%;
+	font-style: italic;
 }
