@@ -552,22 +552,9 @@ function dropDown ( el ) {
 	      "left" : parseInt ( el.css("left") ) + parseInt ( el.css("width") ) + "px",
 	      "top" : parseInt ( el.css("top") ) + "px"
 	    });
-    var link = $("<a />", {
-		class : "button",
-    });
-    link.css ({
-    	"margin-left" : "auto",
-    	"margin-right" : "auto",
-    	"margin-top" : "10px",
-    	"margin-bottom" : "10px",
-    });
-    link.text ( "Archive" );
-    link.bind ( "click", function ( event ) {
-	deleteNote ( el, dr );
-	dr.remove();
-    });
-    dr.append ( link );
-
+    var p = $("<div />");
+    p.css({"margin-top" : "10px",
+	   "margin-bottom" : "6px"});
     for ( var i = 0; i < colorsArr.length; i++ ){
 	var l = $("<div />", {
 	    class : "colorSq"
@@ -593,8 +580,24 @@ function dropDown ( el ) {
 	    });
 	    dr.append ( big );
 	});
-	dr.append ( l );
+	p.append ( l );
     }
+    dr.append( p );
+
+    var link = $("<a />", {
+	class : "button",
+    });
+    link.css ({
+    	"margin-left" : "auto",
+    	"margin-right" : "auto",
+    });
+    link.text ( "Archive" );
+    link.bind ( "click", function ( event ) {
+	deleteNote ( el, dr );
+	dr.remove();
+    });
+    dr.append ( link );
+
     $("#noteArea").bind ( "click", function ( event ) {
 	$("#noteArea").unbind ( "click" );
 	dr.remove();
@@ -603,6 +606,7 @@ function dropDown ( el ) {
 	event.preventDefault();
 	event.stopPropagation();
     });
+
     $("#noteArea").append ( dr );
 };
 
