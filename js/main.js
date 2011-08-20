@@ -650,6 +650,8 @@ function undoAction () {
 
     var act = undoStack.pop();
 
+    console.log ( act );
+    
     if ( act.b != null ){
 
 	writeNote ( act.b, false );
@@ -672,6 +674,8 @@ function redoAction () {
 
     var act = redoStack.pop();
 
+    console.log ( act );
+
     if ( act.a != null ) {
 
 	writeNote ( act.a, false );
@@ -680,8 +684,11 @@ function redoAction () {
 	saveNote ( act.a, true )
 
     } else {
-	console.log ( "hi" );
-	deleteNote ( $(act.b.id) );
+
+	writeNote ( trash[act.b.id], false );
+	notes[act.b.id] = trash[act.b.id];
+	delete trash[act.b.id];
+	saveNote( notes[act.b.id], true );
 
     }
 
