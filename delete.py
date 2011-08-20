@@ -43,8 +43,9 @@ class Trash(webapp.RequestHandler):
 			dict =  json.loads ( self.request.body )
 			for note in dict:
 				db_n = stickynote.db.get( note['id'] )
-				if db_n.is_saved():
-					db_n.delete()
+				if db_n:
+					if db_n.is_saved():
+						db_n.delete()
 		else:
 			self.error(401)
 			self.response.out.write("Not logged in.")
