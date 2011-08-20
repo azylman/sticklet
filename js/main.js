@@ -225,7 +225,8 @@ $("#manage").bind('click', function( event ){
 	el.append ( j );
 	for ( var a in trash ) {
 	    var div = $("<div />",{
-		class : "trash_item"
+		class : "trash_item",
+		id : trash[a].id
 	    });
 	    var ch = $("<input />", {
 		type : "checkbox",
@@ -329,6 +330,9 @@ function permDelete( cs ){
 
     var c = confirm ( "Are you sure you wish to permanently delete these notes?" );
     if ( c ) {
+    for (var a = 0; a < cs.length; a++) {
+    	$("#" + cs[a].name).fadeOut();
+    }
 	$.ajax({
 	    "url" : "/notes/trash/delete",
 	    "type" : "PUT",
@@ -338,7 +342,6 @@ function permDelete( cs ){
 		for( var a = 0; a < cs.length; a++) {
 		    delete trash[cs[a].name];
 		}
-		unToggle( $("#managemenu") );
 	    },
 	    "error" : function( err ) {
 		console.log ( err );
