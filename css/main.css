@@ -212,11 +212,12 @@ a.right {
 
 .trash_item .trash_content {
 	display: inline-block;
-	width: 70%;
+	white-space: nowrap;
+	width:70%;
 }
 
 .trash_item .trash_subject {
-	font-size: 175%;
+	font-size: 130%;
 }
 
 .trash_button {

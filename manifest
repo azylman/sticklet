@@ -3,9 +3,9 @@ CACHE MANIFEST
 
 CACHE:
 /
-/css/main.css
-/js/main.js
-/js/jquery.js
+/css/*
+/js/*
+/images/*
 
 NETWORK:
 *

@@ -188,6 +188,24 @@ $('#noteArea').bind('dblclick', function(event) {
 	createNote(event)
 });
 
+$("#check_all").bind ( "click", function (event){
+    var s = l.attr("checked");
+    var child = el.children(".trash_item").children(".trash_checkbox");
+    if ( s == "checked" ){
+	el.children(".trash_item").children(".trash_checkbox").attr({"checked" : "checked" });
+    } else {
+	el.children(".trash_item").children(".trash_checkbox").removeAttr("checked");
+    }
+});
+
+$("#archive_delete").bind( "click", function( event ){
+    permDelete( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
+});
+
+$("#archive_restore").bind ( "click", function( event ){
+    restoreTrash( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
+});
+
 $('#undo').bind('click', function( event ) {
 	undoAction()
 });
@@ -196,33 +214,11 @@ $('#redo').bind('click', function( event ) {
 });
 
 $("#manage").bind('click', function( event ){
-    var el = $("#managemenu");
-    if ( el.is(":hidden") ){
+    var l = $("#managemenu");
+    if ( l.is(":hidden") ){
 	// the 30 is the padding on the menu*2. For some reason, it doesn't count that towards the height...
-	el.height($(window).height() - $("#toolbar").height() - 30);
-	var j = $("<div />");
-	j.css({"text-align" : "center"});
-	var k = $("<h3 />");
-	k.text("Trashed Items:");
-	j.append ( k );
-	var l = $("<input />", {
-	    type : "checkbox",
-	    class : "trash_checkbox"
-	});
-	l.bind ( "click", function (event){
-	    var s = l.attr("checked");
-	    var child = el.children(".trash_item").children(".trash_checkbox");
-	    if ( s == "checked" ){
-		el.children(".trash_item").children(".trash_checkbox").attr({"checked" : "checked" });
-	    } else {
-		el.children(".trash_item").children(".trash_checkbox").removeAttr("checked");
-	    }
-	});
-	j.append ( l );
-	var ty = $("<span />");
-	ty.text ( "Check/Uncheck All" );
-	j.append ( ty );
-	el.append ( j );
+	l.height($(window).height() - $("#toolbar").height() - 30);
+	var el = $("#archived_content");
 	for ( var a in trash ) {
 	    var div = $("<div />",{
 		class : "trash_item",
@@ -241,51 +237,31 @@ $("#manage").bind('click', function( event ){
 	    	class: "trash_subject"
 	    });
 	    var snippet = $("<div />");
-	    var subject = trash[a].subject;
-		if (subject != "") {
-			subj.text(subject);
-		} else {
-			subj.html("&nbsp;");
-		}
-	    var content = trash[a].content;
-		if (content != "") {
-			snippet.text(content);
-		} else {
-			snippet.html("&nbsp;");
-		}
+	    var subject = trash[a].subject.replace(/<\/?[^>]+(>|$)/g, "");
+	    if (subject != "") {
+		subj.text(subject);
+	    } else {
+		subj.html("&nbsp;");
+	    }
+	    var content = trash[a].content.replace(/<\/?[^>]+(>|$)/g, "");
+	    if (content != "") {
+		snippet.text(content);
+	    } else {
+		snippet.html("&nbsp;");
+	    }
 	    sp.append(subj);
 	    sp.append(snippet);
 	    div.append ( sp );
 	    el.append( div );
 	}
-	var ds = $("<div />", {
-	    class : "trash_button"
-	});
-	var but = $("<a />", {
-	    class : "button left"
-	});
-	but.text( "Delete" );
-	but.bind( "click", function( event ){
-	    permDelete( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
-	});
-	ds.append ( but );
-	var buts = $("<a />", {
-	    class : "button right"
-	});
-	buts.text( "Restore" );
-	buts.bind ( "click", function( event ){
-	    restoreTrash( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
-	});
-	ds.append ( buts );
-	el.append ( ds );
 	$("#noteArea").bind("click", function( event ) {
 	    if( event.target != el.get() ) {
 		unToggle ( el );
 	    }
 	});
-	el.slideDown( "slow" );
+	l.slideDown( "slow" );
     } else {
-	unToggle ( el );
+	unToggle ( l );
     }
 });
 
@@ -353,8 +329,8 @@ function permDelete( cs ){
 
 function unToggle( el ) {
     $("#noteArea").unbind("click");
-    el.slideToggle( 'slow', function() {
-	el.html("");
+    el.slideToggle( 'fast', function() {
+	$("#archived_content").html("");
     });
 };
 
@@ -584,7 +560,7 @@ function dropDown ( el ) {
     	"margin-top" : "10px",
     	"margin-bottom" : "10px",
     });
-    link.text ( "Delete" );
+    link.text ( "Archive" );
     link.bind ( "click", function ( event ) {
 	deleteNote ( el, dr );
 	dr.remove();
