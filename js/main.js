@@ -257,7 +257,9 @@ $("#manage").bind('click', function( event ){
 		unToggle ( );
 	    }
 	});
-	l.slideDown( "slow" );
+	l.slideDown( "slow", function(){
+	    $("#archived_content").css({"overflow-y" : "auto"});
+	});
     } else {
 	unToggle ( );
     }
@@ -329,6 +331,7 @@ function unToggle( ) {
     $("#noteArea").unbind("click");
     $("#managemenu").slideToggle( 'fast', function() {
 	$("#archived_content").html("");
+	$("#archived_content").css({"overflow-y" : "hidden"});
     });
 };
 
