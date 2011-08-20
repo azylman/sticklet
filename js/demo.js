@@ -15,16 +15,22 @@ username = "demo";
 $(document).ready(function(){
 
     var el = $("#demo_note");
-    var s = el.children(".noteHeader");
-    var c = el.children(".noteContent");
+    var s = el.children(".noteHeader").children("span");
+    var c = el.children(".noteContent").children("blockquote");
     s.bind("dblclick", function( event ) {
-
 	s.attr({"contenteditable" : true});
-
+    });
+    s.bind("blur", function( event ) {
+	s.attr({"contenteditable" : false});
+	s.focus();
     });
 
     c.bind("dblclick", function ( event ) {
 	c.attr({"contenteditable":true});
+	s.focus();
+    });
+    c.bind("blur", function( event ) {
+	c.attr({"contenteditable" : false});
     });
 
 });
