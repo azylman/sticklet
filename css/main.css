@@ -63,10 +63,15 @@ html,body {
 }
 
 #archived_content {
-    position:relative;
+    position:absolute;
+    top:59px;
+    bottom:30px;
+    left:0px;
+    right:0px;
     overflow-x: hidden;
     overflow-y: auto;
-    height:100%;
+    height:auto;
+    max-height:100%;
 }
 
 .options {
