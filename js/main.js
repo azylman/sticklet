@@ -256,12 +256,12 @@ $("#manage").bind('click', function( event ){
 	}
 	$("#noteArea").bind("click", function( event ) {
 	    if( event.target != el.get() ) {
-		unToggle ( el );
+		unToggle ( );
 	    }
 	});
 	l.slideDown( "slow" );
     } else {
-	unToggle ( l );
+	unToggle ( );
     }
 });
 
@@ -327,9 +327,9 @@ function permDelete( cs ){
     }
 };
 
-function unToggle( el ) {
+function unToggle( ) {
     $("#noteArea").unbind("click");
-    el.slideToggle( 'fast', function() {
+    $("#managemenu").slideToggle( 'fast', function() {
 	$("#archived_content").html("");
     });
 };
