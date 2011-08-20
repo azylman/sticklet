@@ -272,6 +272,7 @@ function restoreTrash( cs ) {
     var idArr = new Array();
     for( var a = 0; a < cs.length; a++) {
 	idArr.push ( {"id" : cs[a].name} );
+    	$("#" + cs[a].name).fadeOut();	
     }
     if ( idArr.length < 1 ) return;
     var dict = JSON.stringify(idArr);
@@ -287,7 +288,7 @@ function restoreTrash( cs ) {
 		delete trash[cs[a].name];
 		dumpNotes();
 	    }
-	    unToggle( $("#managemenu") );
+	    //unToggle( $("#managemenu") );
 	},
 	"error" : function( err ) {
 	    console.log ( err );
@@ -308,9 +309,9 @@ function permDelete( cs ){
 
     var c = confirm ( "Are you sure you wish to permanently delete these notes?" );
     if ( c ) {
-    for (var a = 0; a < cs.length; a++) {
-    	$("#" + cs[a].name).fadeOut();
-    }
+	for (var a = 0; a < cs.length; a++) {
+    	    $("#" + cs[a].name).fadeOut();
+	}
 	$.ajax({
 	    "url" : "/notes/trash/delete",
 	    "type" : "PUT",
