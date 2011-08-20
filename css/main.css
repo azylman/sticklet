@@ -74,6 +74,12 @@ html,body {
     max-height:100%;
 }
 
+#menus {
+    position:fixed;
+    width:100%;
+    height:100%;
+}
+
 .options {
 	background-image: url(/images/context_hover.png);
 	float: right;
