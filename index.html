@@ -10,30 +10,32 @@
 		<link type="text/css" rel="stylesheet" href="/css/main.css" />
 	</head>
 	<body>
-	  <div id="toolbar">
-	    <div id="lefties">
-	      <a id="manage" class="button">Archive</a>
-	      <a id="undo" class="button left">Undo</a>
-	      <a id="redo" class="button right">Redo</a>
+	  <div id="menus">
+	    <div id="toolbar">
+	      <div id="lefties">
+		<a id="manage" class="button">Archive</a>
+		<a id="undo" class="button left">Undo</a>
+		<a id="redo" class="button right">Redo</a>
+	      </div>
+	      <div id="righties">
+		<a id="help" class="button">Help</a>
+		<a href="{{ url }}" class="button">{{ url_linktext }}</a>
+	      </div>
 	    </div>
-	    <div id="righties">
-	      <a id="help" class="button">Help</a>
-	      <a href="{{ url }}" class="button">{{ url_linktext }}</a>
-	    </div>
-	  </div>
-	  <div id="managemenu">
-	    <div>
-	      <h3>Archived Items</h3>
-	      <input type="checkbox" class="trash_checkbox" id="check_all">
-	      <span>Check/Uncheck All</span>
-	      <hr>
-	    </div>
-	    <div id="archived_content">
-	      
-	    </div>
-	    <div class="trash_button">
-	      <a class="button left" id="archive_delete">Delete</a>
-	      <a class="button right" id="archive_restore">Restore</a>
+	    <div id="managemenu">
+	      <div class="centered">
+		<h3>Archived Items</h3>
+		<input type="checkbox" class="trash_checkbox" id="check_all">
+		<span>Check/Uncheck All</span>
+		<hr>
+	      </div>
+	      <div id="archived_content">
+		
+	      </div>
+	      <div class="trash_button">
+		<a class="button left" id="archive_delete">Delete</a>
+		<a class="button right" id="archive_restore">Restore</a>
+	      </div>
 	    </div>
 	  </div>
     	  <div id="noteArea">

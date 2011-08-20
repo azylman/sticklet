@@ -199,11 +199,11 @@ $("#check_all").bind ( "click", function (event){
 });
 
 $("#archive_delete").bind( "click", function( event ){
-    permDelete( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
+    permDelete( $("#archived_content").children(".trash_item").children(":checked") );
 });
 
 $("#archive_restore").bind ( "click", function( event ){
-    restoreTrash( $(event.currentTarget).parents("#managemenu").children(".trash_item").children(":checked") );
+    restoreTrash( $("#archived_content").children(".trash_item").children(":checked") );
 });
 
 $('#undo').bind('click', function( event ) {
@@ -217,7 +217,8 @@ $("#manage").bind('click', function( event ){
     var l = $("#managemenu");
     if ( l.is(":hidden") ){
 	// the 30 is the padding on the menu*2. For some reason, it doesn't count that towards the height...
-	l.height($(window).height() - $("#toolbar").height() - 30);
+	//l.height($(window).height() - $("#toolbar").height() - 30);
+	//$("#trash_button").css({"bottom" : "0px;"});
 	var el = $("#archived_content");
 	for ( var a in trash ) {
 	    var div = $("<div />",{

@@ -225,3 +225,7 @@ a.right {
     bottom: 0px;
     margin:auto;
 }
+
+.centered {
+    text-align:center;
+}
