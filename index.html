@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <!--<html manifest="manifest">-->
 <html>
-	<head>
-	        <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
-	        <meta name="author" content="Vincent Dumas, Alex Zylman"/>
-		<meta name="keywords" content="stickynotes,webnotes,notes,html5,sticklet"/>
-		<meta name="description" content="Notes you can take anywhere"/>
-		<title>Sticklet</title>
-		<link type="text/css" rel="stylesheet" href="/css/main.css" />
-	</head>
-	<body>
-	  <div id="menus">
-	    <div id="toolbar">
-	      <div id="lefties">
-		<a id="manage" class="button enabled">Archive</a>
-		<a id="undo" class="button left disabled">Undo</a>
-		<a id="redo" class="button right disabled">Redo</a>
-	      </div>
-	      <div id="righties">
-		<a id="help" class="button enabled">Help</a>
-		<a href="{{ url }}" class="button enabled">{{ url_linktext }}</a>
-	      </div>
-	    </div>
-	    <div id="managemenu">
-	      <div class="centered">
-		<h3>Archived Items</h3>
-		<input type="checkbox" class="trash_checkbox" id="check_all">
-		<span>Check/Uncheck All</span>
-		<hr>
-	      </div>
-	      <div id="archived_content">
-	      </div>
-	      <div class="trash_button">
-		<a class="button left disabled" id="archive_delete">Delete</a>
-		<a class="button right disabled" id="archive_restore">Restore</a>
-	      </div>
-	    </div>
-	  </div>
-    	  <div id="noteArea">
+    <head>
+            <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+            <meta name="author" content="Vincent Dumas, Alex Zylman"/>
+        <meta name="keywords" content="stickynotes,webnotes,notes,html5,sticklet"/>
+        <meta name="description" content="Notes you can take anywhere"/>
+        <title>Sticklet</title>
+        <link type="text/css" rel="stylesheet" href="/css/main.css" />
+    </head>
+    <body>
+      <div id="menus">
+        <div id="toolbar">
+          <div id="lefties">
+        <a id="manage" class="button enabled">Archive</a>
+        <a id="undo" class="button left disabled">Undo</a>
+        <a id="redo" class="button right disabled">Redo</a>
           </div>
-	</body>
-	<script type="text/javascript">
-	  var username = "{{ user }}";
-	</script>
-	<script type="text/javascript" src="/js/jquery.js"></script>
-	<script type="text/javascript" src="/js/jquery.overlaps.min.js"></script>
-	<script type="text/javascript" src="/js/main.js"></script>
+          <div id="righties">
+        <a id="help" class="button enabled">Help</a>
+        <a href="{{ url }}" class="button enabled">{{ url_linktext }}</a>
+          </div>
+        </div>
+        <div id="managemenu">
+          <div class="centered">
+        <h3>Archived Items</h3>
+        <input type="checkbox" class="trash_checkbox" id="check_all">
+        <span>Check/Uncheck All</span>
+        <hr>
+          </div>
+          <div id="archived_content">
+          </div>
+          <div class="trash_button">
+        <a class="button left disabled" id="archive_delete">Delete</a>
+        <a class="button right disabled" id="archive_restore">Restore</a>
+          </div>
+        </div>
+      </div>
+          <div id="noteArea">
+          </div>
+    </body>
+    <script type="text/javascript">
+      var username = "{{ user }}";
+    </script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.overlaps.min.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
 </html>

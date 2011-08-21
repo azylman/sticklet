@@ -1,12 +1,12 @@
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-	background: url(/images/rodin.png);
-	background-repeat: no-repeat;
-	padding-top: 75px;
+    background: url(/images/rodin.png);
+    background-repeat: no-repeat;
+    padding-top: 75px;
 }
 
 .login {
@@ -15,24 +15,24 @@ body {
 }
 
 #page {
-	color: #DDD;
-	width: 800px;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 50px;
-	border-radius: 25px;
-	background: rgba(0, 0, 0, .5);
-	text-align: center;
+    color: #DDD;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 50px;
+    border-radius: 25px;
+    background: rgba(0, 0, 0, .5);
+    text-align: center;
 }
 
 h1 {
-	font-size: 600%;
-	font-style: italic;
-	font-family: 'Droid Serif', serif;
+    font-size: 600%;
+    font-style: italic;
+    font-family: 'Droid Serif', serif;
 }
 
 h2 {
-	font-size: 300%;
-	font-style: italic;
-	font-family: 'Droid Serif', serif;
+    font-size: 300%;
+    font-style: italic;
+    font-family: 'Droid Serif', serif;
 }
