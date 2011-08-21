@@ -684,50 +684,10 @@ function undoAction () {
 	$("#undo").removeClass("enabled").addClass("disabled");
     }
 
-    if ( act.b != null ){
-
-	writeNote ( act.b, false );
-	notes[act.b.id] = act.b;
-	if ( !!trash[act.b.id] ) {
-	    if ( online ) {
-		$.ajax ({ "url" : "/notes/trash",
-			  "type" : "PUT",
-			  "data" : JSON.stringify ( [{"id" : act.b.id}] ),
-			  "success" : function ( resp ) {
-			      delete trash[act.b.id];	    
-			      dumpNotes();
-			  },
-			  "error" : function( resp ) {
-			      alert(resp);
-			  }
-			});
-	    }
-	} else {
-	    saveNote ( act.b, true );
-	}
-	
-
-    } else {
-
-	var n = act.a;
-	trash[n.id] = notes[n.id];
-	delete notes[n.id];
-	$("#"+n.id).remove();
-	if ( online ) {
-	    $.ajax ({ "url" : "/notes/delete",
-		      "type" : "PUT",
-		      "data" : JSON.stringify ( [{"id" : n.id}] ),
-		      "success" : function ( resp ) {
-			  delete notes[n.id];
-			  $("#"+n.id).remove();
-			  dumpNotes();
-		      },
-		      "error" : function( resp ) {
-			  alert(resp);
-		      }
-		    });
-	}
-    }
+    writeNote ( act.b, false );
+    notes[act.b.id] = act.b;
+    dumpNotes();
+    saveNote ( act.b, true );
 
     redoStack.push ( act );
 
@@ -745,22 +705,10 @@ function redoAction () {
 	$("#redo").removeClass("enabled").addClass("disabled");
     }
 
-    if ( act.a != null ) {
-
-	writeNote ( act.a, false );
-	notes[act.a.id] = act.a;
-	delete trash[act.b.id];
-	saveNote ( act.a, true )
-
-    } else {
-
-	writeNote ( trash[act.b.id], false );
-	notes[act.b.id] = trash[act.b.id];
-	delete trash[act.b.id];
-	drawTrash();
-	saveNote( notes[act.b.id], true );
-
-    }
+    writeNote ( act.a, false );
+    notes[act.a.id] = act.a;
+    dumpNotes();
+    saveNote ( act.a, true )
 
     undoStack.push ( act );
 
