@@ -684,19 +684,49 @@ function undoAction () {
 	$("#undo").removeClass("enabled").addClass("disabled");
     }
 
-    console.log ( act );
-
     if ( act.b != null ){
 
 	writeNote ( act.b, false );
 	notes[act.b.id] = act.b;
-	delete trash[act.b.id];
-	saveNote ( act.b, true );
+	if ( !!trash[act.b.id] ) {
+	    if ( online ) {
+		$.ajax ({ "url" : "/notes/trash",
+			  "type" : "PUT",
+			  "data" : JSON.stringify ( [{"id" : act.b.id}] ),
+			  "success" : function ( resp ) {
+			      delete trash[act.b.id];	    
+			      dumpNotes();
+			  },
+			  "error" : function( resp ) {
+			      alert(resp);
+			  }
+			});
+	    }
+	} else {
+	    saveNote ( act.b, true );
+	}
+	
 
     } else {
 
-	//deleteNote ( $(act.a.id) );
-
+	var n = act.a;
+	trash[n.id] = notes[n.id];
+	delete notes[n.id];
+	$("#"+n.id).remove();
+	if ( online ) {
+	    $.ajax ({ "url" : "/notes/delete",
+		      "type" : "PUT",
+		      "data" : JSON.stringify ( [{"id" : n.id}] ),
+		      "success" : function ( resp ) {
+			  delete notes[n.id];
+			  $("#"+n.id).remove();
+			  dumpNotes();
+		      },
+		      "error" : function( resp ) {
+			  alert(resp);
+		      }
+		    });
+	}
     }
 
     redoStack.push ( act );
@@ -714,8 +744,6 @@ function redoAction () {
     if ( redoStack.length == 0) {
 	$("#redo").removeClass("enabled").addClass("disabled");
     }
-
-    console.log ( act );
 
     if ( act.a != null ) {
 
