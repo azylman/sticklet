@@ -4,7 +4,7 @@ for ( var a in window.localStorage ) {
     }
 }
 
-var note = { "id" : "demo_note", "x" : 600, "y" : 370, "z" : 100,
+var note = { "id" : "demo_note", "x" : 600, "y" : 380, "z" : 100,
          "subject" : "Click Subject here", "content" : "Click Content here" };
 var online = false;
 var notes = {};
