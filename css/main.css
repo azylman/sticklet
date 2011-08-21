@@ -251,3 +251,12 @@ a.right {
     text-align:center;
     padding:15px;
 }
+
+#copy {
+    opacity:.3;
+    text-align:center;
+    margin:auto;
+    position:fixed;
+    bottom:0px;
+    right:0px;
+}
