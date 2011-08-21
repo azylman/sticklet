@@ -310,7 +310,6 @@ function restoreTrash( cs ) {
 		drawTrash();
 		dumpNotes();
 	    }
-	    //unToggle( $("#managemenu") );
 	},
 	"error" : function( err ) {
 	    console.log ( err );
@@ -377,7 +376,6 @@ function startDrag ( e ) {
 
     e.stopPropagation();
     e.preventDefault();
-    unToggle();
 
     dragged.el = el;
 
@@ -522,7 +520,6 @@ function writeNote ( note, fade ) {
     o.bind( "click", function(event) {
 	event.preventDefault();
 	event.stopPropagation();
-	unToggle();
 	dropDown( elm );
     });
     elm.append( o );
