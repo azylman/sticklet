@@ -355,7 +355,7 @@ function permDelete( cs ){
 
 function unToggle( ) {
     $("#noteArea").unbind("click");
-    $("#managemenu").slideToggle( 'fast', function() {
+    $("#managemenu").slideUp( 'fast', function() {
 	$("#archived_content").css({"overflow-y" : "hidden"});
     });
 };
