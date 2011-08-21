@@ -50,3 +50,8 @@ a.large {
 #description {
     margin-top: 20px;
 }
+
+p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
