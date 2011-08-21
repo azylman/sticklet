@@ -36,6 +36,14 @@ if ( online ) {
     getTrash();
 }
 
+function getSize( obj ) {
+	var max = 0;
+	for ( var i in trash ) {
+		max = i;
+	}
+	return max;
+}
+
 function getNotes () {
     $.ajax ({
 	"url" : "/notes",
@@ -74,6 +82,7 @@ function getTrash () {
 	    $.each(resp, function(index) {
 		trash[resp[index].id] = resp[index];
 	    });
+	    drawTrash();
 	}
     });
 };
@@ -159,6 +168,7 @@ function deleteNote ( el ) {
 	}
     delete notes[ n.id ];
     trash[n.id] = n;
+    drawTrash();
     el.fadeOut ( 350, function () {
 	el.remove();
     });
@@ -218,6 +228,22 @@ $("#manage").bind('click', function( event ){
     var l = $("#managemenu");
     if ( l.is(":hidden") ){
 	var el = $("#archived_content");
+	$("#noteArea").bind("click", function( event ) {
+	    if( event.target != el.get() ) {
+		unToggle ( );
+	    }
+	});
+	l.slideDown( "slow", function(){
+	    $("#archived_content").css({"overflow-y" : "auto"});
+	});
+    } else {
+	unToggle ( );
+    }
+});
+
+function drawTrash() {
+	var el = $("#archived_content");
+	el.html("");
 	for ( var a in trash ) {
 	    var div = $("<div />",{
 		class : "trash_item",
@@ -253,18 +279,14 @@ $("#manage").bind('click', function( event ){
 	    div.append ( sp );
 	    el.append( div );
 	}
-	$("#noteArea").bind("click", function( event ) {
-	    if( event.target != el.get() ) {
-		unToggle ( );
-	    }
-	});
-	l.slideDown( "slow", function(){
-	    $("#archived_content").css({"overflow-y" : "auto"});
-	});
-    } else {
-	unToggle ( );
-    }
-});
+	if ( getSize(trash) != 0 ) {
+		$("#archive_delete").removeClass("disabled").addClass("enabled");
+		$("#archive_restore").removeClass("disabled").addClass("enabled");
+	} else {
+		$("#archive_delete").removeClass("enabled").addClass("disabled");
+		$("#archive_restore").removeClass("enabled").addClass("disabled");
+	}
+}
 
 function restoreTrash( cs ) {
 
@@ -285,6 +307,7 @@ function restoreTrash( cs ) {
 		writeNote( trash[cs[a].name] );
 		notes[cs[a].name] = trash[cs[a].name];
 		delete trash[cs[a].name];
+		drawTrash();
 		dumpNotes();
 	    }
 	    //unToggle( $("#managemenu") );
@@ -320,6 +343,7 @@ function permDelete( cs ){
 		for( var a = 0; a < cs.length; a++) {
 		    delete trash[cs[a].name];
 		}
+		drawTrash();
 	    },
 	    "error" : function( err ) {
 		console.log ( err );
@@ -332,7 +356,6 @@ function permDelete( cs ){
 function unToggle( ) {
     $("#noteArea").unbind("click");
     $("#managemenu").slideToggle( 'fast', function() {
-	$("#archived_content").html("");
 	$("#archived_content").css({"overflow-y" : "hidden"});
     });
 };
@@ -590,7 +613,7 @@ function dropDown ( el ) {
     dr.append( p );
 
     var link = $("<a />", {
-	class : "button",
+	class : "button enabled",
     });
     link.css ({
     	"margin-left" : "auto",
@@ -678,6 +701,7 @@ function undoAction () {
 
     redoStack.push ( act );
 
+	drawTrash();
     $("#redo").removeClass("disabled").addClass("enabled");
 };
 
@@ -705,6 +729,7 @@ function redoAction () {
 	writeNote ( trash[act.b.id], false );
 	notes[act.b.id] = trash[act.b.id];
 	delete trash[act.b.id];
+	drawTrash();
 	saveNote( notes[act.b.id], true );
 
     }
