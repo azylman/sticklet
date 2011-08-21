@@ -7,6 +7,7 @@ body {
 	background: url(/images/rodin.png);
 	background-repeat: no-repeat;
 	padding-top: 75px;
+	font-family: 'Droid Serif', serif;
 }
 
 .login {
@@ -28,11 +29,9 @@ body {
 h1 {
 	font-size: 600%;
 	font-style: italic;
-	font-family: 'Copse', serif;
 }
 
 h2 {
 	font-size: 300%;
 	font-style: italic;
-	font-family: 'Copse', serif;
 }
