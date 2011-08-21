@@ -18,6 +18,7 @@ body {
     border-radius: 25px;
     background: rgba(0, 0, 0, .6);
     text-align: left;
+    height: 560px;
 }
 
 h1 {
@@ -43,10 +44,6 @@ a.large {
     font-size: 300%;
 }
 
-.login {
-    margin-top: 30px;
-}
-
 #description {
     margin-top: 20px;
 }
@@ -58,4 +55,12 @@ p {
 
 #noteArea {
     color: #333;
+    float: right;
+    width: 500px;
+    top: 30px;
+}
+
+#login {
+    width: 160px;
+    top: 175px;
 }

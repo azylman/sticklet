@@ -20,8 +20,6 @@ notes[note.id] = note;
 window.localStorage.setItem ( "notes_demo", JSON.stringify(notes) );
 username = "demo";
 
-$("#noteArea").css('top', 30);
-
 $(document).ready(function(){
 
     var el = $("#demo_note");
