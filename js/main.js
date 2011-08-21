@@ -705,31 +705,10 @@ function redoAction () {
     $("#redo").removeClass("enabled").addClass("disabled");
     }
 
-<<<<<<< HEAD
     writeNote ( act.a, false );
     notes[act.a.id] = act.a;
     dumpNotes();
     saveNote ( act.a, true )
-=======
-    console.log ( act );
-
-    if ( act.a != null ) {
-
-    writeNote ( act.a, false );
-    notes[act.a.id] = act.a;
-    delete trash[act.b.id];
-    saveNote ( act.a, true )
-
-    } else {
-
-    writeNote ( trash[act.b.id], false );
-    notes[act.b.id] = trash[act.b.id];
-    delete trash[act.b.id];
-    drawTrash();
-    saveNote( notes[act.b.id], true );
-
-    }
->>>>>>> reindent ALL THE THINGS
 
     undoStack.push ( act );
 
