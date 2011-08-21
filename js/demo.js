@@ -4,7 +4,15 @@ for ( var a in window.localStorage ) {
     }
 }
 
-var note = { "id" : "demo_note", "x" : 600, "y" : 380, "z" : 100,
+var log = $("#login")
+var pos = log.position();
+
+var x = pos.left + log.width() + 120;
+var y = pos.top + log.height();
+
+console.log ( pos.left );
+
+var note = { "id" : "demo_note", "x" : x, "y" : y, "z" : 100,
          "subject" : "Click Subject here", "content" : "Click Content here" };
 var online = false;
 var notes = {};
