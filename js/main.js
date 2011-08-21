@@ -271,7 +271,7 @@ function restoreTrash( cs ) {
     var idArr = new Array();
     for( var a = 0; a < cs.length; a++) {
 	idArr.push ( {"id" : cs[a].name} );
-    	$("#" + cs[a].name).fadeOut();	
+    	$("#" + cs[a].name).fadeOut();
     }
     if ( idArr.length < 1 ) return;
     var dict = JSON.stringify(idArr);
@@ -643,7 +643,9 @@ function Action (){
     this.push = function () {
 	if ( ! compare ( this.a, this.b ) ) {
 	    undoStack.push ( this );
+		$("#undo").removeClass("disabled").addClass("enabled");
 	    redoStack = new Array ();
+	    $("#redo").removeClass("enabled").addClass("disabled");
 	}
     }
 
@@ -655,8 +657,12 @@ function undoAction () {
 
     var act = undoStack.pop();
 
+    if ( undoStack.length == 0) {
+		$("#undo").removeClass("enabled").addClass("disabled");
+	}
+
     console.log ( act );
-    
+
     if ( act.b != null ){
 
 	writeNote ( act.b, false );
@@ -671,6 +677,8 @@ function undoAction () {
     }
 
     redoStack.push ( act );
+
+    $("#redo").removeClass("disabled").addClass("enabled");
 };
 
 function redoAction () {
@@ -678,6 +686,10 @@ function redoAction () {
     if ( redoStack.length == 0 ) return;
 
     var act = redoStack.pop();
+
+	if ( redoStack.length == 0) {
+		$("#redo").removeClass("enabled").addClass("disabled");
+	}
 
     console.log ( act );
 
@@ -698,6 +710,8 @@ function redoAction () {
     }
 
     undoStack.push ( act );
+
+    $("#undo").removeClass("disabled").addClass("enabled");
 };
 
 $(document).bind("keypress", function( event ) {
