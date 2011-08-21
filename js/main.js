@@ -52,19 +52,19 @@ function getNotes () {
 	"dataType" : "json",
 	"success" : function( resp ) {
 	    var tmp = {};
-		$.each(resp, function(index) {
-		    z = ( resp[index].z > z ) ? resp[index].z : z;
-		    var new_Z = resp[index].z;
-		    if ( !!notes[resp[index].id] ){
-			notes[resp[index].id].z = new_Z;
-			$("#" + resp[index].id).css('z-index', new_Z);
-		    }
-		    writeNote ( resp[index], false );
-		    delete notes[resp[index].id];
-		    tmp[resp[index].id] = resp[index];
-		});
+	    $.each(resp, function(index) {
+		z = ( resp[index].z > z ) ? resp[index].z : z;
+		var new_Z = resp[index].z;
+		if ( !!notes[resp[index].id] ){
+		    notes[resp[index].id].z = new_Z;
+		    $("#" + resp[index].id).css('z-index', new_Z);
+		}
+		writeNote ( resp[index], false );
+		delete notes[resp[index].id];
+		tmp[resp[index].id] = resp[index];
+	    });
 	    for ( var d in notes )
-	    	    $( "#" + notes[d].id ).remove();
+	    	$( "#" + notes[d].id ).remove();
 	    notes = tmp;
 	    dumpNotes();
 	}
@@ -128,21 +128,21 @@ function createNote( e ) {
 
     content = "";
     $.ajax ({ "type" : "POST",
-	     "async" : true,
-	     "url" : "/notes",
-	     "success" : function( resp ){
-		 var note = JSON.parse ( resp );
-		 var con = writeNote ( note, true );
-		 notes[note.id] = note;
-		 var act = new Action ();
-		 act.setAfter ( note );
-  		 act.push ();
-		 dumpNotes();
-		 con.attr({"contenteditable" : true});
-		 con.focus();
-	     },
+	      "async" : true,
+	      "url" : "/notes",
+	      "success" : function( resp ){
+		  var note = JSON.parse ( resp );
+		  var con = writeNote ( note, true );
+		  notes[note.id] = note;
+		  var act = new Action ();
+		  act.setAfter ( note );
+  		  act.push ();
+		  dumpNotes();
+		  con.attr({"contenteditable" : true});
+		  con.focus();
+	      },
 	      "data" : {"x" : x, "y" : y, "z" : ++z}
-    });
+	    });
 };
 
 function deleteNote ( el ) {
@@ -156,16 +156,16 @@ function deleteNote ( el ) {
     var note = { "id" : n.id };
     if ( online ) {
 	$.ajax ({ "url" : "/notes/delete",
-	  "type" : "PUT",
-	  "data" : JSON.stringify ( [note] ),
-	  "success" : function ( resp ) {
-		dumpNotes();
-	  },
-	  "error" : function( resp ) {
-		  alert(resp);
-	  }
+		  "type" : "PUT",
+		  "data" : JSON.stringify ( [note] ),
+		  "success" : function ( resp ) {
+		      dumpNotes();
+		  },
+		  "error" : function( resp ) {
+		      alert(resp);
+		  }
 		});
-	}
+    }
     delete notes[ n.id ];
     trash[n.id] = n;
     drawTrash();
@@ -218,10 +218,10 @@ $("#archive_restore").bind ( "click", function( event ){
 });
 
 $('#undo').bind('click', function( event ) {
-	undoAction()
+    undoAction()
 });
 $('#redo').bind('click', function( event ) {
-	redoAction()
+    redoAction()
 });
 
 $("#manage").bind('click', function( event ){
@@ -242,50 +242,50 @@ $("#manage").bind('click', function( event ){
 });
 
 function drawTrash() {
-	var el = $("#archived_content");
-	el.html("");
-	for ( var a in trash ) {
-	    var div = $("<div />",{
-		class : "trash_item",
-		id : trash[a].id
-	    });
-	    var ch = $("<input />", {
-		type : "checkbox",
-		class : "trash_checkbox",
-		name : trash[a].id
-	    });
-	    div.append ( ch );
-	    var sp = $("<span />", {
-		class : "trash_content"
-	    });
-	    var subj = $("<div />", {
-	    	class: "trash_subject"
-	    });
-	    var snippet = $("<div />");
-	    var subject = trash[a].subject.replace(/<\/?[^>]+(>|$)/g, "");
-	    if (subject != "") {
-		subj.text(subject);
-	    } else {
-		subj.html("&nbsp;");
-	    }
-	    var content = trash[a].content.replace(/<\/?[^>]+(>|$)/g, "");
-	    if (content != "") {
-		snippet.text(content);
-	    } else {
-		snippet.html("&nbsp;");
-	    }
-	    sp.append(subj);
-	    sp.append(snippet);
-	    div.append ( sp );
-	    el.append( div );
-	}
-	if ( getSize(trash) > 0 ) {
-		$("#archive_delete").removeClass("disabled").addClass("enabled");
-		$("#archive_restore").removeClass("disabled").addClass("enabled");
+    var el = $("#archived_content");
+    el.html("");
+    for ( var a in trash ) {
+	var div = $("<div />",{
+	    class : "trash_item",
+	    id : trash[a].id
+	});
+	var ch = $("<input />", {
+	    type : "checkbox",
+	    class : "trash_checkbox",
+	    name : trash[a].id
+	});
+	div.append ( ch );
+	var sp = $("<span />", {
+	    class : "trash_content"
+	});
+	var subj = $("<div />", {
+	    class: "trash_subject"
+	});
+	var snippet = $("<div />");
+	var subject = trash[a].subject.replace(/<\/?[^>]+(>|$)/g, "");
+	if (subject != "") {
+	    subj.text(subject);
 	} else {
-		$("#archive_delete").removeClass("enabled").addClass("disabled");
-		$("#archive_restore").removeClass("enabled").addClass("disabled");
+	    subj.html("&nbsp;");
 	}
+	var content = trash[a].content.replace(/<\/?[^>]+(>|$)/g, "");
+	if (content != "") {
+	    snippet.text(content);
+	} else {
+	    snippet.html("&nbsp;");
+	}
+	sp.append(subj);
+	sp.append(snippet);
+	div.append ( sp );
+	el.append( div );
+    }
+    if ( getSize(trash) > 0 ) {
+	$("#archive_delete").removeClass("disabled").addClass("enabled");
+	$("#archive_restore").removeClass("disabled").addClass("enabled");
+    } else {
+	$("#archive_delete").removeClass("enabled").addClass("disabled");
+	$("#archive_restore").removeClass("enabled").addClass("disabled");
+    }
 }
 
 function restoreTrash( cs ) {
@@ -418,26 +418,26 @@ function stopDrag ( e ) {
     	alert ( "Note not found in array. You, sir, have a bug." );
     }
 
-	var newX = parseInt( dragged.el.style.left );
-	var newY = parseInt( dragged.el.style.top );
-	var newZ = parseInt( dragged.el.style.zIndex );
+    var newX = parseInt( dragged.el.style.left );
+    var newY = parseInt( dragged.el.style.top );
+    var newZ = parseInt( dragged.el.style.zIndex );
 
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
     dragged = {};
 
-	if (note.x == newX && note.y == newY) { // If only the z-index has changed
-		var overlap = false;
-		for(var n in notes) {
-			if ($("#" + note.id).overlaps("#" + notes[n].id)) { // Check if the note overlaps with any others
-				if (note.z < notes[n].z) { // If it overlaps and it's not on top
-					overlap = true;
-				}
-			}
+    if (note.x == newX && note.y == newY) { // If only the z-index has changed
+	var overlap = false;
+	for(var n in notes) {
+	    if ($("#" + note.id).overlaps("#" + notes[n].id)) { // Check if the note overlaps with any others
+		if (note.z < notes[n].z) { // If it overlaps and it's not on top
+		    overlap = true;
 		}
-		if (!overlap) // If we didn't find any overlap, that means that there was no visual change - stop everything
-			return;
+	    }
 	}
+	if (!overlap) // If we didn't find any overlap, that means that there was no visual change - stop everything
+	    return;
+    }
 
     note.x = newX;
     note.y = newY;
@@ -482,8 +482,8 @@ function writeNote ( note, fade ) {
         'backgroundColor' : note.color
     });
 
-	elm.bind('mousedown', function(event) {
-    		startDrag(event);
+    elm.bind('mousedown', function(event) {
+    	startDrag(event);
     });
 
     var h = $('<div />', {
@@ -518,6 +518,7 @@ function writeNote ( note, fade ) {
     	class : "options"
     });
     o.bind( "click", function(event) {
+	unToggle();
 	event.preventDefault();
 	event.stopPropagation();
 	dropDown( elm );
@@ -573,9 +574,9 @@ function dropDown ( el ) {
     });
     var el = $(el);
     dr.css ({
-	      "left" : parseInt ( el.css("left") ) + parseInt ( el.css("width") ) + "px",
-	      "top" : parseInt ( el.css("top") ) + "px"
-	    });
+	"left" : parseInt ( el.css("left") ) + parseInt ( el.css("width") ) + "px",
+	"top" : parseInt ( el.css("top") ) + "px"
+    });
     var p = $("<div />");
     p.css({"margin-top" : "10px",
 	   "margin-bottom" : "6px"});
@@ -665,7 +666,7 @@ function Action (){
     this.push = function () {
 	if ( ! compare ( this.a, this.b ) ) {
 	    undoStack.push ( this );
-		$("#undo").removeClass("disabled").addClass("enabled");
+	    $("#undo").removeClass("disabled").addClass("enabled");
 	    redoStack = new Array ();
 	    $("#redo").removeClass("enabled").addClass("disabled");
 	}
@@ -680,8 +681,8 @@ function undoAction () {
     var act = undoStack.pop();
 
     if ( undoStack.length == 0) {
-		$("#undo").removeClass("enabled").addClass("disabled");
-	}
+	$("#undo").removeClass("enabled").addClass("disabled");
+    }
 
     console.log ( act );
 
@@ -694,13 +695,13 @@ function undoAction () {
 
     } else {
 
-	deleteNote ( $(act.a.id) );
+	//deleteNote ( $(act.a.id) );
 
     }
 
     redoStack.push ( act );
 
-	drawTrash();
+    drawTrash();
     $("#redo").removeClass("disabled").addClass("enabled");
 };
 
@@ -710,9 +711,9 @@ function redoAction () {
 
     var act = redoStack.pop();
 
-	if ( redoStack.length == 0) {
-		$("#redo").removeClass("enabled").addClass("disabled");
-	}
+    if ( redoStack.length == 0) {
+	$("#redo").removeClass("enabled").addClass("disabled");
+    }
 
     console.log ( act );
 
