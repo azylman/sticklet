@@ -7,18 +7,20 @@ for ( var a in window.localStorage ) {
 var log = $("#login")
 var pos = log.position();
 
-var x = pos.left + log.width() + 120;
-var y = pos.top + log.height();
+var x = pos.left + log.width() + 340;
+var y = pos.top + 33;
 
 console.log ( pos.left );
 
-var note = { "id" : "demo_note", "x" : x, "y" : y, "z" : 100,
+var note = { "id" : "demo_note", "x" : 125, "y" : 0, "z" : 100,
          "subject" : "Click Subject here", "content" : "Click Content here" };
 var online = false;
 var notes = {};
 notes[note.id] = note;
 window.localStorage.setItem ( "notes_demo", JSON.stringify(notes) );
 username = "demo";
+
+$("#noteArea").css('top', 30);
 
 $(document).ready(function(){
 

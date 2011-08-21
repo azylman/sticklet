@@ -11,8 +11,7 @@
     <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
 </head>
 <body>
-    <div id="noteArea">
-        <div id="page">
+        <div id="page" style="height:560px">
             <h1>Sticklet</h1>
             <h2>Take your ideas with you</h2>
             <div id="description"><p>Sticklet is a cloud-based notes storage allowing
@@ -21,9 +20,9 @@
             <p>Whether it's your idea for The Next Big Thing or just your grocery list,
             Sticklet is the solution. Log in with your Google account and get to
             writing, or try out the demo note further down the page.</p></div>
-            <a href="{{ url }}" class="login button enabled large" id="login"><div id="text">{{ url_linktext }}</div><div id="subtext">Using your Google account</div></a>
+            <a href="{{ url }}" class="login button enabled large" id="login" style="width:200px;top:145px;"><div id="text">{{ url_linktext }}</div><div id="subtext">Using your Google account</div></a>
+            <div id="noteArea" style="float:right;width:500px;"></div>
         </div>
-    </div>
 </body>
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/jquery.overlaps.min.js"></script>
