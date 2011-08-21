@@ -10,30 +10,6 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-- kind: Greeting
-  ancestor: yes
-  properties:
-  - name: date
-    direction: desc
-
-- kind: StickyNote
-  ancestor: yes
-  properties:
-  - name: date
-    direction: desc
-
-- kind: model
-  ancestor: yes
-  properties:
-  - name: date
-    direction: desc
-
-- kind: snModel
-  ancestor: yes
-  properties:
-  - name: date
-    direction: desc
-
 - kind: snModel
   ancestor: yes
   properties:
