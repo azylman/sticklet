@@ -279,7 +279,7 @@ function drawTrash() {
 	    div.append ( sp );
 	    el.append( div );
 	}
-	if ( getSize(trash) != 0 ) {
+	if ( getSize(trash) > 0 ) {
 		$("#archive_delete").removeClass("disabled").addClass("enabled");
 		$("#archive_restore").removeClass("disabled").addClass("enabled");
 	} else {
@@ -377,6 +377,7 @@ function startDrag ( e ) {
 
     e.stopPropagation();
     e.preventDefault();
+    unToggle();
 
     dragged.el = el;
 
@@ -521,6 +522,7 @@ function writeNote ( note, fade ) {
     o.bind( "click", function(event) {
 	event.preventDefault();
 	event.stopPropagation();
+	unToggle();
 	dropDown( elm );
     });
     elm.append( o );
