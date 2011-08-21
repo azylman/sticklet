@@ -37,11 +37,11 @@ if ( online ) {
 }
 
 function getSize( obj ) {
-	var max = 0;
-	for ( var i in trash ) {
-		max = i;
-	}
-	return max;
+    var max = 0;
+    for ( var i in obj ) {
+	max++;
+    }
+    return max;
 }
 
 function getNotes () {
