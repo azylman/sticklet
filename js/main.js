@@ -134,9 +134,6 @@ function createNote( e ) {
           var note = JSON.parse ( resp );
           var con = writeNote ( note, true );
           notes[note.id] = note;
-          var act = new Action ();
-          act.setAfter ( note );
-            act.push ();
           dumpNotes();
           con.attr({"contenteditable" : true});
           con.focus();
@@ -149,10 +146,7 @@ function deleteNote ( el ) {
 
     var n = notes[el.attr('id')];
     var act = new Action();
-    act.setBefore ( n );
     n.trash = 1;
-    act.setAfter ( n );
-    act.push ( );
     var note = { "id" : n.id };
     if ( online ) {
     $.ajax ({ "url" : "/notes/delete",
@@ -263,12 +257,14 @@ function drawTrash() {
     });
     var snippet = $("<div />");
     var subject = trash[a].subject.replace(/<\/?[^>]+(>|$)/g, "");
+	subject = subject.substr(0, 25);
     if (subject != "") {
         subj.text(subject);
     } else {
         subj.html("&nbsp;");
     }
     var content = trash[a].content.replace(/<\/?[^>]+(>|$)/g, "");
+	content = content.substr(0,35);
     if (content != "") {
         snippet.text(content);
     } else {
