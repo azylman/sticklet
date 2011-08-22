@@ -483,6 +483,11 @@ function writeNote ( note, fade ) {
     var o = $('<div />', {
         "class" : "options"
     });
+    // var opts = $("<a />", {
+    // 	"class" : "button enabled"
+    // });
+    // opts.text("X");
+    // o.append ( opts );
     o.bind( "click", function(event) {
 	unToggle();
 	event.preventDefault();
