@@ -1,7 +1,5 @@
 "use strict";
-if ( notes === undefined ){
-    var notes = {};
-}
+var notes = {};
 var dragged = {};
 var z = 0;
 var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
