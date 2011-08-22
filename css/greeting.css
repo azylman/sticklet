@@ -3,8 +3,14 @@
     padding: 0;
 }
 
+html {
+    height:100%;
+}
+
 body {
-    background: url(/images/rodin.png);
+    background: url('/images/rodin.png');
+    min-height:1000px;
+    /*background-image: url('/images/rodin.png');*/
     background-repeat: no-repeat;
     padding-top: 75px;
 }
