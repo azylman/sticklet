@@ -8,12 +8,9 @@ html {
 }
 
 body {
-    position:absolute;
-    top:0px;
-    left:0px;
-    background: url('/images/rodin.png') no-repeat center center fixed;
-    min-height:100%;
-    height:auto;
+    background: url('/images/rodin.png') no-repeat;
+    height:100%;
+    background-size:contain;
     width:100%;
 }
 
@@ -22,12 +19,11 @@ body {
     color: #EEE;
     width: 800px;
     margin: auto;
-    margin-top:75px;
     padding: 50px;
     border-radius: 25px;
     background: rgba(0, 0, 0, .6);
     text-align: left;
-    height: 560px;
+    height: 480px;
 }
 
 h1 {
@@ -64,5 +60,5 @@ p {
 
 #login {
     width: 160px;
-    top: 175px;
+    top: 65px;
 }
