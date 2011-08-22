@@ -21,6 +21,8 @@ window.localStorage.setItem ( "notes_demo", JSON.stringify(notes) );
 username = "demo";
 
 $(document).ready(function(){
+	
+	$("body").height( Math.max($("body").height(), $(document).height()) );
 
     var el = $("#demo_note");
     var s = el.children(".noteHeader").children("div");
