@@ -282,7 +282,11 @@ a.right {
     margin:auto;
     margin-top:75px;
     border-radius:25px;
-    padding:25px;
+    padding:10px;
+}
+
+#help_menu h1 {
+    text-align:center;
 }
 
 #exit_help {
@@ -291,4 +295,9 @@ a.right {
     top:0px;
     right:0px;
     display:inline;
+}
+
+#help_text {
+    width:500px;
+    margin:auto;
 }

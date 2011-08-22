@@ -504,9 +504,10 @@ function writeNote ( note, fade ) {
     $(document).bind ( "click", function( event ) {
         if ( isEditable ( event.target ) ) return;
         event.stopPropagation();
-        s.attr({"contenteditable" : false});
+        //s.attr({"contenteditable" : false});
+	s.blur();
         $(document).unbind( "click" );
-            closeSave( event, s );
+        //closeSave( event, s );
     });
     });
     s.html(note.subject);
@@ -711,16 +712,23 @@ function redoAction () {
     $("#undo").removeClass("disabled").addClass("enabled");
 };
 
-$(document).bind("keypress", function( event ) {
+$(document).keyup(function( event ) {
+
     if ( event.ctrlKey ) {
-	if ( event.keyCode == 26 ) {
+	if ( event.keyCode == 90 ) {
             undoAction();
-	} else if ( event.keyCode == 25 ) {
+	} else if ( event.keyCode == 89 ) {
             redoAction();
 	}
     } else if ( event.shiftKey ) {
-	if ( event.keyCode == 63 ){
-	    $("#help_overlay").fadeToggle("fast");
+	if ( event.keyCode == 191 ){
+	    if ( ! isEditable( event.target ) ) 
+		$("#help_overlay").fadeToggle("fast");
+	} 
+    } else if ( event.keyCode == 27 ) {
+	$("#help_overlay").fadeOut("fast");
+	if ( isEditable( event.target ) ) {
+	    $(event.target).blur();
 	}
     }
 });
