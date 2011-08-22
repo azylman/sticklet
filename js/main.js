@@ -194,53 +194,6 @@ function saveNote ( note, sync, fn ) {
             });
 };
 
-$('#noteArea').bind('dblclick', function(event) {
-    if ( online )
-	createNote(event)
-});
-
-$("#check_all").bind ( "click", function (event){
-    var s = $("#check_all").attr("checked");
-    var el = $("#archived_content");
-    if ( s == "checked" ){
-	el.find(".trash_checkbox").attr({"checked":"checked"});
-    } else {
-	el.find(".trash_checkbox").removeAttr("checked");
-    }
-});
-
-$("#archive_delete").bind( "click", function( event ){
-    permDelete( $("#archived_content").find(":checked") );
-});
-
-$("#archive_restore").bind ( "click", function( event ){
-    restoreTrash( $("#archived_content").find(":checked") );
-});
-
-$('#undo').bind('click', function( event ) {
-    undoAction()
-});
-$('#redo').bind('click', function( event ) {
-    redoAction()
-});
-
-$("#manage").bind('click', function( event ){
-    var l = $("#managemenu");
-    if ( l.is(":hidden") ){
-	var el = $("#archived_content");
-	$("#noteArea").bind("click", function( event ) {
-            if( event.target != el.get() ) {
-		unToggle ( );
-            }
-	});
-	l.slideDown( "slow", function(){
-            $("#archived_content").css({"overflow-y" : "auto"});
-	});
-    } else {
-	unToggle ( );
-    }
-});
-
 function drawTrash() {
     var el = $("#archived_content");
     el.html("");
@@ -722,38 +675,89 @@ function redoAction () {
     $("#undo").removeClass("disabled").addClass("enabled");
 };
 
-$(document).keyup(function( event ) {
+$(document).ready( function () {
 
-    if ( event.ctrlKey ) {
-	if ( event.keyCode == 90 ) {
-            undoAction();
-	} else if ( event.keyCode == 89 ) {
-            redoAction();
+    $('#noteArea').bind('dblclick', function(event) {
+	if ( online )
+	    createNote(event)
+    });
+
+    $("#check_all").bind ( "click", function (event){
+	var s = $("#check_all").attr("checked");
+	var el = $("#archived_content");
+	if ( s == "checked" ){
+	    el.find(".trash_checkbox").attr({"checked":"checked"});
+	} else {
+	    el.find(".trash_checkbox").removeAttr("checked");
 	}
-    } else if ( event.shiftKey ) {
-	if ( event.keyCode == 191 ){
-	    if ( ! isEditable( event.target ) ) 
-		$("#help_overlay").fadeToggle("fast");
-	} 
-    } else if ( event.keyCode == 27 ) {
-	$("#help_overlay").fadeOut("fast");
-	if ( isEditable( event.target ) ) {
-	    $(event.target).blur();
+    });
+
+    $("#archive_delete").bind( "click", function( event ){
+	permDelete( $("#archived_content").find(":checked") );
+    });
+
+    $("#archive_restore").bind ( "click", function( event ){
+	restoreTrash( $("#archived_content").find(":checked") );
+    });
+
+    $('#undo').bind('click', function( event ) {
+	undoAction()
+    });
+    $('#redo').bind('click', function( event ) {
+	redoAction()
+    });
+
+    $("#manage").bind('click', function( event ){
+	var l = $("#managemenu");
+	if ( l.is(":hidden") ){
+	    var el = $("#archived_content");
+	    $("#noteArea").bind("click", function( event ) {
+		if( event.target != el.get() ) {
+		    unToggle ( );
+		}
+	    });
+	    l.slideDown( "slow", function(){
+		$("#archived_content").css({"overflow-y" : "auto"});
+	    });
+	} else {
+	    unToggle ( );
 	}
-    }
-});
+    });
 
-$("#help").bind("click", function ( event ){
-    $("#help_overlay").fadeIn("fast");
-});
 
-$("#exit_help").bind("click", function ( event ) {
-    $("#help_overlay").fadeOut("fast");
-});
+    $(document).keyup(function( event ) {
 
-$("#help_overlay").bind("click", function( event ) {
-    if ( event.target == event.currentTarget ) {
+	if ( event.ctrlKey ) {
+	    if ( event.keyCode == 90 ) {
+		undoAction();
+	    } else if ( event.keyCode == 89 ) {
+		redoAction();
+	    }
+	} else if ( event.shiftKey ) {
+	    if ( event.keyCode == 191 ){
+		if ( ! isEditable( event.target ) ) 
+		    $("#help_overlay").fadeToggle("fast");
+	    } 
+	} else if ( event.keyCode == 27 ) {
+	    $("#help_overlay").fadeOut("fast");
+	    if ( isEditable( event.target ) ) {
+		$(event.target).blur();
+	    }
+	}
+    });
+
+    $("#help").bind("click", function ( event ){
+	$("#help_overlay").fadeIn("fast");
+    });
+
+    $("#exit_help").bind("click", function ( event ) {
 	$("#help_overlay").fadeOut("fast");
-    }
-});
+    });
 
+    $("#help_overlay").bind("click", function( event ) {
+	if ( event.target == event.currentTarget ) {
+	    $("#help_overlay").fadeOut("fast");
+	}
+    });
+
+});
