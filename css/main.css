@@ -93,7 +93,8 @@ html,body {
     opacity: .3;
     z-index: 500;
     display: none;
-    border-radius:2px;
+    border-radius:1px;
+    border:1px solid black;
 }
 
 .context {
