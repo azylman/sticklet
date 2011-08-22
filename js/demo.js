@@ -13,7 +13,7 @@ var y = pos.top + 33;
 console.log ( pos.left );
 
 var note = { "id" : "demo_note", "x" : 700, "y" : 460, "z" : 100,
-         "subject" : "Click Subject here", "content" : "Click Content here" };
+         "subject" : "Double-click to edit", "content" : "Double-click to edit" };
 var online = false;
 var notes = {};
 notes[note.id] = note;
