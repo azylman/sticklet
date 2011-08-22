@@ -81,7 +81,7 @@ html,body {
 }
 
 .options {
-    /*background-image: url(/images/context_hover.png);*/
+    background-image: url(/images/context.png);
     float: right;
     position: absolute;
     top: 8px;
@@ -90,9 +90,10 @@ html,body {
     cursor:pointer;
     width: 13px;
     height: 13px;
-    opacity: 1;
+    opacity: .3;
     z-index: 500;
     display: none;
+    border-radius:2px;
 }
 
 .context {
