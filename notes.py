@@ -26,7 +26,7 @@ class Note(webapp.RequestHandler):
             note = stickynote.snModel(parent=stickynote.key(user.email()))
             note.author = users.get_current_user()
             note.content = ""
-            note.subject = "Note"
+            note.subject = "Sticklet"
             note.color = ""
             note.trash = 0
             note.x = int ( self.request.get( 'x' ) )
