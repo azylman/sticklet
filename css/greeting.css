@@ -12,6 +12,8 @@ body {
     height:100%;
     background-size:contain;
     width:100%;
+    min-height: 635px; /* height of #page + top of #page */
+    height: auto;
 }
 
 #page {
@@ -23,7 +25,8 @@ body {
     border-radius: 25px;
     background: rgba(0, 0, 0, .6);
     text-align: left;
-    height: 480px;
+    height: 560px;
+    top: 75px;
 }
 
 h1 {
@@ -60,5 +63,5 @@ p {
 
 #login {
     width: 160px;
-    top: 65px;
+    top: 175px;
 }
