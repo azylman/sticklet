@@ -721,3 +721,17 @@ $(document).bind("keypress", function( event ) {
     }
     }
 });
+
+$("#help").bind("click", function ( event ){
+    $("#help_overlay").slideDown("slow");
+});
+
+$("#exit_help").bind("click", function ( event ) {
+    $("#help_overlay").slideUp("fast");
+});
+
+$("#help_overlay").bind("click", function( event ) {
+    if ( event.target == event.currentTarget ) {
+	$("#help_overlay").slideUp("fast");
+    }
+});

@@ -260,3 +260,34 @@ a.right {
     bottom:0px;
     right:0px;
 }
+
+#help_overlay {
+    position:fixed;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    color:#DDD;
+    background-color: rgba(0,0,0,.6);
+    z-index:1015;
+}
+
+#help_menu {
+    position:relative;
+    color:black;
+    width:800px;
+    height:400px;
+    background-color:white;
+    margin:auto;
+    margin-top:75px;
+    border-radius:25px;
+    padding:25px;
+}
+
+#exit_help {
+    border:1px solid black;
+    position:absolute;
+    top:0px;
+    right:0px;
+    display:inline;
+}
