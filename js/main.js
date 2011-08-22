@@ -712,26 +712,30 @@ function redoAction () {
 };
 
 $(document).bind("keypress", function( event ) {
-
     if ( event.ctrlKey ) {
-    if ( event.keyCode == 26 ) {
-        undoAction();
-    } else if ( event.keyCode == 25 ) {
-        redoAction();
-    }
+	if ( event.keyCode == 26 ) {
+            undoAction();
+	} else if ( event.keyCode == 25 ) {
+            redoAction();
+	}
+    } else if ( event.shiftKey ) {
+	if ( event.keyCode == 63 ){
+	    $("#help_overlay").fadeToggle("fast");
+	}
     }
 });
 
 $("#help").bind("click", function ( event ){
-    $("#help_overlay").slideDown("slow");
+    $("#help_overlay").fadeIn("fast");
 });
 
 $("#exit_help").bind("click", function ( event ) {
-    $("#help_overlay").slideUp("fast");
+    $("#help_overlay").fadeOut("fast");
 });
 
 $("#help_overlay").bind("click", function( event ) {
     if ( event.target == event.currentTarget ) {
-	$("#help_overlay").slideUp("fast");
+	$("#help_overlay").fadeOut("fast");
     }
 });
+
