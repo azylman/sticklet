@@ -21,12 +21,12 @@ body {
     color: #EEE;
     width: 800px;
     margin: auto;
-    padding: 50px;
+    padding: 30px;
     border-radius: 25px;
     background: rgba(0, 0, 0, .6);
     text-align: left;
     height: 560px;
-    top: 75px;
+    top: 40px;
 }
 
 h1 {
