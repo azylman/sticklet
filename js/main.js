@@ -1,6 +1,7 @@
 "use strict";
-if ( notes === undefined )
+if ( notes === undefined ){
     var notes = {};
+}
 var dragged = {};
 var z = 0;
 var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
@@ -42,8 +43,9 @@ if ( online ) {
 function getSize( obj ) {
     var max = 0;
     for ( var i in obj ) {
-	if ( obj.hasOwnProperty( i ) )
+	if ( obj.hasOwnProperty( i ) ){
 	    max++;
+	}
     }
     return max;
 }
@@ -68,14 +70,15 @@ function getNotes () {
 		tmp[resp[index].id] = resp[index];
             });
             for ( var d in notes ){
-		if ( notes.hasOwnProperty ( d ) ) 
+		if ( notes.hasOwnProperty ( d ) ) {
 		    $( "#" + notes[d].id ).remove();
+		}
 	    }
             notes = tmp;
             dumpNotes();
 	}
     });
-};
+}
 
 function getTrash () {
     $.ajax ({
@@ -91,11 +94,11 @@ function getTrash () {
             drawTrash();
 	}
     });
-};
+}
 
 function dumpNotes ( ){
     window.localStorage.setItem ( "notes_" + username, JSON.stringify ( notes ) );
-};
+}
 
 function closeSave ( e, obj ) {
 
@@ -113,19 +116,20 @@ function closeSave ( e, obj ) {
     act.setAfter ( notes[id] );
     act.push();
 
-    var n = { "subject" : subject, "content" : content, "id" : id }
-    if( online )
+    var n = { "subject" : subject, "content" : content, "id" : id };
+    if( online ){
 	saveNote ( n, true );
-};
+    }
+}
 
 function createNote( e ) {
 
-    if ( ! online ) return;
+    if ( ! online ){ return; }
 
     e.stopPropagation();
     e.preventDefault();
 
-    if ( e.target != e.currentTarget ) return;
+    if ( e.target != e.currentTarget ){ return; }
 
     var pos = $("#noteArea").position();
 
@@ -146,7 +150,7 @@ function createNote( e ) {
               },
               "data" : {"x" : x, "y" : y, "z" : ++z}
             });
-};
+}
 
 function deleteNote ( el ) {
 
@@ -173,7 +177,7 @@ function deleteNote ( el ) {
 	el.remove();
     });
 
-};
+}
 
 function saveNote ( note, sync, fn ) {
 
@@ -184,15 +188,16 @@ function saveNote ( note, sync, fn ) {
               "type" : "PUT",
               "data" : dict,
               "success" : function ( resp ) {
-		  if ( fn !== undefined )
+		  if ( fn !== undefined ) {
 		      fn ( resp );
+		  }
 		  dumpNotes();
               },
               "error" : function( resp ) {
 		  alert(resp);
               }
             });
-};
+}
 
 function drawTrash() {
     var el = $("#archived_content");
@@ -200,32 +205,32 @@ function drawTrash() {
     for ( var a in trash ) {
 	if ( trash.hasOwnProperty ( a ) ) {
 	    var div = $("<div />",{
-		class : "trash_item",
-		id : trash[a].id
+		"class" : "trash_item",
+		"id" : trash[a].id
 	    });
 	    var ch = $("<input />", {
-		type : "checkbox",
-		class : "trash_checkbox",
-		name : trash[a].id
+		"type" : "checkbox",
+		"class" : "trash_checkbox",
+		"name" : trash[a].id
 	    });
 	    div.append ( ch );
 	    var sp = $("<span />", {
-		class : "trash_content"
+		"class" : "trash_content"
 	    });
 	    var subj = $("<div />", {
-		class: "trash_subject"
+		"class": "trash_subject"
 	    });
 	    var snippet = $("<div />");
 	    var subject = trash[a].subject.replace(/<\/?[^>]+(>|$)/g, "");
 	    subject = subject.substr(0, 25);
-	    if (subject != "") {
+	    if (subject !== "") {
 		subj.text(subject);
 	    } else {
 		subj.html("&nbsp;");
 	    }
 	    var content = trash[a].content.replace(/<\/?[^>]+(>|$)/g, "");
 	    content = content.substr(0,35);
-	    if (content != "") {
+	    if (content !== "") {
 		snippet.text(content);
 	    } else {
 		snippet.html("&nbsp;");
@@ -252,7 +257,7 @@ function restoreTrash( cs ) {
 	idArr.push ( {"id" : cs[a].name} );
         $("#" + cs[a].name).fadeOut();
     }
-    if ( idArr.length < 1 ) return;
+    if ( idArr.length < 1 ){ return; }
     var dict = JSON.stringify(idArr);
     $.ajax({
 	"url" : "/notes/trash",
@@ -274,7 +279,7 @@ function restoreTrash( cs ) {
 	}
     });
 
-};
+}
 
 function permDelete( cs ){
 
@@ -282,13 +287,13 @@ function permDelete( cs ){
     for( var a = 0; a < cs.length; a++) {
 	idArr.push ( {"id" : cs[a].name });
     }
-    if ( idArr.length < 1 ) return;
+    if ( idArr.length < 1 ) { return; }
     var dict = JSON.stringify(idArr);
 
     var c = confirm ( "Are you sure you wish to permanently delete these notes?" );
     if ( c ) {
-	for (var a = 0; a < cs.length; a++) {
-            $("#" + cs[a].name).fadeOut();
+	for (var p = 0; p < cs.length; p++) {
+            $("#" + cs[p].name).fadeOut();
 	}
 	$.ajax({
             "url" : "/notes/trash/delete",
@@ -296,8 +301,8 @@ function permDelete( cs ){
             "data" : dict,
             "async" : true,
             "success" : function( resp ){
-		for( var a = 0; a < cs.length; a++) {
-		    delete trash[cs[a].name];
+		for( var t = 0; t < cs.length; t++) {
+		    delete trash[cs[t].name];
 		}
 		drawTrash();
             },
@@ -307,37 +312,39 @@ function permDelete( cs ){
             }
 	});
     }
-};
+}
 
 function unToggle( ) {
     $("#noteArea").unbind("click");
     $("#managemenu").slideUp( 'fast', function() {
 	$("#archived_content").css({"overflow-y" : "hidden"});
     });
-};
+}
 
 function isEditable ( l ) {
-    while ( l != null && l.nodeName != "BODY" ) {
-	if ( $(l).attr('contenteditable') == "true" )
+    while ( l !== null && l.nodeName != "BODY" ) {
+	if ( $(l).attr('contenteditable') == "true" ){
             return true;
+	}
 	l = l.parentNode;
     }
     return false;
-};
+}
 
 function startDrag ( e ) {
 
     var el = e.currentTarget;
 
-    if ( e.button != 0 || isEditable ( e.target ) ) return;
+    if ( e.button !== 0 || isEditable ( e.target ) ){ return; }
 
     e.stopPropagation();
     e.preventDefault();
 
     dragged.el = el;
 
-    if ( dragged.el.style.zIndex < z )
+    if ( dragged.el.style.zIndex < z ){
 	dragged.el.style.zIndex = ++z;
+    }
 
     dragged.x = e.clientX + window.scrollX;
     dragged.y = e.clientY + window.scrollY;
@@ -346,7 +353,7 @@ function startDrag ( e ) {
 
     document.addEventListener( "mousemove", dragging, true );
     document.addEventListener( "mouseup", stopDrag, true );
-};
+}
 
 function dragging ( e ) {
 
@@ -359,7 +366,7 @@ function dragging ( e ) {
     dragged.el.style.left = (dragged.sx + x - dragged.x) + "px";
     dragged.el.style.top = (dragged.sy + y - dragged.y) + "px";
 
-};
+}
 
 function stopDrag ( e ) {
 
@@ -394,8 +401,9 @@ function stopDrag ( e ) {
 		}
 	    }
 	}
-	if (!overlap) // If we didn't find any overlap, that means that there was no visual change - stop everything
+	if (!overlap) {// If we didn't find any overlap, that means that there was no visual change - stop everything
             return;
+	}
     }
 
     note.x = newX;
@@ -405,15 +413,16 @@ function stopDrag ( e ) {
     act.setAfter ( note );
     act.push ( );
 
-    var n = { "x" : note.x, "z" : note.z, "y" : note.y, "id" : note.id };
+    var no = { "x" : note.x, "z" : note.z, "y" : note.y, "id" : note.id };
 
-    if ( online )
-	saveNote ( n, true );
+    if ( online ){
+	saveNote ( no, true );
+    }
 
-};
+}
 
 function compare ( note, note2 ) {
-    if ( note2 == null ) return false;
+    if ( note2 === null ){ return false; }
     var nA = (note2 === undefined ) ? notes[note.id] : note2;
     if ( !!nA ) {
 	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
@@ -422,16 +431,15 @@ function compare ( note, note2 ) {
 	}
     }
     return false;
-};
+}
 
 function writeNote ( note, fade ) {
 
-    if ( compare ( note ) )
-	return;
+    if ( compare ( note ) ){ return; }
 
     var elm = $('<div />',  {
-        class : "note",
-        id : note.id
+        "class" : "note",
+        "id" : note.id
     });
 
     elm.css({
@@ -446,7 +454,7 @@ function writeNote ( note, fade ) {
     });
 
     var h = $('<div />', {
-        class : "noteHeader"
+        "class" : "noteHeader"
     });
     var s = $('<div />');
     s.bind("blur", function(event) {
@@ -461,11 +469,11 @@ function writeNote ( note, fade ) {
 	}
     });
     s.bind( "dblclick", function ( event ) {
-	if ( ! online ) return;
+	if ( ! online ){ return; }
 	s.attr({"contenteditable" : true});
 	s.focus();
 	$(document).bind ( "click", function( event ) {
-            if ( isEditable ( event.target ) ) return;
+            if ( isEditable ( event.target ) ){ return; }
             event.stopPropagation();
             //s.attr({"contenteditable" : false});
 	    s.blur();
@@ -475,7 +483,7 @@ function writeNote ( note, fade ) {
     });
     s.html(note.subject);
     var o = $('<div />', {
-        class : "options"
+        "class" : "options"
     });
     o.bind( "click", function(event) {
 	unToggle();
@@ -495,7 +503,7 @@ function writeNote ( note, fade ) {
     elm.append( h );
     elm.append( $("<hr/>" ) );
     var c = $('<div />', {
-        class : 'noteContent'
+        "class" : 'noteContent'
     });
     var b = $('<blockquote />');
     b.bind ( "blur", function( event ) {
@@ -503,11 +511,11 @@ function writeNote ( note, fade ) {
         b.attr({"contenteditable" : false});
     });
     b.bind ( "dblclick", function( event ) {
-	if ( ! online ) return;
+	if ( ! online ){ return; }
 	b.attr({"contenteditable" : true});
 	b.focus();
 	$(document).bind ( "click", function( event ) {
-            if ( isEditable ( event.target ) ) return;
+            if ( isEditable ( event.target ) ){ return; }
             event.stopPropagation();
             b.attr({"contenteditable" : false});
             $(document).unbind( "click" );
@@ -518,21 +526,22 @@ function writeNote ( note, fade ) {
     c.append ( b );
     elm.append ( c );
     $( "#" + note.id ).remove();
-    if ( fade )
+    if ( fade ) {
 	elm.css({"display":"none"});
+    }
     $("#noteArea").append ( elm );
     if ( fade ) {
 	elm.fadeIn( 350 );
     }
     return b;
-};
+}
 
-function dropDown ( el ) {
+function dropDown ( po ) {
 
     var dr = $('<div />', {
-	class : "menu",
+	"class" : "menu"
     });
-    var el = $(el);
+    var el = $(po);
     dr.css ({
 	"left" : parseInt ( el.css("left") ) + parseInt ( el.css("width") ) + "px",
 	"top" : parseInt ( el.css("top") ) + "px"
@@ -542,16 +551,17 @@ function dropDown ( el ) {
 	   "margin-bottom" : "6px"});
     for ( var i = 0; i < colorsArr.length; i++ ){
 	var l = $("<div />", {
-            class : "colorSq"
+            "class" : "colorSq"
 	});
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
 	l.bind( "mouseover", function ( event ) {
-            if ( !! current )
+            if ( !! current ) {
 		current.remove();
+	    }
             var df = $(event.currentTarget);
             var big = $("<div />", {
-		class: "bigSq"
+		"class" : "bigSq"
             });
             current = big;
             var pos = df.position();
@@ -573,11 +583,11 @@ function dropDown ( el ) {
     dr.append( p );
 
     var link = $("<a />", {
-	class : "button enabled",
+	"class" : "button enabled"
     });
     link.css ({
         "margin-left" : "auto",
-        "margin-right" : "auto",
+        "margin-right" : "auto"
     });
     link.text ( "Archive" );
     link.bind ( "click", function ( event ) {
@@ -596,7 +606,7 @@ function dropDown ( el ) {
     });
 
     $("#noteArea").append ( dr );
-};
+}
 
 function colorNote ( el, event ) {
     var color = $(event.currentTarget).css("backgroundColor");
@@ -607,10 +617,11 @@ function colorNote ( el, event ) {
     act.setAfter ( n );
     act.push ( );
     var note = { "id" : n.id, "color" : color };
-    if ( online )
+    if ( online ) {
 	saveNote ( note, true );
+    }
     el.css({"backgroundColor" : color});
-};
+}
 
 function Action (){
 
@@ -632,54 +643,59 @@ function Action (){
 	}
     }
 
-};
+}
 
 function undoAction () {
 
-    if ( undoStack.length == 0 ) return;
+    if ( undoStack.length === 0 ){ return; }
 
     var act = undoStack.pop();
 
-    if ( undoStack.length == 0) {
+    if ( undoStack.length === 0) {
 	$("#undo").removeClass("enabled").addClass("disabled");
     }
 
     writeNote ( act.b, false );
     notes[act.b.id] = act.b;
     dumpNotes();
-    saveNote ( act.b, true );
+    if ( online ) {
+	saveNote ( act.b, true );
+    }
 
     redoStack.push ( act );
 
     drawTrash();
     $("#redo").removeClass("disabled").addClass("enabled");
-};
+}
 
 function redoAction () {
 
-    if ( redoStack.length == 0 ) return;
+    if ( redoStack.length === 0 ) { return; }
 
     var act = redoStack.pop();
 
-    if ( redoStack.length == 0) {
+    if ( redoStack.length === 0) {
 	$("#redo").removeClass("enabled").addClass("disabled");
     }
 
     writeNote ( act.a, false );
     notes[act.a.id] = act.a;
     dumpNotes();
-    saveNote ( act.a, true )
+    if ( online ) {
+	saveNote ( act.a, true );
+    }
 
     undoStack.push ( act );
 
     $("#undo").removeClass("disabled").addClass("enabled");
-};
+}
 
 $(document).ready( function () {
 
     $('#noteArea').bind('dblclick', function(event) {
-	if ( online )
+	if ( online ) {
 	    createNote(event)
+	}
     });
 
     $("#check_all").bind ( "click", function (event){
@@ -735,8 +751,9 @@ $(document).ready( function () {
 	    }
 	} else if ( event.shiftKey ) {
 	    if ( event.keyCode == 191 ){
-		if ( ! isEditable( event.target ) ) 
+		if ( ! isEditable( event.target ) ) {
 		    $("#help_overlay").fadeToggle("fast");
+		}
 	    } 
 	} else if ( event.keyCode == 27 ) {
 	    $("#help_overlay").fadeOut("fast");

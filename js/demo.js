@@ -10,8 +10,6 @@ var pos = log.position();
 var x = pos.left + log.width() + 340;
 var y = pos.top + 33;
 
-console.log ( pos.left );
-
 var note = { "id" : "demo_note", "x" : 700, "y" : 395, "z" : 100,
          "subject" : "Double-click to edit", "content" : "Double-click to edit" };
 var online = false;
