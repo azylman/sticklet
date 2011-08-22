@@ -8,18 +8,21 @@ html {
 }
 
 body {
-    background: url('/images/rodin.png');
-    min-height:1000px;
-    /*background-image: url('/images/rodin.png');*/
-    background-repeat: no-repeat;
-    padding-top: 75px;
+    position:absolute;
+    top:0px;
+    left:0px;
+    background: url('/images/rodin.png') no-repeat center center fixed;
+    min-height:100%;
+    height:auto;
+    width:100%;
 }
 
 #page {
+    position:relative;
     color: #EEE;
     width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
+    margin-top:75px;
     padding: 50px;
     border-radius: 25px;
     background: rgba(0, 0, 0, .6);
@@ -57,13 +60,6 @@ a.large {
 p {
     margin-top: 10px;
     margin-bottom: 10px;
-}
-
-#noteArea {
-    color: #333;
-    float: right;
-    width: 500px;
-    top: 30px;
 }
 
 #login {
