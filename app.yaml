@@ -34,5 +34,8 @@ handlers:
   upload: manifest
   expiration: "0s"
 
+- url: /favicon.ico
+  static_files: /images/favicon.ico
+
 - url: /.*
   script: main.py
