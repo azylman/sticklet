@@ -29,6 +29,10 @@ if ( window.screen.width < 400 || window.screen.height < 400 ) {
 	"type" : "text/javascript"
     });
     $("body").append( script );
+    $("body").width(450);
+    $("html").width(450);
+    $("#menus").width(450);
+
 }
 
 if ( window.localStorage.getItem( "notes_" + username ) ){

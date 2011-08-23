@@ -86,7 +86,9 @@ function writeMobile ( note, over ) {
     elm.css({
         'backgroundColor' : note.color,
 	"margin" : "auto",
-	"color" : "black"
+	"color" : "black",
+	"top" : 45,
+	"left" : 10
     });
 
     var h = $('<div />', {
