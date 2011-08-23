@@ -35,7 +35,8 @@ handlers:
   expiration: "0s"
 
 - url: /favicon.ico
-  static_files: /images/favicon.ico
+  static_files: favicon.ico
+  upload: favicon.ico
 
 - url: /.*
   script: main.py
