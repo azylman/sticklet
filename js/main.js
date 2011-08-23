@@ -23,6 +23,14 @@ try {
     online = false;
 }
 
+if ( window.screen.width < 400 || window.screen.height < 400 ) {
+    var script = $("<script />", {
+	"src" : "/js/mobile.js",
+	"type" : "text/javascript"
+    });
+    $("body").append( script );
+}
+
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
@@ -60,7 +68,7 @@ function getNotes () {
 		z = ( resp[index].z > z ) ? resp[index].z : z;
 		var new_Z = resp[index].z;
 		if ( !!notes[resp[index].id] ){
-		    notes[resp[index].id].z = new_Z;
+		    [resp[index].id].z = new_Z;
 		    $("#" + resp[index].id).css('z-index', new_Z);
 		}
 		writeNote ( resp[index], false );
@@ -483,11 +491,6 @@ function writeNote ( note, fade ) {
     var o = $('<div />', {
         "class" : "options"
     });
-    // var opts = $("<a />", {
-    // 	"class" : "button enabled context"
-    // });
-    // opts.text("^");
-    // o.append ( opts );
     o.bind( "click", function(event) {
 	unToggle();
 	event.preventDefault();

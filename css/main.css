@@ -273,7 +273,7 @@ a.right {
     right:0px;
 }
 
-#help_overlay {
+.overlay {
     display:none;
     position:fixed;
     top:0px;
