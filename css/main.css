@@ -289,7 +289,7 @@ a.right {
     position:relative;
     color:black;
     width:60%;
-    height:400px;
+    height:50%;
     background-color:white;
     margin:auto;
     margin-top:75px;
@@ -308,7 +308,9 @@ a.right {
 }
 
 #help_text {
+    overflow-y: auto;
     width:80%;
+    height:100%;
     margin:auto;
 }
 
@@ -327,4 +329,8 @@ a.right {
 
 #help_text table {
     margin-top: -5px;
+}
+
+#help_text ul {
+    padding-left:25px;
 }
