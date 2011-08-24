@@ -1,3 +1,9 @@
+/*
+*   COPYRIGHT 2011 Vincent Dumas
+*   COPYRIGHT 2011 Alex Zylman
+*
+*/
+
 for ( var a in window.localStorage ) {
     if ( /^notes_.*/.test ( a ) ) {
 	window.localStorage.removeItem ( a );

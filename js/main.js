@@ -1,3 +1,8 @@
+/*
+*   COPYRIGHT 2011 Vincent Dumas
+*   COPYRIGHT 2011 Alex Zylman
+*
+*/
 "use strict";
 var notes = {};
 var dragged = {};
@@ -42,7 +47,6 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     $("#logout").addClass("right");
     $("#undo").addClass("left right");
     $("#redo").addClass("right");
-    //$("#redo").css("margin-right", "0px");
     $("#toolbar").css("width", "350px");
     $("#righties").css({
 	"position" : "static",

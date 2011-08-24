@@ -1,9 +1,10 @@
-"use strict";
+/*
+*   COPYRIGHT 2011 Vincent Dumas
+*   COPYRIGHT 2011 Alex Zylman
+*
+*/
 
-//$("#help_menu").remove();
-//$("#help").remove();
-//$("#undo").remove();
-//$("#redo").remove();
+"use strict";
 
 function startDrag( event, note ){
 
