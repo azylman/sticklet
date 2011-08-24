@@ -235,6 +235,7 @@ function saveNote ( note, sync, fn ) {
 }
 
 function drawTrash() {
+    $("#check_all").removeAttr("checked");
     var el = $("#archived_content");
     el.html("");
     for ( var a in trash ) {
