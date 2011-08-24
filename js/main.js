@@ -37,6 +37,27 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     });
     $("head").append ( view );
     $("body").append( script );
+    $("#manage").addClass("left");
+    $("#help").addClass("left right");
+    $("#logout").addClass("right");
+    $("#undo").addClass("left right");
+    $("#redo").addClass("right left");
+    $("#righties").css({
+	"position" : "static",
+	"top" : "",
+	"left" : "",
+	"display" : "inline-block",
+	"margin-top" : "5px"
+    });
+    $("#lefties").css({
+	"position" : "static",
+	"top" : "",
+	"left" : "",
+	"display" : "inline-block",
+	"margin-top" : "5px"
+    });
+    //$("#help").remove();
+    //$("#help_menu").remove();
     //$("body").width(450);
     //$("html").width(450);
     //$("#menus").width(450);

@@ -1,7 +1,7 @@
 "use strict";
 
-$("#help_menu").remove();
-$("#help").remove();
+//$("#help_menu").remove();
+//$("#help").remove();
 //$("#undo").remove();
 //$("#redo").remove();
 
@@ -150,7 +150,7 @@ function writeMobile ( note, over ) {
             return;
 	}
     });
-    s.bind( "dblclick", function ( event ) {
+    s.bind( "click", function ( event ) {
 	event.preventDefault();
 	if ( ! online ){ return; }
 	s.attr({"contenteditable" : true});
@@ -158,10 +158,8 @@ function writeMobile ( note, over ) {
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
             event.stopPropagation();
-            //s.attr({"contenteditable" : false});
 	    s.blur();
             $(document).unbind( "click" );
-            //closeSave( event, s );
 	});
     });
     s.html(note.subject);
@@ -176,16 +174,9 @@ function writeMobile ( note, over ) {
 	dropDown( elm );
     });
     elm.append( o );
-    elm.bind( "mouseover", function( event ) {
-	o.css({"display":"inline"});
-	elm.bind( "mouseout", function ( event ) {
-            o.css({"display":"none"});
-            elm.unbind( "mouseout" );
-	});
-    });
+    o.css({"display":"inline"});
 
     h.append( s );
-
     elm.append( h );
 
     elm.append( $("<hr/>" ) );
@@ -197,7 +188,7 @@ function writeMobile ( note, over ) {
         closeSave(event, b);
         b.attr({"contenteditable" : false});
     });
-    b.bind ( "dblclick", function( event ) {
+    b.bind ( "click", function( event ) {
 	if ( ! online ){ return; }
 	b.attr({"contenteditable" : true});
 	b.focus();
@@ -215,7 +206,6 @@ function writeMobile ( note, over ) {
     elm.append ( c );
 
     elm.css({"display":"none"});
-
     over.append ( elm );
     elm.fadeIn( 350 );
 
