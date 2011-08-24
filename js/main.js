@@ -23,7 +23,10 @@ try {
     online = false;
 }
 
-if ( window.screen.width < 400 || window.screen.height < 400 ) {
+var userAgent = window.navigator.userAgent.toLowerCase();
+if ( userAgent.search ( "iphone" ) > -1 || 
+     userAgent.search( "android") >  -1 ||
+     userAgent.search ( "linux" ) > -1 ) {
     var script = $("<script />", {
 	"src" : "/js/mobile.js",
 	"type" : "text/javascript"
@@ -32,7 +35,7 @@ if ( window.screen.width < 400 || window.screen.height < 400 ) {
     $("body").width(450);
     $("html").width(450);
     $("#menus").width(450);
-
+    $("#noteArea").unbind("dblclick");
 }
 
 if ( window.localStorage.getItem( "notes_" + username ) ){
@@ -72,7 +75,7 @@ function getNotes () {
 		z = ( resp[index].z > z ) ? resp[index].z : z;
 		var new_Z = resp[index].z;
 		if ( !!notes[resp[index].id] ){
-		    [resp[index].id].z = new_Z;
+		    notes[resp[index].id].z = new_Z;
 		    $("#" + resp[index].id).css('z-index', new_Z);
 		}
 		writeNote ( resp[index], false );

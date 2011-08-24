@@ -1,6 +1,6 @@
 "use strict";
-
-function startDrag( event ){
+$("#help_menu").remove();
+function startDrag( event, note ){
 
     var over = $("<div />", {
 	"class" : "overlay"
@@ -9,22 +9,55 @@ function startDrag( event ){
     over.fadeIn( "fast" );
     over.bind( "click", function ( event ) {
 	if ( event.currentTarget == event.target ) {
-	    over.fadeOut( "fast" );
+	    if ( !! notes[note.id] ) {
+		writeNote ( note );
+	    } else {
+		$("#tmp_" + note.id).remove();
+	    }
+	    over.fadeOut( "fast", function(){
+		over.remove();
+	    });
 	}
     });
 
-    writeMobile ( notes[event.currentTarget.id], over );
+    writeMobile ( note, over );
 
+}
+
+function getNotes(){
+    $.ajax ({
+	"url" : "/notes",
+	"async" : true,
+	"type" : "GET",
+	"dataType" : "json",
+	"success" : function( resp ) {
+            var tmp = {};
+            $.each(resp, function(index) {
+		writeNote ( resp[index], false );
+		delete notes[resp[index].id];
+		tmp[resp[index].id] = resp[index];
+            });
+            for ( var d in notes ){
+		if ( notes.hasOwnProperty ( d ) ) {
+		    $( "#" + notes[d].id ).remove();
+		}
+	    }
+            notes = tmp;
+            dumpNotes();
+	}
+    });
 }
 
 function compare ( note ) {
 
-    var el = $( "#" + note.id );
-    var pos =  el.position();
-    if ( pos === null ) { return false; }
+    var n = notes[note.id];
+    if ( n === undefined || n === null ) { return false; }
+    var pos = { "left" : n.x, "top" : n.y };
     if ( pos.left === 0 ) {
 	if ( (pos.top-45) % 35 === 0 ) {
-	    el.css({"zIndex" : mobZ++})
+	    note.x = n.x;
+	    note.y = n.y;
+	    note.z = n.z;
 	    return true;
 	}
     }
@@ -35,26 +68,31 @@ function compare ( note ) {
 var offset = 45;
 var mobZ = 0;
 
-function writeNote ( note, fade ) {
+function writeNote ( note ) {
 
-    if ( compare ( note ) ){ return; }
+    if ( ! compare ( note ) ){ 
+	note.x = 0;
+	note.y = offset;
+	note.z = mobZ++;
+    }
 
     var elm = $('<div />',  {
         "class" : "note",
-        "id" : note.id
+	"id" : "tmp_" + note.id
     });
 
     elm.css({
-        'left' : 0,
-        'top' : offset,
-	"zIndex" : mobZ++,
+        'left' : note.x,
+        'top' : note.y,
+	"zIndex" : note.z,
         'backgroundColor' : note.color
     });
 
     offset += 35;
 
     elm.bind('click', function(event) {
-        startDrag( event );
+	event.preventDefault();
+        startDrag( event, note );
     });
 
     var h = $('<div />', {
@@ -72,7 +110,7 @@ function writeNote ( note, fade ) {
     b.html(note.content);
     c.append ( b );
     elm.append ( c );
-    $( "#" + note.id ).remove();
+    $( "#tmp_" + note.id ).remove();
     $("#noteArea").append ( elm );
 }
 
@@ -80,7 +118,7 @@ function writeMobile ( note, over ) {
 
     var elm = $('<div />',  {
         "class" : "note",
-        "id" : "displayed_note"
+        "id" : note.id
     });
 
     elm.css({
@@ -108,6 +146,7 @@ function writeMobile ( note, over ) {
 	}
     });
     s.bind( "dblclick", function ( event ) {
+	event.preventDefault();
 	if ( ! online ){ return; }
 	s.attr({"contenteditable" : true});
 	s.focus();
