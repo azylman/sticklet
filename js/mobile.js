@@ -1,5 +1,10 @@
 "use strict";
+
 $("#help_menu").remove();
+$("#help").remove();
+//$("#undo").remove();
+//$("#redo").remove();
+
 function startDrag( event, note ){
 
     var over = $("<div />", {
