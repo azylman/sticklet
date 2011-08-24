@@ -26,16 +26,21 @@ try {
 var userAgent = window.navigator.userAgent.toLowerCase();
 if ( userAgent.search ( "iphone" ) > -1 || 
      userAgent.search( "android") >  -1 ) {
-//     userAgent.search ( "linux" ) > -1 ) {
+     //userAgent.search ( "linux" ) > -1 ) {
     var script = $("<script />", {
 	"src" : "/js/mobile.js",
 	"type" : "text/javascript"
     });
+    var view = $("<meta>", {
+	"name" : "viewport",
+	"content" : "width=device-width,initial-scale=1,maximum-scale=1"
+    });
+    $("head").append ( view );
     $("body").append( script );
-    $("body").width(450);
-    $("html").width(450);
-    $("#menus").width(450);
-    $("#noteArea").unbind("dblclick");
+    //$("body").width(450);
+    //$("html").width(450);
+    //$("#menus").width(450);
+    //$("#noteArea").unbind("dblclick");
 }
 
 if ( window.localStorage.getItem( "notes_" + username ) ){
