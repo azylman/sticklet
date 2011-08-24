@@ -25,8 +25,8 @@ try {
 
 var userAgent = window.navigator.userAgent.toLowerCase();
 if ( userAgent.search ( "iphone" ) > -1 || 
-     userAgent.search( "android") >  -1 ) {
-     //userAgent.search ( "linux" ) > -1 ) {
+     userAgent.search( "android") >  -1 || ) {
+//     userAgent.search ( "linux" ) > -1 ) {
     var script = $("<script />", {
 	"src" : "/js/mobile.js",
 	"type" : "text/javascript"
@@ -38,30 +38,20 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     $("head").append ( view );
     $("body").append( script );
     $("#manage").addClass("left");
-    $("#help").addClass("left right");
+    $("#help").addClass("left");
     $("#logout").addClass("right");
     $("#undo").addClass("left right");
-    $("#redo").addClass("right left");
+    $("#redo").addClass("right");
     $("#righties").css({
 	"position" : "static",
-	"top" : "",
-	"left" : "",
 	"display" : "inline-block",
 	"margin-top" : "5px"
     });
     $("#lefties").css({
 	"position" : "static",
-	"top" : "",
-	"left" : "",
 	"display" : "inline-block",
 	"margin-top" : "5px"
     });
-    //$("#help").remove();
-    //$("#help_menu").remove();
-    //$("body").width(450);
-    //$("html").width(450);
-    //$("#menus").width(450);
-    //$("#noteArea").unbind("dblclick");
 }
 
 if ( window.localStorage.getItem( "notes_" + username ) ){

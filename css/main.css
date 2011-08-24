@@ -64,7 +64,7 @@ html,body {
 
 #archived_content {
     position:absolute;
-    top:70px;
+    top:59px;
     bottom:30px;
     left:0px;
     right:0px;
@@ -288,7 +288,7 @@ a.right {
 #help_menu {
     position:relative;
     color:black;
-    width:800px;
+    width:60%;
     height:400px;
     background-color:white;
     margin:auto;
@@ -308,7 +308,7 @@ a.right {
 }
 
 #help_text {
-    width:500px;
+    width:80%;
     margin:auto;
 }
 
@@ -316,15 +316,15 @@ a.right {
     text-align: right;
 }
 
-td {
+#help_text td {
     padding: 3px;
 }
 
-h3 {
+#help_text h3 {
     margin-bottom: 3px;
     margin-top: 10px;
 }
 
-table {
+#help_text table {
     margin-top: -5px;
 }
