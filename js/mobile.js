@@ -76,7 +76,7 @@ var mobZ = 0;
 function writeNote ( note ) {
 
     if ( ! compare ( note ) ){ 
-	note.x = 0;
+	note.x = 10;
 	note.y = offset;
 	note.z = mobZ++;
     }
@@ -131,7 +131,7 @@ function writeMobile ( note, over ) {
 	"margin" : "auto",
 	"color" : "black",
 	"top" : 45,
-	"left" : 10
+	"left" : 15
     });
 
     var h = $('<div />', {
