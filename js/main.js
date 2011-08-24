@@ -25,8 +25,8 @@ try {
 
 var userAgent = window.navigator.userAgent.toLowerCase();
 if ( userAgent.search ( "iphone" ) > -1 || 
-     userAgent.search( "android") >  -1 ||
-     userAgent.search ( "linux" ) > -1 ) {
+     userAgent.search( "android") >  -1 ) {
+//     userAgent.search ( "linux" ) > -1 ) {
     var script = $("<script />", {
 	"src" : "/js/mobile.js",
 	"type" : "text/javascript"
