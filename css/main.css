@@ -311,3 +311,20 @@ a.right {
     width:500px;
     margin:auto;
 }
+
+.right-justify {
+    text-align: right;
+}
+
+td {
+    padding: 3px;
+}
+
+h3 {
+    margin-bottom: 3px;
+    margin-top: 10px;
+}
+
+table {
+    margin-top: -5px;
+}
