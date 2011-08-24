@@ -58,7 +58,7 @@ function compare ( note ) {
     var n = notes[note.id];
     if ( n === undefined || n === null ) { return false; }
     var pos = { "left" : n.x, "top" : n.y };
-    if ( pos.left === 0 ) {
+    if ( pos.left === 10 ) {
 	if ( (pos.top-45) % 35 === 0 ) {
 	    note.x = n.x;
 	    note.y = n.y;
