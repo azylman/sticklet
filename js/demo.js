@@ -37,11 +37,11 @@ $(document).ready(function(){
             if ( isEditable ( s.get() ) ) return
             s.attr({"contenteditable" : false});
             $(document).unbind("click");
+	    s.blur();
 	});
     });
     s.bind("blur", function( event ) {
 	s.attr({"contenteditable" : false});
-	s.focus();
     });
 
     c.bind("dblclick", function ( event ) {
@@ -50,11 +50,12 @@ $(document).ready(function(){
 	$(document).bind("click", function ( event ) {
             if ( isEditable ( c.get() ) ) return
             c.attr({"contenteditable" : false});
+	    c.blur();
             $(document).unbind("click");
 	});
     });
     c.bind("blur", function( event ) {
 	c.attr({"contenteditable" : false});
     });
-
+    $("#noteArea").unbind("dblclick");
 });
