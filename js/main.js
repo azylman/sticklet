@@ -25,8 +25,8 @@ try {
 
 var userAgent = window.navigator.userAgent.toLowerCase();
 if ( userAgent.search ( "iphone" ) > -1 || 
-     userAgent.search( "android") >  -1 || //) {
-     userAgent.search ( "linux" ) > -1 ) {
+     userAgent.search( "android") >  -1  ) {
+//     userAgent.search ( "linux" ) > -1 ) {
     var script = $("<script />", {
 	"src" : "/js/mobile.js",
 	"type" : "text/javascript"
@@ -42,7 +42,8 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     $("#logout").addClass("right");
     $("#undo").addClass("left right");
     $("#redo").addClass("right");
-    $("#redo").css("margin-right", "0px");
+    //$("#redo").css("margin-right", "0px");
+    $("#toolbar").css("width", "350px");
     $("#righties").css({
 	"position" : "static",
 	"display" : "inline-block",

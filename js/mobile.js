@@ -58,7 +58,7 @@ function compare ( note ) {
     var n = notes[note.id];
     if ( n === undefined || n === null ) { return false; }
     var pos = { "left" : n.x, "top" : n.y };
-    if ( pos.left === 10 ) {
+    if ( pos.left === offleft ) {
 	if ( (pos.top-45) % 35 === 0 ) {
 	    note.x = n.x;
 	    note.y = n.y;
@@ -72,11 +72,12 @@ function compare ( note ) {
 
 var offset = 45;
 var mobZ = 0;
+var offleft = 37;
 
 function writeNote ( note ) {
 
     if ( ! compare ( note ) ){ 
-	note.x = 10;
+	note.x = offleft;
 	note.y = offset;
 	note.z = mobZ++;
     }
@@ -131,7 +132,7 @@ function writeMobile ( note, over ) {
 	"margin" : "auto",
 	"color" : "black",
 	"top" : 45,
-	"left" : 15
+	"left" : offleft + 5
     });
 
     var h = $('<div />', {
@@ -211,3 +212,5 @@ function writeMobile ( note, over ) {
 
 }
 
+function saveNote(){}
+function deleteNote(){}
