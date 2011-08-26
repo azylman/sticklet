@@ -22,7 +22,8 @@ class MainPage(webapp.RequestHandler):
             template_values = {
                 'url': url,
                 'url_linktext': url_linktext,
-                'user' : user.nickname()
+                'user' : user.nickname(),
+                'login' : users.create_login_url('/')
             }
 
             path = os.path.join(os.path.dirname(__file__), 'index.html')

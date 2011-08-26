@@ -1,13 +1,14 @@
 CACHE MANIFEST
-# version: 1.4
+# version: 1.5
 
 CACHE:
 /
 /css/main.css
 /js/main.js
+/js/mobile.js
 /js/jquery.js
 /js/jquery.overlaps.min.js
-/images/context_hover.png
+/images/context.png
 
 NETWORK:
 *
