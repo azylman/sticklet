@@ -764,11 +764,11 @@ function redoAction () {
 }
 
 function searchNotes ( ) {
-    var str = $("#searchbox").val();
+    var str = $("#searchbox").val().toLowerCase();
     for ( var n in notes ) {
 	if ( notes.hasOwnProperty( n ) ) {
 	    var note = $("#" + notes[n].id);
-	    var text = note.text();
+	    var text = note.text().toLowerCase();
 	    if ( text.search ( str ) != -1 ) {
 		note.removeClass("unfound")
 		note.addClass("found");
@@ -781,6 +781,7 @@ function searchNotes ( ) {
     $(document).bind("click", function ( event ) {
 	$(".found").removeClass("found");
 	$(".unfound").removeClass("unfound");
+	$(document).unbind("click");
     });
 }
 
