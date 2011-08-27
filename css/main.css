@@ -149,11 +149,13 @@ html,body {
 }
 
 .found {
-    border: 2px solid red;
+    border: 2px solid red !important;
+    z-index: 1025 !important;
 }
 
 .unfound {
-    opacity: .5;
+    opacity: .5 !important;
+    z-index: 1 !important;
 }
 
 .colorSq {
