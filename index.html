@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html manifest="manifest">
-<!--<html>-->
+<!--<html manifest="manifest">-->
+<html>
     <head>
       <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
       <meta name="author" content="Vincent Dumas, Alex Zylman"/>
@@ -28,6 +28,10 @@
             <a id="undo" class="button left disabled">Undo</a>
             <a id="redo" class="button right disabled">Redo</a>
           </div>
+	  <div id="searcharea">
+	    <input type="text" id="searchbox" class="left">
+	    <a id="search" class="button enabled right">Search</a>
+	  </div>
           <div id="righties">
             <a id="help" class="button enabled">Help</a>
             <a id="logout" href="{{ url }}" class="button enabled">{{ url_linktext }}</a>

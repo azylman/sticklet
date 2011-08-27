@@ -125,6 +125,37 @@ html,body {
     left: 15px;
 }
 
+#searchbox {
+    margin-top:5px;
+    color: #6e6e6e;
+    font: bold 12px Helvetica, Arial, sans-serif;
+    text-decoration: none;
+    padding: 7px 12px;
+    position: relative;
+    display: inline-block;
+    text-shadow: 0 1px 0 #fff;
+    background: #f3f3f3;
+    background: -webkit-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
+    background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
+    border: solid 2px #dcdcdc;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    width:250px;
+}
+
+#search{
+    border: solid 2px #dcdcdc;
+}
+
+.found {
+    border: 2px solid red;
+}
+
+.unfound {
+    opacity: .5;
+}
+
 .colorSq {
     height:20px;
     width:20px;
@@ -237,6 +268,8 @@ a.right {
     background-color: #FFF;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, .5);
     z-index: 1005;
+    text-align:center;
+    vertical-align:middle;
 }
 
 .trash_item .trash_checkbox {

@@ -763,6 +763,27 @@ function redoAction () {
     $("#undo").removeClass("disabled").addClass("enabled");
 }
 
+function searchNotes ( ) {
+    var str = $("#searchbox").val();
+    for ( var n in notes ) {
+	if ( notes.hasOwnProperty( n ) ) {
+	    var note = $("#" + notes[n].id);
+	    var text = note.text();
+	    if ( text.search ( str ) != -1 ) {
+		note.removeClass("unfound")
+		note.addClass("found");
+	    } else {
+		note.removeClass("found")
+		note.addClass("unfound");
+	    }
+	}
+    }
+    $(document).bind("click", function ( event ) {
+	$(".found").removeClass("found");
+	$(".unfound").removeClass("unfound");
+    });
+}
+
 $(document).ready( function () {
 
     $('#noteArea').bind('dblclick', function(event) {
@@ -833,6 +854,10 @@ $(document).ready( function () {
 	    if ( isEditable( event.target ) ) {
 		$(event.target).blur();
 	    }
+	} else if ( event.keyCode == 13 ) {
+	    if ( $("#searchbox").is(":focus") ) {
+		searchNotes();
+	    }
 	}
     });
 
@@ -848,6 +873,10 @@ $(document).ready( function () {
 	if ( event.target == event.currentTarget ) {
 	    $("#help_overlay").fadeOut("fast");
 	}
+    });
+
+    $("#search").bind("click", function ( event ) {
+	searchNotes();
     });
 
 });
