@@ -48,16 +48,6 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     $("#undo").addClass("left right");
     $("#redo").addClass("right");
     $("#toolbar").css("width", "350px");
-    $("#righties").css({
-	"position" : "static",
-	"display" : "inline-block",
-	"margin-top" : "5px"
-    });
-    $("#lefties").css({
-	"position" : "static",
-	"display" : "inline-block",
-	"margin-top" : "5px"
-    });
 }
 
 if ( window.localStorage.getItem( "notes_" + username ) ){

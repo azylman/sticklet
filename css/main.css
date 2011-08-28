@@ -14,6 +14,7 @@ html,body {
   color: #333;
   background-color: #FFFFFF;
   height:100%;
+  min-width:770px;
 }
 
 .note {
@@ -114,19 +115,18 @@ html,body {
 }
 
 #righties {
-    position: absolute;
-    top: 5px;
-    right: 15px;
+    display: inline-block;
+    float:right;
+    margin-top:5px;
 }
 
 #lefties {
-    position: absolute;
-    top: 5px;
-    left: 15px;
+    display:inline-block;
+    float:left;
+    margin-top:5px;
 }
 
 #searchbox {
-    margin-top:5px;
     color: #6e6e6e;
     font: bold 12px Helvetica, Arial, sans-serif;
     text-decoration: none;
@@ -142,6 +142,11 @@ html,body {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     width:250px;
+}
+
+#searcharea {
+    margin-top:5px;
+    display:inline-block;
 }
 
 #search{
@@ -205,7 +210,6 @@ a.button {
     border-radius: 2px;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
-    margin-right: 10px;
 }
 
 a.disabled {
@@ -266,7 +270,7 @@ a.right {
 #toolbar {
     position: absolute;
     width:100%;
-    height: 41px;
+    min-height: 41px;
     background-color: #FFF;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, .5);
     z-index: 1005;
