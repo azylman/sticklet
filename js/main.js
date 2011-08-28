@@ -853,6 +853,7 @@ $(document).ready( function () {
 	    }
 	    if ( $("#searchbox").is(":focus") ){
 		$(document).trigger("click");
+		$("#searchbox").val("").text("");
 	    }
 	} else if ( event.keyCode == 13 ) {
 	    if ( $("#searchbox").is(":focus") ) {
