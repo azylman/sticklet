@@ -524,7 +524,7 @@ function writeNote ( note, fade ) {
     var s = $('<div />');
     s.bind("blur", function(event) {
         closeSave(event, $(this));
-        $(this).attr({"contenteditable" : false});
+        $(this).attr({"contenteditable" : false}).css("cursor", "move");
     });
     s.bind( "keypress", function ( event ) {
 	if (event.keyCode == 13 ) {
@@ -574,7 +574,7 @@ function writeNote ( note, fade ) {
     var b = $('<blockquote />');
     b.bind ( "blur", function( event ) {
         closeSave(event, b);
-        b.attr({"contenteditable" : false});
+        b.attr({"contenteditable" : false}).css("cursor", "move");
     });
     b.bind ( "dblclick", function( event ) {
 	if ( ! online ){ return; }
