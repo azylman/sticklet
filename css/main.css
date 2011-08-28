@@ -137,20 +137,21 @@ html,body {
     background: #f3f3f3;
     background: -webkit-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
     background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#F5F5F5),to(#F1F1F1));
-    border: solid 2px #dcdcdc;
+    border: solid 1px #dcdcdc;
     border-radius: 2px;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     width:250px;
+    margin-right:1px;
+}
+
+#searcharea input:focus {
+    border:1px solid #999;
 }
 
 #searcharea {
     margin-top:5px;
     display:inline-block;
-}
-
-#search{
-    border: solid 2px #dcdcdc;
 }
 
 .found {
