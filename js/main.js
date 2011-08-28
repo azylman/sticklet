@@ -851,6 +851,9 @@ $(document).ready( function () {
 	    if ( isEditable( event.target ) ) {
 		$(event.target).blur();
 	    }
+	    if ( $("#searchbox").is(":focus") ){
+		$(document).trigger("click");
+	    }
 	} else if ( event.keyCode == 13 ) {
 	    if ( $("#searchbox").is(":focus") ) {
 		searchNotes();
