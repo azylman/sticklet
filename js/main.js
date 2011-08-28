@@ -662,7 +662,7 @@ function dropDown ( po ) {
 
     $("#noteArea").bind ( "click", function ( event ) {
 	$("#noteArea").unbind ( "click" );
-	dr.remove();
+	$(".menu").remove();
     });
     dr.bind ( "click", function ( event ) {
 	event.preventDefault();
