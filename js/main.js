@@ -766,7 +766,7 @@ function redoAction () {
 
 function searchNotes ( ) {
     var str = $("#searchbox").val().toLowerCase();
-    if ( str !== "" ) {
+    if ( str === "" ) {
  	$(".found").removeClass("found");
 	$(".unfound").removeClass("unfound");
 	return; 
