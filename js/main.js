@@ -766,7 +766,11 @@ function redoAction () {
 
 function searchNotes ( ) {
     var str = $("#searchbox").val().toLowerCase();
-    if ( str === "" ) { return; }
+    if ( str !== "" ) {
+ 	$(".found").removeClass("found");
+	$(".unfound").removeClass("unfound");
+	return; 
+    }
     for ( var n in notes ) {
 	if ( notes.hasOwnProperty( n ) ) {
 	    var note = $("#" + notes[n].id);
