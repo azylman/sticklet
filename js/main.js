@@ -39,6 +39,7 @@ if ( userAgent.search ( "iphone" ) > -1 ||
 	"name" : "viewport",
 	"content" : "width=device-width,initial-scale=1,maximum-scale=1"
     });
+    $("#searcharea").remove();
     $("head").append ( view );
     $("body").append( script );
     $("#manage").addClass("left");
@@ -765,6 +766,7 @@ function redoAction () {
 
 function searchNotes ( ) {
     var str = $("#searchbox").val().toLowerCase();
+    if ( str === "" ) { return; }
     for ( var n in notes ) {
 	if ( notes.hasOwnProperty( n ) ) {
 	    var note = $("#" + notes[n].id);
@@ -870,13 +872,14 @@ $(document).ready( function () {
 	$("#help_overlay").fadeOut("fast");
     });
 
-    $("#help_overlay").bind("click", function( event ) {
+    $("#help_overlay").bind( "click", function( event ) {
 	if ( event.target == event.currentTarget ) {
 	    $("#help_overlay").fadeOut("fast");
 	}
     });
 
-    $("#search").bind("click", function ( event ) {
+    $("#search").bind( "click", function ( event ) {
+	event.stopPropagation();
 	searchNotes();
     });
 
