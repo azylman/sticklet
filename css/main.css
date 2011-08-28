@@ -29,7 +29,7 @@ html,body {
 }
 
 .noteHeader div {
-    cursor:text;
+    cursor: move;
     max-width: 210px;
     text-align:center;
     margin: 0px;
@@ -41,7 +41,7 @@ html,body {
 }
 
 .noteContent blockquote {
-    cursor: text;
+    cursor: move;
     padding: 5px;
     min-height: 170px;
 }

@@ -183,11 +183,10 @@ function createNote( e ) {
               "url" : "/notes",
               "success" : function( resp ){
 		  var note = JSON.parse ( resp );
-		  var con = writeNote ( note, true );
+		  writeNote ( note, true );
 		  notes[note.id] = note;
 		  dumpNotes();
-		  con.attr({"contenteditable" : true});
-		  con.focus();
+		  $("#" + note.id).find("blockquote").trigger("dblclick");
               },
 	      "error" : function ( resp ) {
 		  if( resp.status == 401 ) {
@@ -537,6 +536,7 @@ function writeNote ( note, fade ) {
     s.bind( "dblclick", function ( event ) {
 	if ( ! online ){ return; }
 	s.attr({"contenteditable" : true});
+	s.css("cursor", "text");
 	s.focus();
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
@@ -579,6 +579,7 @@ function writeNote ( note, fade ) {
     b.bind ( "dblclick", function( event ) {
 	if ( ! online ){ return; }
 	b.attr({"contenteditable" : true});
+	b.css("cursor", "text");
 	b.focus();
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
@@ -599,7 +600,6 @@ function writeNote ( note, fade ) {
     if ( fade ) {
 	elm.fadeIn( 350 );
     }
-    return b;
 }
 
 function dropDown ( po ) {
