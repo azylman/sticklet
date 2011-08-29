@@ -52,11 +52,6 @@ try {
     var online = false;
 }
 
-if ( !!window.localStorage.getItem("notes_demo") ) {
-    online = false;
-}
-
-
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
