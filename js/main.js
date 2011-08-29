@@ -448,6 +448,13 @@ function dragging ( e ) {
 
     el.css("left", (dragged.sx + x - dragged.x) + "px");
     el.css("top", (dragged.sy + y - dragged.y) + "px");
+
+    if ( $(e.target).parents("#managemenu").length > 0) {
+	el.addClass ( "unfound" ).addClass( "found" );
+	$("#managemenu").css("cursor","crosshair");
+    } else { 
+	el.removeClass ( "unfound" ).removeClass( "found" );
+    }
     
 }
 
@@ -487,6 +494,13 @@ function stopDrag ( e ) {
 	if (!overlap) {
             return;
 	}
+    }
+
+    $("#managemenu").css("cursor", "auto");
+
+    if ( $(e.target).parents("#managemenu").length > 0) {
+	deleteNote( $("#" + note.id ) );
+	return;
     }
 
     note.x = newX;
@@ -560,10 +574,8 @@ function writeNote ( note, fade ) {
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
             event.stopPropagation();
-            //s.attr({"contenteditable" : false});
 	    s.blur();
             $(document).unbind( "click" );
-            //closeSave( event, s );
 	});
     });
     s.html(note.subject);
@@ -676,7 +688,7 @@ function dropDown ( po ) {
     });
     link.text ( "Archive" );
     link.bind ( "click", function ( event ) {
-	deleteNote ( el, dr );
+	deleteNote ( el );
 	dr.remove();
     });
     dr.append ( link );
@@ -787,17 +799,14 @@ function searchNotes ( ) {
 	    var note = $("#" + notes[n].id);
 	    var text = note.text().toLowerCase();
 	    if ( text.search ( str ) != -1 ) {
-		note.removeClass("unfound")
-		note.addClass("found");
+		note.removeClass("unfound").addClass("found");
 	    } else {
-		note.removeClass("found")
-		note.addClass("unfound");
+		note.removeClass("found").addClass("unfound");
 	    }
 	}
     }
     $(document).bind("click", function ( event ) {
-	$(".found").removeClass("found");
-	$(".unfound").removeClass("unfound");
+	$(".found").removeClass("found").removeClass("unfound");
 	$(document).unbind("click");
     });
 }
@@ -841,6 +850,10 @@ $(document).ready( function () {
 	    var el = $("#archived_content");
 	    l.slideDown( "slow", function(){
 		$("#archived_content").css({"overflow-y" : "auto"});
+	    });
+	    $("#noteArea").bind("click", function ( event ) {
+		unToggle();
+		$("#noteArea").unbind("click");
 	    });
 	} else {
 	    unToggle ( );
