@@ -821,7 +821,8 @@ function searchNotes ( ) {
 	$("#manage").click();
     }
     $(document).bind("click", function ( event ) {
-	$(".found").removeClass("found").removeClass("unfound");
+	$(".found").removeClass("found");
+	$(".unfound").removeClass("unfound");
 	$(document).unbind("click");
     });
 }
