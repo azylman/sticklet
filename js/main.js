@@ -229,20 +229,21 @@ function drawTrash() {
 		"class" : "trash_item",
 		"id" : trash[a].id
 	    });
-	    var area = $("#noteArea");
-	    area.css("cursor","crosshair");
 	    div.bind("mousedown", function ( event ) {
 		if ( $(event.target).is("input") ) { return; }
 		event.preventDefault();
+		var div = $(event.currentTarget);
+		var area = $("#noteArea");
+		area.css("cursor", "crosshair");
  		area.bind( "mouseup", function ( event ) {
 		    var note = trash[div.attr("id")];
 		    note.x = event.clientX + window.scrollX;
 		    note.y = event.clientY + window.scrollY;
 		    note.z = z++;
+		    area.css("cursor", "auto");
 		    saveNote( {"id" : note.id, "x" : note.x, "y" : note.y, "z" : note.z}, true );
 		    restoreTrash( div.find(".trash_checkbox") );
 		    area.unbind("mouseup");
-		    area.css("cursor","auto");
 		});
 	    });
 
@@ -769,7 +770,8 @@ function searchNotes ( ) {
     var found = false;
     for ( var s in trash ) {
 	if ( trash.hasOwnProperty( s ) ) {
-	    var txt = trash[s].subject + " " + trash[s].content;
+	    var txt = trash[s].subject.toLowerCase() + " " + trash[s].content.toLowerCase();
+	    txt = txt.replace( /<\/?[^>]+(>|$)/g, "" );
 	    if ( txt.search( str ) != -1 ) {
 		found = true;
 		$("#" + trash[s].id ).addClass( "found" );
@@ -779,7 +781,16 @@ function searchNotes ( ) {
 	}
     }
     if ( found ) {
-	$("#manage").click();
+	var l = $("#managemenu");
+	if ( l.is(":hidden") ) {
+		l.slideDown( "slow", function(){
+		$("#archived_content").css({"overflow-y" : "auto"});
+	    });
+	    $("#noteArea").bind("click", function ( event ) {
+		unToggle();
+		$("#noteArea").unbind("click");
+	    });
+	}
     } else {
 	unToggle ();
     }
@@ -831,7 +842,6 @@ $(document).ready( function () {
 	event.preventDefault();
 	var l = $("#managemenu");
 	if ( l.is(":hidden") ){
-	    var el = $("#archived_content");
 	    l.slideDown( "slow", function(){
 		$("#archived_content").css({"overflow-y" : "auto"});
 	    });
