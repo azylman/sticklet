@@ -351,6 +351,7 @@ function restoreTrash( cs ) {
 		//window.location = loginURL;
 		window.location = $("#logout").attr("href");
 	    } else {
+		console.log ( resp );
 		alert( "Failed to connect with server, if problem persists, contact the webmasters.");
 	    }
 	}
