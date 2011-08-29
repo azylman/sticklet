@@ -426,8 +426,8 @@ function startDrag ( e ) {
 
     dragged.x = e.clientX + window.scrollX;
     dragged.y = e.clientY + window.scrollY;
-    dragged.sx = parseInt( el.style.left );
-    dragged.sy = parseInt( el.style.top );
+    dragged.sx = parseInt( el.style.left, 10 );
+    dragged.sy = parseInt( el.style.top, 10 );
 
     document.addEventListener( "mousemove", dragging, true );
     document.addEventListener( "mouseup", stopDrag, true );
@@ -469,9 +469,9 @@ function stopDrag ( e ) {
         alert ( "Note not found in array. You, sir, have a bug." );
     }
 
-    var newX = parseInt( dragged.el.style.left );
-    var newY = parseInt( dragged.el.style.top );
-    var newZ = parseInt( dragged.el.style.zIndex );
+    var newX = parseInt( dragged.el.style.left, 10 );
+    var newY = parseInt( dragged.el.style.top, 10 );
+    var newZ = parseInt( dragged.el.style.zIndex, 10 );
 
     document.removeEventListener( "mousemove", dragging, true );
     document.removeEventListener( "mouseup", stopDrag, true );
@@ -636,9 +636,10 @@ function dropDown ( po ) {
 	"class" : "menu"
     });
     var el = $(po);
+    var pos = el.position();
     dr.css ({
-	"left" : parseInt ( el.css("left") ) + parseInt ( el.css("width") ) + "px",
-	"top" : parseInt ( el.css("top") ) + "px"
+	"left" : (pos.left + el.width()) + "px",
+	"top" : pos.top + "px"
     });
     var p = $("<div />");
     p.css({"margin-top" : "10px",
