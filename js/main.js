@@ -425,10 +425,7 @@ function stopDrag ( e ) {
     e.stopPropagation();
     e.preventDefault();
 
-    var act = new Action();
-
     var note = notes[dragged.el.id];
-    act.setBefore ( note );
 
     if ( note === undefined ) {
         alert ( "Note not found in array. You, sir, have a bug." );
@@ -464,6 +461,9 @@ function stopDrag ( e ) {
 	deleteNote( $("#" + note.id ) );
 	return;
     }
+
+    var act = new Action();
+    act.setBefore ( note );
 
     note.x = newX;
     note.y = newY;
