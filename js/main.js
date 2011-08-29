@@ -72,7 +72,8 @@ function getNotes () {
 	    if( resp.status == 401 ) {
 		window.location = $("#logout").attr("href");
 	    } else {
-		alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+		//alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+		online = false;
 	    }
 	}
     });
@@ -95,7 +96,8 @@ function getTrash () {
 	    if( resp.status == 401 ) {
 		window.location = $("#logout").attr("href");
 	    } else {
-		alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+		//alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+		online = false;
 	    }
 	}
     });
