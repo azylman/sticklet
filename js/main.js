@@ -404,13 +404,8 @@ function unToggle( ) {
 }
 
 function isEditable ( l ) {
-    while ( l !== null && l.nodeName != "BODY" ) {
-	if ( $(l).attr('contenteditable') == "true" ){
-            return true;
-	}
-	l = l.parentNode;
-    }
-    return false;
+    var el = $(l);
+    return (el.parents('[contenteditable="true"]').length > 0 || el.attr('contenteditable') == "true") ? true : false;
 }
 
 function startDrag ( e ) {
@@ -890,7 +885,7 @@ $(document).ready( function () {
 	    }
 	} else if ( event.shiftKey ) {
 	    if ( event.keyCode == 191 ){
-		if ( ! isEditable( event.target ) ) {
+		if ( ! isEditable( event.target ) && event.target.id != "searchbox" ) {
 		    $("#help_overlay").fadeToggle("fast");
 		}
 	    } 
