@@ -4,68 +4,67 @@
 *
 */
 "use strict";
-(function(){
-    window.notes = {};
-    window.dragged = {};
-    window.z = 0;
-    window.colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
+var notes = {};
+var dragged = {};
+var z = 0;
+var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
 			 "#FFF79A", "#FDC68A", "#d8bfd8" ];
-    window.undoStack = new Array();
-    window.redoStack = new Array();
-    window.current;
-    window.trash = {};
-    try {
-	if ( window.online === undefined ){
-	    window.online = window.navigator.onLine;
-	    window.applicationCache.onerror=function( event ){
-		event.preventDefault();
-		event.stopPropagation();
-		online = false;
-	   }
-	} else {
+var undoStack = new Array();
+var redoStack = new Array();
+var current;
+var trash = {};
+try {
+    if ( online === undefined ){
+	var online = window.navigator.onLine;
+	window.applicationCache.onerror=function( event ){
+	    event.preventDefault();
+	    event.stopPropagation();
 	    online = false;
 	}
-    }catch ( err ) {
-	window.online = false;
+    } else {
+	online = false;
     }
+}catch ( err ) {
+    var online = false;
+}
 
-    window.userAgent = window.navigator.userAgent.toLowerCase();
-    if ( userAgent.search ( "iphone" ) > -1 || 
-	 userAgent.search( "android") >  -1  ) {
-	var script = $("<script />", {
-	    "src" : "/js/mobile.js",
-	    "type" : "text/javascript"
-	});
-	var view = $("<meta>", {
-	    "name" : "viewport",
-	    "content" : "width=device-width,initial-scale=1,maximum-scale=1"
-	});
-	$("#searcharea").remove();
-	$("head").append ( view );
-	$("body").append( script );
-	$("#manage").addClass("left");
-	$("#help").addClass("left");
-	$("#logout").addClass("right");
-	$("#undo").addClass("left right");
-	$("#redo").addClass("right");
-	$("#toolbar").css("width", "350px");
-    }
+var userAgent = window.navigator.userAgent.toLowerCase();
+if ( userAgent.search ( "iphone" ) > -1 || 
+     userAgent.search( "android") >  -1  ) {
+    var script = $("<script />", {
+	"src" : "/js/mobile.js",
+	"type" : "text/javascript"
+    });
 
-    if ( window.localStorage.getItem( "notes_" + username ) ){
-	var arr = JSON.parse ( window.localStorage['notes_' + username] );
-	for ( var a in arr ) {
-	    if ( arr.hasOwnProperty( a ) ) {
-		z = ( arr[a].z > z ) ? arr[a].z : z;
-		writeNote( arr[a], false );
-		notes[arr[a].id] = arr[a];
-	    }
+    var view = $("<meta>", {
+	"name" : "viewport",
+	"content" : "width=device-width,initial-scale=1,maximum-scale=1"
+    });
+    $("#searcharea").remove();
+    $("head").append ( view );
+    $("body").append( script );
+    $("#manage").addClass("left");
+    $("#help").addClass("left");
+    $("#logout").addClass("right");
+    $("#undo").addClass("left right");
+    $("#redo").addClass("right");
+    $("#toolbar").css("width", "350px");
+}
+
+if ( window.localStorage.getItem( "notes_" + username ) ){
+    var arr = JSON.parse ( window.localStorage['notes_' + username] );
+    for ( var a in arr ) {
+	if ( arr.hasOwnProperty( a ) ) {
+	    z = ( arr[a].z > z ) ? arr[a].z : z;
+	    writeNote( arr[a], false );
+	    notes[arr[a].id] = arr[a];
 	}
     }
-    if ( online ) {
-	getNotes();
-	getTrash();
-    }
-})(window)
+}
+if ( online ) {
+    getNotes();
+    getTrash();
+}
 
 function getSize( obj ) {
     var max = 0;
@@ -265,6 +264,23 @@ function drawTrash() {
 		"class" : "trash_item",
 		"id" : trash[a].id
 	    });
+	    div.bind("mousedown", function ( event ) {
+		if ( $(event.target).is("input") ) { return; }
+		var d = $(this);
+		event.preventDefault();
+		var cs = event.currentTarget;
+		$("#noteArea").bind( "mouseup", function ( event ) {
+		    var div = d;
+		    var note = trash[div.attr("id")];
+		    note.x = event.clientX + window.scrollX;
+		    note.y = event.clientY + window.scrollY;
+		    note.z = z++;
+		    saveNote( {"id" : note.id, "x" : note.x, "y" : note.y, "z" : note.z}, true );
+		    restoreTrash( div.find(".trash_checkbox") );
+		    $("#noteArea").unbind("mouseup");
+		});
+	    });
+
 	    var ch = $("<input />", {
 		"type" : "checkbox",
 		"class" : "trash_checkbox",
@@ -622,14 +638,14 @@ function dropDown ( po ) {
 	var col = colorsArr[i];
 	l.css({"backgroundColor" : col});
 	l.bind( "mouseover", function ( event ) {
-            if ( !! current ) {
-		current.remove();
+            if ( !! window.current ) {
+		window.current.remove();
 	    }
             var df = $(event.currentTarget);
             var big = $("<div />", {
 		"class" : "bigSq"
             });
-            current = big;
+            window.current = big;
             var pos = df.position();
             big.css ({ "top" : pos.top-3,
 		       "left" : pos.left-3,
