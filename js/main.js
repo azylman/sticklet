@@ -805,6 +805,21 @@ function searchNotes ( ) {
 	    }
 	}
     }
+    var found = false;
+    for ( var s in trash ) {
+	if ( trash.hasOwnProperty( s ) ) {
+	    var text = trash[s].subject + " " + trash[s].content;
+	    if ( text.search( str ) != -1 ) {
+		found = true;
+		$("#" + trash[s].id ).addClass( "found" );
+	    } else {
+		$("#" + trash[s].id ).addClass( "unfound" );
+	    }
+	}
+    }
+    if ( found ) {
+	$("#manage").click();
+    }
     $(document).bind("click", function ( event ) {
 	$(".found").removeClass("found").removeClass("unfound");
 	$(document).unbind("click");
