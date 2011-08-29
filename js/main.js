@@ -247,6 +247,10 @@ function drawTrash() {
 		    restoreTrash( div.find(".trash_checkbox") );
 		    area.unbind("mouseup");
 		});
+		div.bind("mouseup", function ( event ) {
+		    area.css("cursor", "auto");
+		    area.unbind("mouseup");
+		});
 	    });
 
 	    var ch = $("<input />", {
