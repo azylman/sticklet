@@ -18,6 +18,8 @@
 	  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 	  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
+	  var username = "{{ user }}";
+	  var loginURL = "{{ login }}";
 	</script>
     </head>
     <body>
@@ -93,10 +95,6 @@
 	</div>
       </div>
     </body>
-    <script type="text/javascript">
-      var username = "{{ user }}";
-      var loginURL = "{{ login }}";
-    </script>
     <script type="text/javascript" src="/js/jquery.js"></script>
     <script type="text/javascript" src="/js/jquery.overlaps.min.js"></script>
     <script type="text/javascript" src="/js/main.js"></script>
