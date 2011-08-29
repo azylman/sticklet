@@ -939,11 +939,6 @@ if ( userAgent.search ( "iphone" ) > -1 ||
 	"src" : "/js/mobile.js",
 	"type" : "text/javascript"
     });
-
-    var view = $("<meta>", {
-	"name" : "viewport",
-	"content" : "width=device-width,initial-scale=1,maximum-scale=1"
-    });
     $("#searcharea").remove();
     $("head").append ( view );
     $("body").append( script );
@@ -953,6 +948,10 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     $("#undo").addClass("left right");
     $("#redo").addClass("right");
     $("#toolbar").css("width", "350px");
+    var view = $("<meta>", {
+	"name" : "viewport",
+	"content" : "width=device-width,initial-scale=1,maximum-scale=1"
+    });
 }
 
 if ( window.localStorage.getItem( "notes_" + username ) ){
