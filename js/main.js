@@ -845,21 +845,26 @@ $(document).ready( function () {
     });
 
     $("#archive_delete").bind( "click", function( event ){
+	event.preventDefault();
 	permDelete( $("#archived_content").find(":checked") );
     });
 
     $("#archive_restore").bind ( "click", function( event ){
+	event.preventDefault();
 	restoreTrash( $("#archived_content").find(":checked") );
     });
 
     $('#undo').bind('click', function( event ) {
+	event.preventDefault();
 	undoAction()
     });
     $('#redo').bind('click', function( event ) {
+	event.preventDefault();
 	redoAction()
     });
 
     $("#manage").bind('click', function( event ){
+	event.preventDefault();
 	var l = $("#managemenu");
 	if ( l.is(":hidden") ){
 	    var el = $("#archived_content");
@@ -907,6 +912,7 @@ $(document).ready( function () {
     });
 
     $("#help").bind("click", function ( event ){
+	event.preventDefault();
 	$("#help_overlay").fadeIn("fast");
     });
 
@@ -921,6 +927,7 @@ $(document).ready( function () {
     });
 
     $("#search").bind( "click", function ( event ) {
+	event.preventDefault();
 	event.stopPropagation();
 	searchNotes();
     });
@@ -937,7 +944,8 @@ $(document).ready( function () {
 
     $(window).bind("focus", function ( event ) {
 	if ( event.target == event.currentTarget ) {
-	    console.log ( event );
+	    getNotes();
+	    getTrash();
 	}
     });
 
