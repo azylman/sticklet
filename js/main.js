@@ -504,6 +504,7 @@ function stopDrag ( e ) {
 
 function compare ( note, note2 ) {
     if ( note2 === null ){ return false; }
+    if ( notes[note.id] === undefined && note2 === undefined ) { return false; }
     var nA = (note2 === undefined ) ? notes[note.id] : note2;
     if ( !!nA ) {
 	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
