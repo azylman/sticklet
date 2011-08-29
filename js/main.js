@@ -52,7 +52,7 @@ try {
     var online = false;
 }
 
-if ( window.localStorage.getItem("notes_demo") ) {
+if ( !!window.localStorage.getItem("notes_demo") ) {
     online = false;
 }
 
