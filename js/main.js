@@ -8,15 +8,15 @@ var notes = {};
 var dragged = {};
 var z = 0;
 var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
-			 "#FFF79A", "#FDC68A", "#d8bfd8" ];
+		  "#FFF79A", "#FDC68A", "#d8bfd8" ];
 var undoStack = new Array();
 var redoStack = new Array();
 var current;
 var trash = {};
 try {
     if ( online === undefined ){
-	var online = window.navigator.onLine;
-	window.applicationCache.onerror=function( event ){
+	online = navigator.onLine;
+	applicationCache.onerror=function( event ){
 	    event.preventDefault();
 	    event.stopPropagation();
 	    online = false;
@@ -28,7 +28,7 @@ try {
     var online = false;
 }
 
-var userAgent = window.navigator.userAgent.toLowerCase();
+var userAgent = navigator.userAgent.toLowerCase();
 if ( userAgent.search ( "iphone" ) > -1 || 
      userAgent.search( "android") >  -1  ) {
     var script = $("<script />", {
@@ -443,10 +443,12 @@ function dragging ( e ) {
 
     var x = e.clientX + window.scrollX;
     var y = e.clientY + window.scrollY;
+    
+    var el = $(dragged.el);
 
-    dragged.el.style.left = (dragged.sx + x - dragged.x) + "px";
-    dragged.el.style.top = (dragged.sy + y - dragged.y) + "px";
-
+    el.css("left", (dragged.sx + x - dragged.x) + "px");
+    el.css("top", (dragged.sy + y - dragged.y) + "px");
+    
 }
 
 function stopDrag ( e ) {
@@ -471,18 +473,18 @@ function stopDrag ( e ) {
     document.removeEventListener( "mouseup", stopDrag, true );
     dragged = {};
 
-    if (note.x == newX && note.y == newY) { // If only the z-index has changed
+    if (note.x == newX && note.y == newY) { 
 	var overlap = false;
 	for(var n in notes) {
 	    if ( notes.hasOwnProperty ( n ) ) {
-		if ($("#" + note.id).overlaps("#" + notes[n].id)) { // Check if the note overlaps with any others
-		    if (note.z < notes[n].z) { // If it overlaps and it's not on top
+		if ($("#" + note.id).overlaps("#" + notes[n].id)) { 
+		    if (note.z < notes[n].z) { 
 			overlap = true;
 		    }
 		}
 	    }
 	}
-	if (!overlap) {// If we didn't find any overlap, that means that there was no visual change - stop everything
+	if (!overlap) {
             return;
 	}
     }
@@ -837,11 +839,6 @@ $(document).ready( function () {
 	var l = $("#managemenu");
 	if ( l.is(":hidden") ){
 	    var el = $("#archived_content");
-	    $("#noteArea").bind("click", function( event ) {
-		if( event.target != el.get() ) {
-		    unToggle ( );
-		}
-	    });
 	    l.slideDown( "slow", function(){
 		$("#archived_content").css({"overflow-y" : "auto"});
 	    });
