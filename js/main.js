@@ -229,20 +229,20 @@ function drawTrash() {
 		"class" : "trash_item",
 		"id" : trash[a].id
 	    });
+	    var area = $("#noteArea");
+	    area.css("cursor","crosshair");
 	    div.bind("mousedown", function ( event ) {
 		if ( $(event.target).is("input") ) { return; }
-		var d = $(this);
 		event.preventDefault();
-		var cs = event.currentTarget;
-		$("#noteArea").bind( "mouseup", function ( event ) {
-		    var div = d;
+ 		area.bind( "mouseup", function ( event ) {
 		    var note = trash[div.attr("id")];
 		    note.x = event.clientX + window.scrollX;
 		    note.y = event.clientY + window.scrollY;
 		    note.z = z++;
 		    saveNote( {"id" : note.id, "x" : note.x, "y" : note.y, "z" : note.z}, true );
 		    restoreTrash( div.find(".trash_checkbox") );
-		    $("#noteArea").unbind("mouseup");
+		    area.unbind("mouseup");
+		    area.css("cursor","auto");
 		});
 	    });
 
