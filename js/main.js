@@ -14,21 +14,6 @@ var redoStack = new Array();
 var current;
 var trash = {};
 
-try {
-    if ( online === undefined ){
-	online = navigator.onLine;
-	applicationCache.onerror=function( event ){
-	    event.preventDefault();
-	    event.stopPropagation();
-	    online = false;
-	}
-    } else {
-	online = false;
-    }
-}catch ( err ) {
-    var online = false;
-}
-
 var userAgent = navigator.userAgent.toLowerCase();
 if ( userAgent.search ( "iphone" ) > -1 || 
      userAgent.search( "android") >  -1  ) {
@@ -51,6 +36,26 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     $("#redo").addClass("right");
     $("#toolbar").css("width", "350px");
 }
+
+try {
+    if ( online === undefined ){
+	online = navigator.onLine;
+	applicationCache.onerror=function( event ){
+	    event.preventDefault();
+	    event.stopPropagation();
+	    online = false;
+	}
+    } else {
+	online = false;
+    }
+}catch ( err ) {
+    var online = false;
+}
+
+if ( window.localStorage.getItem("notes_demo") ) {
+    online = false;
+}
+
 
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
@@ -944,8 +949,10 @@ $(document).ready( function () {
 
     $(window).bind("focus", function ( event ) {
 	if ( event.target == event.currentTarget ) {
-	    getNotes();
-	    getTrash();
+	    if ( online ) {
+		getNotes();
+		getTrash();
+	    }
 	}
     });
 

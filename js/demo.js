@@ -10,7 +10,7 @@ var x=pos.left+log.width()+340;
 var y=pos.top+33;
 
 var note={id:"demo_note",x:700,y:395,z:100,subject:"Double-click to edit",content:"Double-click to edit"};
-var online=false;
+window.online = false;
 
 window.localStorage.setItem("notes_demo",JSON.stringify({demo_note:note}));
 username="demo";
