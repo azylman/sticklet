@@ -819,6 +819,8 @@ function searchNotes ( ) {
     }
     if ( found ) {
 	$("#manage").click();
+    } else {
+	unToggle ();
     }
     $(document).bind("click", function ( event ) {
 	$(".found").removeClass("found");
