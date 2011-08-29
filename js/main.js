@@ -910,7 +910,7 @@ $(document).ready( function () {
 	if ( event.target == event.currentTarget ) {
 	    if ( online ) {
 		getNotes();
-		getTrash();
+		setTimeout("getTrash()", 20);
 	    }
 	}
     });
@@ -952,5 +952,5 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
 
 if ( online ) {
     getNotes();
-    getTrash();
+    setTimeout("getTrash()", 20);
 }

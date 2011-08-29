@@ -2,7 +2,7 @@ from google.appengine.ext import db
 
 class StickyNoteModel(db.Model):
     author = db.UserProperty()
-    content = db.StringProperty(multiline=True)
+    content = db.TextProperty()
     date = db.DateTimeProperty(auto_now_add=True)
     subject = db.StringProperty()
     color = db.StringProperty()
