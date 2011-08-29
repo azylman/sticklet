@@ -73,7 +73,7 @@ function getNotes () {
 		window.location = $("#logout").attr("href");
 	    } else {
 		//alert( "Failed to connect with server, if problem persists, contact the webmasters.");
-		online = false;
+		//online = false;
 	    }
 	}
     });
@@ -97,7 +97,7 @@ function getTrash () {
 		window.location = $("#logout").attr("href");
 	    } else {
 		//alert( "Failed to connect with server, if problem persists, contact the webmasters.");
-		online = false;
+		//online = false;
 	    }
 	}
     });
