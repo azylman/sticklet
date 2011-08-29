@@ -13,6 +13,7 @@ var undoStack = new Array();
 var redoStack = new Array();
 var current;
 var trash = {};
+
 try {
     if ( online === undefined ){
 	online = navigator.onLine;
@@ -922,6 +923,22 @@ $(document).ready( function () {
     $("#search").bind( "click", function ( event ) {
 	event.stopPropagation();
 	searchNotes();
+    });
+
+    $("body").bind("online", function ( event ) {
+	console.log ( "true" );
+	online = true;
+    });
+
+    $("body").bind("offline", function ( event ) {
+	console.log ( "false" );
+	offline = true;
+    });
+
+    $(window).bind("focus", function ( event ) {
+	if ( event.target == event.currentTarget ) {
+	    console.log ( event );
+	}
     });
 
 });
