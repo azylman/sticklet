@@ -16,6 +16,21 @@ var current;
 var trash = {};
 var userAgent = navigator.userAgent.toLowerCase();
 
+try {
+    if ( online === undefined ){
+	var online = navigator.onLine;
+	applicationCache.onerror=function( event ){
+	    event.preventDefault();
+	    event.stopPropagation();
+	    online = false;
+	};
+    } else {
+	online = false;
+    }
+}catch ( err ) {
+    var online = false;
+}
+
 function getSize( obj ) {
     var max = 0;
     for ( var i in obj ) {
@@ -924,21 +939,6 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     $("#toolbar").css("width", "350px");
 }
 
-try {
-    if ( online === undefined ){
-	online = navigator.onLine;
-	applicationCache.onerror=function( event ){
-	    event.preventDefault();
-	    event.stopPropagation();
-	    online = false;
-	};
-    } else {
-	online = false;
-    }
-}catch ( err ) {
-    var online = false;
-}
-
 if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
@@ -949,6 +949,7 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
 	}
     }
 }
+
 if ( online ) {
     getNotes();
     getTrash();
