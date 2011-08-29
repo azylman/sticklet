@@ -9,8 +9,8 @@ var dragged = {};
 var z = 0;
 var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
 		  "#FFF79A", "#FDC68A", "#d8bfd8" ];
-var undoStack = new Array();
-var redoStack = new Array();
+var undoStack = [];
+var redoStack = [];
 var current;
 var trash = {};
 
@@ -44,7 +44,7 @@ try {
 	    event.preventDefault();
 	    event.stopPropagation();
 	    online = false;
-	}
+	};
     } else {
 	online = false;
     }
@@ -326,7 +326,7 @@ function drawTrash() {
 
 function restoreTrash( cs ) {
 
-    var idArr = new Array();
+    var idArr = [];
     for( var a = 0; a < cs.length; a++) {
 	idArr.push ( {"id" : cs[a].name} );
         $("#" + cs[a].name).fadeOut();
@@ -362,7 +362,7 @@ function restoreTrash( cs ) {
 
 function permDelete( cs ){
 
-    var idArr = new Array();
+    var idArr = [];
     for( var a = 0; a < cs.length; a++) {
 	idArr.push ( {"id" : cs[a].name });
     }
@@ -725,19 +725,18 @@ function Action (){
 
     this.setBefore = function ( before ) {
 	this.b = jQuery.extend ( true, {}, before );
-    }
+    };
     this.setAfter = function ( after ) {
 	this.a = jQuery.extend ( true, {}, after );
-    }
+    };
     this.push = function () {
 	if ( ! compare ( this.a, this.b ) ) {
             undoStack.push ( this );
             $("#undo").removeClass("disabled").addClass("enabled");
-            redoStack = new Array ();
+            redoStack = [];
             $("#redo").removeClass("enabled").addClass("disabled");
 	}
-    }
-
+    };
 }
 
 function undoAction () {
@@ -806,8 +805,8 @@ function searchNotes ( ) {
     var found = false;
     for ( var s in trash ) {
 	if ( trash.hasOwnProperty( s ) ) {
-	    var text = trash[s].subject + " " + trash[s].content;
-	    if ( text.search( str ) != -1 ) {
+	    var txt = trash[s].subject + " " + trash[s].content;
+	    if ( txt.search( str ) != -1 ) {
 		found = true;
 		$("#" + trash[s].id ).addClass( "found" );
 	    } else {
@@ -831,7 +830,7 @@ $(document).ready( function () {
 
     $('#noteArea').bind('dblclick', function(event) {
 	if ( online ) {
-	    createNote(event)
+	    createNote(event);
 	}
     });
 
@@ -857,11 +856,11 @@ $(document).ready( function () {
 
     $('#undo').bind('click', function( event ) {
 	event.preventDefault();
-	undoAction()
+	undoAction();
     });
     $('#redo').bind('click', function( event ) {
 	event.preventDefault();
-	redoAction()
+	redoAction();
     });
 
     $("#manage").bind('click', function( event ){
@@ -940,7 +939,7 @@ $(document).ready( function () {
 
     $("body").bind("offline", function ( event ) {
 	console.log ( "false" );
-	offline = true;
+	online = true;
     });
 
     $(window).bind("focus", function ( event ) {
