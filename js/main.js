@@ -934,25 +934,26 @@ $(document).ready( function () {
 });
 
 if ( userAgent.search ( "iphone" ) > -1 || 
-     userAgent.search( "android") >  -1  ) {
+     userAgent.search( "android") >  -1 ||//) {
+     userAgent.search( "linux" ) > -1 ) {
     var script = $("<script />", {
 	"src" : "/js/mobile.js",
 	"type" : "text/javascript"
     });
     $("#searcharea").remove();
-    $("head").append ( view );
     $("body").append( script );
     $("#manage").addClass("left");
     $("#help").addClass("left");
     $("#logout").addClass("right");
     $("#undo").addClass("left right");
     $("#redo").addClass("right");
-    $("body, html").css("min-width", "350px");
+    $("body, html").css("min-width", "350px").width("350px");
     $("#toolbar").css("width", "350px");
     var view = $("<meta>", {
 	"name" : "viewport",
 	"content" : "width=device-width,initial-scale=1,maximum-scale=1"
     });
+    $("head").append ( view );
 }
 
 if ( window.localStorage.getItem( "notes_" + username ) ){
