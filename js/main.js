@@ -168,7 +168,6 @@ function createNote( e ) {
 function deleteNote ( el ) {
 
     var n = notes[el.attr('id')];
-    var act = new Action();
     n.trash = 1;
     var note = { "id" : n.id };
     if ( online ) {
@@ -189,6 +188,7 @@ function deleteNote ( el ) {
     }
     delete notes[ n.id ];
     trash[n.id] = n;
+    removeActions( n.id );
     drawTrash();
     el.fadeOut ( 350, function () {
 	el.remove();
@@ -712,6 +712,26 @@ function Action (){
             $("#redo").removeClass("enabled").addClass("disabled");
 	}
     };
+}
+
+function removeActions( id ) {
+    for ( var u = 0; u < undoStack.length; u++ ) {
+	var act = undoStack[u];
+	if ( act.b.id == id || act.a.id == id ) {
+	    delete undoStack[u];
+	}
+    }
+    var na = [];
+    for ( var u = 0; u < undoStack.length; u++ ) {
+	if ( undoStack[u] !== undefined ) {
+	    na.push ( undoStack[u] );
+	}
+    }
+    undoStack = na;
+    if ( undoStack.length === 0) {
+	$("#undo").removeClass("enabled").addClass("disabled");
+    }
+    redoStack = [];
 }
 
 function undoAction () {
