@@ -857,7 +857,6 @@ $(document).ready( function () {
 	    });
 	    $("#noteArea").bind("click", function ( event ) {
 		unToggle();
-		$("#noteArea").unbind("click");
 	    });
 	} else {
 	    unToggle ( );
