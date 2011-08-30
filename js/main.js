@@ -252,6 +252,10 @@ function drawTrash() {
 		    area.unbind("mouseup");
 		});
 	    });
+	    div.bind( "click", function ( event ) {
+		var ing = $(event.currentTarget).find("input");
+		ing.attr("checked", !ing.is(":checked") );
+	    });
 
 	    var ch = $("<input />", {
 		"type" : "checkbox",
