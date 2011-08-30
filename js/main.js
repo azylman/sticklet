@@ -947,6 +947,7 @@ if ( userAgent.search ( "iphone" ) > -1 ||
     $("#logout").addClass("right");
     $("#undo").addClass("left right");
     $("#redo").addClass("right");
+    $("body, html").css("min-width", "350px");
     $("#toolbar").css("width", "350px");
     var view = $("<meta>", {
 	"name" : "viewport",
