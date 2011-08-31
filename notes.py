@@ -46,15 +46,17 @@ class Note(webapp.RequestHandler):
             notes_query.filter ( "trash = ", 0 )
 
             min_z = 0
+            arr = []
             for note in notes_query:
                 note.z = min_z
                 note.put()
+                arr.append ( note.to_dict() )
                 min_z = min_z + 1
 
-            self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
+            self.response.out.write( json.dumps( arr ) )
         else:
-            self.error(401)
-            self.response.out.write("Not logged in.")
+            self.error( 401 )
+            self.response.out.write( "Not logged in." )
 
     def put(self):
         user = users.get_current_user()
