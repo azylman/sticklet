@@ -393,3 +393,19 @@ a.right {
 #help_text ul {
     padding-left:25px;
 }
+
+.noSelect {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+
+.yesSelect {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    -khtml-user-select: text;
+    user-select: text;
+}

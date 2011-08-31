@@ -46,6 +46,7 @@ function getNotes () {
 	"type" : "GET",
 	"dataType" : "json",
 	"success" : function( resp ) {
+	    getTrash();
             var tmp = {};
 	    z = 0;
             $.each(resp, function(index) {
@@ -521,7 +522,7 @@ function writeNote ( note, fade ) {
     var s = $('<div />');
     s.bind("blur", function(event) {
         closeSave(event, $(this));
-        $(this).attr({"contenteditable" : false}).css("cursor", "move");
+        $(this).attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect");
     });
     s.bind( "keypress", function ( event ) {
 	if (event.keyCode == 13 ) {
@@ -534,6 +535,7 @@ function writeNote ( note, fade ) {
 	if ( ! online ){ return; }
 	s.attr({"contenteditable" : true});
 	s.css("cursor", "text");
+	s.addClass("yesSelect");
 	s.focus();
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
@@ -550,7 +552,6 @@ function writeNote ( note, fade ) {
 	unToggle();
 	event.preventDefault();
 	event.stopPropagation();
-	//$(".menu").remove();
 	dropDown( elm );
     });
     elm.append( o );
@@ -570,12 +571,13 @@ function writeNote ( note, fade ) {
     var b = $('<blockquote />');
     b.bind ( "blur", function( event ) {
         closeSave(event, b);
-        b.attr({"contenteditable" : false}).css("cursor", "move");
+        b.attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect");
     });
     b.bind ( "dblclick", function( event ) {
 	if ( ! online ){ return; }
 	b.attr({"contenteditable" : true});
 	b.css("cursor", "text");
+	b.addClass("yesSelect");
 	b.focus();
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
@@ -816,6 +818,7 @@ $(document).ready( function () {
 	event.preventDefault();
 	undoAction();
     });
+
     $('#redo').bind('click', function( event ) {
 	event.preventDefault();
 	redoAction();
@@ -838,7 +841,6 @@ $(document).ready( function () {
 
 
     $(document).keyup(function( event ) {
-
 	if ( event.ctrlKey ) {
 	    if ( event.keyCode == 90 ) {
 		undoAction();
@@ -933,7 +935,6 @@ $(document).ready( function () {
 	if ( event.target == event.currentTarget ) {
 	    if ( online ) {
 		getNotes();
-		setTimeout("getTrash()", 20);
 	    }
 	}
     });
@@ -976,5 +977,4 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
 
 if ( online ) {
     getNotes();
-    setTimeout("getTrash()", 20);
 }
