@@ -246,6 +246,7 @@ function drawTrash() {
 		});
 	    });
 	    div.bind( "click", function ( event ) {
+		if ( event.target.tagName.toLowerCase() == "input"){ return; }
 		var ing = $(event.currentTarget).find("input");
 		ing.attr("checked", !ing.is(":checked") );
 	    });
@@ -787,6 +788,17 @@ $(document).ready( function () {
 	    el.find(".trash_checkbox").attr({"checked":"checked"});
 	} else {
 	    el.find(".trash_checkbox").removeAttr("checked");
+	}
+    });
+
+    $("#check_all_div").bind("mouseup", function ( event ) {
+	if ( event.target.tagName.toLowerCase() == "input" ){ return; }
+	var q = $("#check_all");
+	var el = $("#managemenu");
+	if ( q.is( ":checked" ) ){
+	    el.find(".trash_checkbox").removeAttr("checked");
+	} else {
+	    el.find(".trash_checkbox").attr("checked", "checked");
 	}
     });
 
