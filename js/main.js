@@ -846,9 +846,11 @@ $(document).ready( function () {
 		redoAction();
 	    }
 	} else if ( event.shiftKey ) {
-	    if ( event.keyCode == 191 ){
-		if ( ! isEditable( event.target ) && event.target.id != "searchbox" ) {
+	    if ( ! isEditable( event.target ) && event.target.id != "searchbox" ) {
+		if ( event.keyCode == 191 ){
 		    $("#help_overlay").fadeToggle("fast");
+		} else if ( event.keyCode == 65 ) {
+		    $("#manage").click();
 		}
 	    } 
 	} else if ( event.keyCode == 27 ) {
