@@ -409,3 +409,7 @@ a.right {
     -khtml-user-select: text;
     user-select: text;
 }
+
+#check_all_div span {
+    cursor: pointer;
+}
