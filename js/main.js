@@ -46,7 +46,6 @@ function getNotes () {
 	"type" : "GET",
 	"dataType" : "json",
 	"success" : function( resp ) {
-	    getTrash();
             var tmp = {};
 	    z = 0;
             $.each(resp, function(index) {
@@ -60,6 +59,7 @@ function getNotes () {
 		delete notes[resp[index].id];
 		tmp[resp[index].id] = resp[index];
             });
+	    getTrash();
             for ( var d in notes ){
 		if ( notes.hasOwnProperty ( d ) ) {
 		    $( "#" + notes[d].id ).remove();
@@ -484,21 +484,51 @@ function stopDrag ( e ) {
 }
 
 function compare ( note, note2 ) {
-    if ( note2 === null ){ return false; }
-    if ( notes[note.id] === undefined && note2 === undefined ) { return false; }
+    if ( note2 === null ){ return 0; }
+    if ( notes[note.id] === undefined && note2 === undefined ) { return 0; }
     var nA = (note2 === undefined ) ? notes[note.id] : note2;
     if ( !!nA ) {
 	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
              nA.subject == note.subject && nA.color == note.color && nA.trash == note.trash ) {
-            return true;
+            return 1;
 	}
     }
-    return false;
+    return -1;
+}
+
+function updateNote ( note ) {
+    var old = notes[note.id];
+    var el = $("#" + note.id);
+    var css = {};
+    if ( old.z != note.z ) {
+	css['zIndex'] = note.z;
+    }
+    if ( old.x != note.x ) {
+	css['left'] = note.x;
+    }
+    if ( old.y != note.y ) {
+	css['top'] = note.y;
+    }
+    if ( old.color != note.color ) {
+	css['background-color'] = note.color;
+    }
+    el.css(css);
+    if ( old.content != note.content ) {
+	el.find("blockquote").html( note.content );
+    }
+    if ( old.subject != note.subject ) {
+	el.find(".noteHeader").find("div").html( note.subject );
+    }
 }
 
 function writeNote ( note, fade ) {
-
-    if ( compare ( note ) ){ return; }
+    var comp =  compare ( note );
+    if ( comp == 1 ){ 
+	return; 
+    } else if ( comp == -1 ) {
+	updateNote( note );
+	return;
+    }
 
     var elm = $('<div />',  {
         "class" : "note",
@@ -651,8 +681,8 @@ function Action (){
     this.push = function () {
 	if ( ! compare ( this.a, this.b ) ) {
             undoStack.push ( this );
-            $("#undo").removeClass("disabled").addClass("enabled");
             redoStack = [];
+            $("#undo").removeClass("disabled").addClass("enabled");
             $("#redo").removeClass("enabled").addClass("disabled");
 	}
     };
