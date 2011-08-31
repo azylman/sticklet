@@ -9,7 +9,7 @@ var notes = {};
 var dragged = {};
 var z = 0;
 var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
-		  "#FFF79A", "#FDC68A", "#d8bfd8" ];
+		  "#FFF79A", "#FDC68A", "#D8BFD8" ];
 var undoStack = [];
 var redoStack = [];
 var current;
@@ -324,7 +324,6 @@ function restoreTrash( cs ) {
 	},
 	"error" : function( resp ) {
 	    if( resp.status == 401 ) {
-		//window.location = loginURL;
 		window.location = $("#logout").attr("href");
 	    } else {
 		console.log ( resp );
@@ -362,7 +361,6 @@ function permDelete( cs ){
             },
             "error" : function( resp ) {
 		if( resp.status == 401 ) {
-		    //window.location = loginURL;
 		    window.location = $("#logout").attr("href");
 		}else {
 		    alert( "Failed to connect with server, if problem persists, contact the webmasters.");
@@ -558,6 +556,7 @@ function writeNote ( note, fade ) {
 	unToggle();
 	event.preventDefault();
 	event.stopPropagation();
+	//$(".menu").remove();
 	dropDown( elm );
     });
     elm.append( o );
@@ -606,80 +605,29 @@ function writeNote ( note, fade ) {
 }
 
 function dropDown ( po ) {
-
-    var dr = $('<div />', {
-	"class" : "menu"
-    });
+    if ( !! current ) {
+	current.remove();
+	current = undefined;
+    }
     var el = $(po);
     var pos = el.position();
-    dr.css ({
+    $(".menu").css({
 	"left" : (pos.left + el.width()) + "px",
-	"top" : pos.top + "px"
+	"top" : pos.top + "px",
+	"display" : "block"
+    }).attr("name", po.attr("id"));
+    var area = $(document);
+    area.bind ( "click", function ( event ) {
+	$(".menu").css("display", "none");
+	if ( !! current ) {
+	    current.remove();
+	    current = undefined;
+	}
+	area.unbind("click");
     });
-    var p = $("<div />");
-    p.css({"margin-top" : "10px",
-	   "margin-bottom" : "6px"});
-    for ( var i = 0; i < colorsArr.length; i++ ){
-	var l = $("<div />", {
-            "class" : "colorSq"
-	});
-	var col = colorsArr[i];
-	l.css({"backgroundColor" : col});
-	l.bind( "mouseover", function ( event ) {
-            if ( !! window.current ) {
-		window.current.remove();
-	    }
-            var df = $(event.currentTarget);
-            var big = $("<div />", {
-		"class" : "bigSq"
-            });
-            window.current = big;
-            var pos = df.position();
-            big.css ({ "top" : pos.top-3,
-		       "left" : pos.left-3,
-		       "background-color" : df.css("background-color")
-		     });
-            big.bind( "mouseout", function ( event ) {
-		big.remove();
-            });
-            big.bind ( "click", function ( event ) {
-		colorNote ( el, event );
-		dr.remove();
-            });
-            dr.append ( big );
-	});
-	p.append ( l );
-    }
-    dr.append( p );
-
-    var link = $("<a />", {
-	"class" : "button enabled"
-    });
-    link.css ({
-        "margin-left" : "auto",
-        "margin-right" : "auto"
-    });
-    link.text ( "Archive" );
-    link.bind ( "click", function ( event ) {
-	deleteNote ( el );
-	dr.remove();
-    });
-    dr.append ( link );
-
-    $("#noteArea").bind ( "click", function ( event ) {
-	$("#noteArea").unbind ( "click" );
-	$(".menu").remove();
-    });
-    dr.bind ( "click", function ( event ) {
-	event.preventDefault();
-	event.stopPropagation();
-    });
-
-    $("#noteArea").append ( dr );
 }
 
-function colorNote ( el, event ) {
-    var color = $(event.currentTarget).css("backgroundColor");
+function colorNote ( el, color ) {
     var n = notes[el.attr( 'id' )];
     var act = new Action ();
     act.setBefore ( n );
@@ -938,11 +886,40 @@ $(document).ready( function () {
     $("body").bind("online", function ( event ) {
 	console.log ( "true" );
 	online = true;
-    });
-
-    $("body").bind("offline", function ( event ) {
+    }).bind("offline", function ( event ) {
 	console.log ( "false" );
 	online = true;
+    });
+
+    $(".colorSq").bind( "mouseover", function ( event ) {
+        if ( !! current ) {
+    	    current.remove();
+	    current = undefined;
+    	}
+        var df = $(event.currentTarget);
+	var el = $("#" + df.parents(".menu").attr("name") );
+        var big = $("<div />", {
+    	    "class" : "bigSq"
+        });
+        current = big;
+        var pos = df.position();
+	var color = df.css("backgroundColor");
+        big.css ({ "top" : pos.top-3,
+    		   "left" : pos.left-3,
+    		   "backgroundColor" : color
+    		 });
+        big.bind( "mouseout", function ( event ) {
+    	    big.remove();
+        });
+        big.bind ( "click", function ( event ) {
+    	    colorNote ( el, color );
+    	    big.remove();
+        });
+	df.parent().append ( big );
+    });
+
+    $("#archive").bind( "click", function ( event ) {
+	deleteNote ( $("#" + $(event.currentTarget).parents(".menu").attr("name") ) );
     });
 
     $(window).bind("focus", function ( event ) {
