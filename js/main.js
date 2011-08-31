@@ -8,8 +8,6 @@
 var notes = {};
 var dragged = {};
 var z = 0;
-var colorsArr = [ "#F7977A", "#C5E3BF", "#C1F0F6",
-		  "#FFF79A", "#FDC68A", "#D8BFD8" ];
 var undoStack = [];
 var redoStack = [];
 var current;
@@ -49,8 +47,9 @@ function getNotes () {
 	"dataType" : "json",
 	"success" : function( resp ) {
             var tmp = {};
+	    z = 0;
             $.each(resp, function(index) {
-		z = ( resp[index].z > z ) ? resp[index].z : z;
+		z++;
 		var new_Z = resp[index].z;
 		if ( !!notes[resp[index].id] ){
 		    notes[resp[index].id].z = new_Z;
@@ -71,10 +70,7 @@ function getNotes () {
 	"error" : function ( resp ) {
 	    if( resp.status == 401 ) {
 		window.location = $("#logout").attr("href");
-	    } else {
-		//alert( "Failed to connect with server, if problem persists, contact the webmasters.");
-		//online = false;
-	    }
+	    } 
 	}
     });
 }
@@ -95,9 +91,6 @@ function getTrash () {
 	"error" : function ( resp ) {
 	    if( resp.status == 401 ) {
 		window.location = $("#logout").attr("href");
-	    } else {
-		//alert( "Failed to connect with server, if problem persists, contact the webmasters.");
-		//online = false;
 	    }
 	}
     });
@@ -960,7 +953,7 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
     var arr = JSON.parse ( window.localStorage['notes_' + username] );
     for ( var a in arr ) {
 	if ( arr.hasOwnProperty( a ) ) {
-	    z = ( arr[a].z > z ) ? arr[a].z : z;
+	    z++;
 	    writeNote( arr[a], false );
 	    notes[arr[a].id] = arr[a];
 	}

@@ -42,15 +42,15 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             notes_query = stickynote.snModel.all().ancestor(
-                stickynote.key(user.email())).order('-date')
+                stickynote.key(user.email())).order('z')
             notes_query.filter ( "trash = ", 0 )
-            min_z = sys.maxint
+
+            min_z = 0
             for note in notes_query:
-                if note.z < min_z:
-                    min_z = note.z
-            for note in notes_query:
-                note.z = note.z - min_z
+                note.z = min_z
                 note.put()
+                min_z = min_z + 1
+
             self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
         else:
             self.error(401)
