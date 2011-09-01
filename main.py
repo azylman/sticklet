@@ -23,7 +23,6 @@ class MainPage(webapp.RequestHandler):
                 'url': url,
                 'url_linktext': url_linktext,
                 'user' : user.nickname(),
-                'login' : users.create_login_url('/'),
                 'color1' : "#F7977A",
                 'color2' : "#C5E3BF",
                 'color3' : "#c1F0F6",
