@@ -29,6 +29,7 @@ body {
     margin: auto;
     padding: 30px;
     border-radius: 25px;
+    background: rgb(255, 255, 255); /* rgba is only supported in ie9+, provide a fallback color */
     background: rgba(255, 255, 255, .8);
     text-align: left;
     height: 560px;
