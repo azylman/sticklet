@@ -24,15 +24,16 @@ body {
 
 #page {
     position:relative;
-    color: #EEE;
+    color: #444;
     width: 800px;
     margin: auto;
     padding: 30px;
     border-radius: 25px;
-    background: rgba(0, 0, 0, .6);
+    background: rgba(255, 255, 255, .8);
     text-align: left;
     height: 560px;
     top: 30px;
+    box-shadow: 0px 4px 10px 5px rgba(0, 0, 0, .4);
 }
 
 h1 {
