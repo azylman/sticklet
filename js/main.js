@@ -679,7 +679,8 @@ function Action (){
 	this.a = jQuery.extend ( true, {}, after );
     };
     this.push = function () {
-	if ( ! compare ( this.a, this.b ) ) {
+	var comp = compare ( this.a, this.b );
+	if ( comp === 0 || comp == -1 ) {
             undoStack.push ( this );
             redoStack = [];
             $("#undo").removeClass("disabled").addClass("enabled");
