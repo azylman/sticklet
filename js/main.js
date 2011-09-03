@@ -183,11 +183,10 @@ function deleteNote ( el ) {
     delete notes[ n.id ];
     trash[n.id] = n;
     removeActions( n.id );
-    drawTrash();
     el.fadeOut ( 350, function () {
 	el.remove();
+	drawTrash();
     });
-
 }
 
 function saveNote ( note, sync, fn ) {
@@ -206,7 +205,6 @@ function saveNote ( note, sync, fn ) {
               },
               "error" : function( resp ) {
 		  if( resp.status == 401 ) {
-		      //window.location = loginURL;
 		      window.location = $("#logout").attr("href");
 		  } else {
 		      alert( "Failed to connect with server, if problem persists, contact the webmasters.");
@@ -218,9 +216,9 @@ function saveNote ( note, sync, fn ) {
 function drawTrash() {
     $("#check_all").removeAttr("checked");
     var el = $("#archived_content");
-    el.html("");
+    //el.html("");
     for ( var a in trash ) {
-	if ( trash.hasOwnProperty ( a ) ) {
+	if ( trash.hasOwnProperty ( a ) && $("#" + a).length == 0 ) {
 	    var div = $("<div />",{
 		"class" : "trash_item",
 		"id" : trash[a].id
@@ -282,7 +280,7 @@ function drawTrash() {
 	    sp.append(subj);
 	    sp.append(snippet);
 	    div.append ( sp );
-	    el.append( div );
+	    el.prepend( div );
 	}
     }
     if ( getSize(trash) > 0 ) {
@@ -299,7 +297,9 @@ function restoreTrash( cs ) {
     var idArr = [];
     for( var a = 0; a < cs.length; a++) {
 	idArr.push ( {"id" : cs[a].name} );
-        $("#" + cs[a].name).fadeOut();
+        $("#" + cs[a].name).fadeOut( function () {
+	    $(this).remove();
+	});
     }
     if ( idArr.length < 1 ){ return; }
     var dict = JSON.stringify(idArr);
@@ -341,7 +341,9 @@ function permDelete( cs ){
     var c = confirm ( "Are you sure you wish to permanently delete these notes?" );
     if ( c ) {
 	for (var p = 0; p < cs.length; p++) {
-            $("#" + cs[p].name).fadeOut();
+            $("#" + cs[p].name).fadeOut( function () {
+		$(this).remove();
+	    });
 	}
 	$.ajax({
             "url" : "/notes/trash/delete",
@@ -728,7 +730,7 @@ function undoAction () {
 
     redoStack.push ( act );
 
-    drawTrash();
+    //drawTrash();
     $("#redo").removeClass("disabled").addClass("enabled");
 }
 

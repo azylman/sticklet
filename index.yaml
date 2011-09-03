@@ -22,6 +22,12 @@ indexes:
   properties:
   - name: trash
   - name: delete_date
+
+- kind: snModel
+  ancestor: yes
+  properties:
+  - name: trash
+  - name: delete_date
     direction: desc
 
 - kind: snModel
