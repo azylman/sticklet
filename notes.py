@@ -42,8 +42,8 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             notes_query = stickynote.snModel.all().ancestor(
-                stickynote.key(user.email())).order('z')
-            notes_query.filter ( "trash = ", 0 )
+                stickynote.key(user.email()))
+            notes_query.filter ( "trash = ", 0 ).order('z')
 
             min_z = 0
             arr = []
@@ -108,7 +108,7 @@ class Trash(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             notes_query = stickynote.snModel.all().ancestor(
-                stickynote.key(user.email())).order('-date')
+                stickynote.key(user.email())).order('-delete_date')
             notes_query.filter ( "trash = ", 1 )
             self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
         else:
