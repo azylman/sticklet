@@ -413,3 +413,11 @@ a.right {
 #check_all_div span {
     cursor: pointer;
 }
+
+#double_click_help {
+    position:absolute;
+    font-size:200%;
+    margin-top:100px;
+    width:100%;
+    text-align:center;
+}

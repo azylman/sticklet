@@ -88,6 +88,17 @@ function getTrash () {
 		trash[resp[index].id] = resp[index];
             });
             drawTrash();
+	    if ( getSize( notes ) == 0 && getSize( trash ) == 0 ) {
+		var el = $("<div />", {
+		    "id" : "double_click_help"
+		});
+		el.text("Double click anywhere to add note");
+		$("#noteArea").append(el);
+		$(document).bind( "dblclick", function ( event ) {
+		    $(this).unbind("dblclick");
+		    el.remove();
+		});
+	    }
 	},
 	"error" : function ( resp ) {
 	    if( resp.status == 401 ) {
@@ -127,9 +138,6 @@ function createNote( e ) {
 
     if ( ! online ){ return; }
 
-    e.stopPropagation();
-    e.preventDefault();
-
     if ( e.target != e.currentTarget ){ return; }
 
     var pos = $("#noteArea").position();
@@ -150,7 +158,7 @@ function createNote( e ) {
               },
 	      "error" : function ( resp ) {
 		  if( resp.status == 401 ) {
-		      window.location = $("#logout").attr("href");//loginURL;
+		      window.location = $("#logout").attr("href");
 		  } else {
 		      alert( "Failed to connect with server, if problem persists, contact the webmasters.");
 		  }
