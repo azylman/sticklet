@@ -93,9 +93,10 @@ function getTrash () {
 		    "id" : "double_click_help"
 		});
 		el.text("Double click anywhere to add note");
+		var doc = $(document);
 		$("#noteArea").append(el);
-		$(document).bind( "dblclick", function ( event ) {
-		    $(this).unbind("dblclick");
+		doc.bind( "dblclick", function ( event ) {
+		    doc.unbind("dblclick");
 		    el.remove();
 		});
 	    }
@@ -224,7 +225,6 @@ function saveNote ( note, sync, fn ) {
 function drawTrash() {
     $("#check_all").removeAttr("checked");
     var el = $("#archived_content");
-    //el.html("");
     for ( var a in trash ) {
 	if ( trash.hasOwnProperty ( a ) && $("#" + a).length == 0 ) {
 	    var div = $("<div />",{
