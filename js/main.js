@@ -349,9 +349,7 @@ function permDelete( cs ){
     var c = confirm ( "Are you sure you wish to permanently delete these notes?" );
     if ( c ) {
 	for (var p = 0; p < cs.length; p++) {
-            $("#" + cs[p].name).fadeOut( function () {
-		$(this).remove();
-	    });
+	    $("#" + cs[p].name).remove();
 	}
 	$.ajax({
             "url" : "/notes/trash/delete",
