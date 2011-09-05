@@ -61,8 +61,9 @@ class Note(webapp.RequestHandler):
                     min_z = min_z + 1
 
                 notes = json.dumps( arr )
-                memcache.add( "notes", notes )
                 self.response.out.write( notes )
+                memcache.add( "notes", notes )
+
         else:
             self.error( 401 )
             self.response.out.write( "Not logged in." )
@@ -117,8 +118,9 @@ class Trash(webapp.RequestHandler):
                     arr.append( note.to_dict() )
 
                 trash = json.dumps( arr )
-                memcache.add( "trash", trash )
                 self.response.out.write( trash )
+                memcache.add( "trash", trash )
+
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
