@@ -591,6 +591,9 @@ function writeNote ( note, fade ) {
 	event.stopPropagation();
 	dropDown( elm );
     });
+    o.bind( "mousedown", function( event ) {
+	event.stopPropagation();
+    });
     elm.append( o );
     elm.bind( "mouseover", function( event ) {
 	o.css({"display":"inline"});
@@ -632,7 +635,23 @@ function writeNote ( note, fade ) {
 		    ch.bind ( "mousedown", function ( event ) {
 			event.stopPropagation();
 		    });
-		    $(node).prepend( ch );
+		    if ( node.tagName.toLowerCase() == "blockquote") {
+			var di = $("<div />");
+			$(node).prepend( di );
+			var sp = $("<span />");
+			di.prepend( sp );
+			di.prepend( "&nbsp;" );
+			di.prepend( ch );
+			var range = document.createRange();
+			range.setStart( di.get(0), 0 );
+			range.setEnd( sp.get(0), 0 );
+			sel.removeAllRanges();
+			sel.addRange( range );
+			sel.collapseToEnd( true );
+		    } else {
+			$(node).prepend( "&nbsp;" );
+			$(node).prepend( ch );
+		    }
 		}
 	    }
 	});
@@ -684,6 +703,7 @@ function dropDown ( po ) {
 	    notes[id].is_list = 0;
 	    saveNote( { "id" : id, "is_list" : 0}, true );
 	}
+	$(".menu").css("display","none");
     });
     var area = $(document);
     area.bind ( "click", function ( event ) {
