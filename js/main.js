@@ -323,6 +323,8 @@ function restoreTrash( cs ) {
 		drawTrash();
 		dumpNotes();
             }
+	    $(".list_check").unbind("click");
+	    $(".list_check").click( checkList );
 	},
 	"error" : function( resp ) {
 	    if( resp.status == 401 ) {
