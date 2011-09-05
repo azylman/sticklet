@@ -703,7 +703,7 @@ function dropDown ( po ) {
 	    notes[id].is_list = 0;
 	    saveNote( { "id" : id, "is_list" : 0}, true );
 	}
-	$(".menu").css("display","none");
+	//$(".menu").css("display","none");
     });
     var area = $(document);
     area.bind ( "click", function ( event ) {

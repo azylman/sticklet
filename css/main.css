@@ -425,3 +425,6 @@ label {
     text-align:center;
 }
 
+.list_check {
+    cursor: pointer;
+}
