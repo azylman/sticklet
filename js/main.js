@@ -638,13 +638,11 @@ function writeNote ( note, fade ) {
 		    if ( node.tagName.toLowerCase() == "blockquote") {
 			var di = $("<div />");
 			$(node).prepend( di );
-			var sp = $("<span />");
-			di.prepend( sp );
 			di.prepend( "&nbsp;" );
 			di.prepend( ch );
 			var range = document.createRange();
 			range.setStart( di.get(0), 0 );
-			range.setEnd( sp.get(0), 0 );
+			range.setEnd( di.get(0), 2 );
 			sel.removeAllRanges();
 			sel.addRange( range );
 			sel.collapseToEnd( true );
