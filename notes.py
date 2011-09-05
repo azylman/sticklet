@@ -29,6 +29,7 @@ class Note(webapp.RequestHandler):
             note.subject = "Sticklet"
             note.color = ""
             note.trash = 0
+            note.is_list = 0
             note.x = int ( self.request.get( 'x' ) )
             note.y = int ( self.request.get( 'y' ) )
             note.z = int ( self.request.get( 'z' ) )
@@ -77,6 +78,9 @@ class Note(webapp.RequestHandler):
                         db_n.y = int(note['y'])
                     if 'z' in note:
                         db_n.z = int(note['z'])
+                    if 'is_list' in note:
+                        db_n.is_list = int(note['is_list'])
+
                     db_n.modify_date = datetime.datetime.now()
                     db_n.put()
                 else:

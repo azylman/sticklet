@@ -171,7 +171,6 @@ function createNote( e ) {
 function deleteNote ( el ) {
 
     var n = notes[el.attr('id')];
-    n.trash = 1;
     var note = { "id" : n.id };
     if ( online ) {
 	$.ajax ({ "url" : "/notes/delete",
@@ -198,12 +197,12 @@ function deleteNote ( el ) {
     });
 }
 
-function saveNote ( note, sync, fn ) {
+function saveNote ( note, async, fn ) {
 
     var dict = JSON.stringify ( [note] );
 
     $.ajax ({ "url" : "/notes",
-              "async" : sync,
+              "async" : async,
               "type" : "PUT",
               "data" : dict,
               "success" : function ( resp ) {
@@ -497,7 +496,7 @@ function compare ( note, note2 ) {
     var nA = (note2 === undefined ) ? notes[note.id] : note2;
     if ( !!nA ) {
 	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
-             nA.subject == note.subject && nA.color == note.color && nA.trash == note.trash ) {
+             nA.subject == note.subject && nA.color == note.color ) {
             return 1;
 	}
     }
@@ -609,7 +608,8 @@ function writeNote ( note, fade ) {
     var b = $('<blockquote />');
     b.bind ( "blur", function( event ) {
         closeSave(event, b);
-        b.attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect");
+        b.attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect").
+	    unbind("keypress");
     });
     b.bind ( "dblclick", function( event ) {
 	if ( ! online ){ return; }
@@ -617,6 +617,28 @@ function writeNote ( note, fade ) {
 	b.css("cursor", "text");
 	b.addClass("yesSelect");
 	b.focus();
+	b.bind( "keypress", function ( event ) {
+	    var note = notes[$(event.currentTarget).parents(".note").attr("id")];
+	    if ( event.keyCode == 13 && note.is_list == 1 ) {
+		var sel = window.getSelection();
+		var node = $(sel.focusNode);
+		if ( node.find("input").length == 0 ) {
+		    //var range = sel.getRangeAt(0);
+		    //range.deleteContents();
+		    //event.preventDefault();
+		    //node.find("br").remove();
+		    var ch = $("<input />", {
+			"type" : "checkbox",
+			"class" : "list_check"
+		    });
+		    ch.click ( checkList );
+		    node.prepend( ch );
+		    //var di = $("<div />");
+		    //node.append( di );
+		    //di.focus();
+		}
+	    }
+	});
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
             event.stopPropagation();
@@ -650,6 +672,22 @@ function dropDown ( po ) {
 	"top" : pos.top + "px",
 	"display" : "block"
     }).attr("name", po.attr("id"));
+    var id = el.attr("id");
+    var li = $("#list");
+    if ( notes[id].is_list == 1 ) {
+	li.attr("checked", "checked");
+    } else {
+	li.removeAttr("checked");
+    }
+    li.click( function ( event ) {
+	if ( li.attr("checked") == "checked" ) {
+	    notes[id].is_list = 1;
+	    saveNote( { "id" : id, "is_list" : 1}, true );
+	} else {
+	    notes[id].is_list = 0;
+	    saveNote( { "id" : id, "is_list" : 0}, true );
+	}
+    });
     var area = $(document);
     area.bind ( "click", function ( event ) {
 	$(".menu").css("display", "none");
@@ -657,6 +695,7 @@ function dropDown ( po ) {
 	    current.remove();
 	    current = undefined;
 	}
+	li.unbind("click");
 	area.unbind("click");
     });
 }
@@ -736,7 +775,6 @@ function undoAction () {
 
     redoStack.push ( act );
 
-    //drawTrash();
     $("#redo").removeClass("disabled").addClass("enabled");
 }
 
@@ -814,6 +852,19 @@ function searchNotes ( ) {
     });
 }
 
+function checkList ( event ) {
+    var el = $(event.currentTarget);
+    if ( el.is( ":checked" ) ) {
+	el.attr("checked", "checked");
+    } else {
+	el.removeAttr("checked");
+    }
+    var note = el.parents(".note");
+    var id = note.attr("id");
+    notes[id].content = note.find("blockquote").html();
+    saveNote( { "id" : id, "content" : notes[id].content}, true );	
+}
+
 $(document).ready( function () {
 
     $('#noteArea').bind('dblclick', function(event) {
@@ -829,17 +880,6 @@ $(document).ready( function () {
 	    el.find(".trash_checkbox").attr({"checked":"checked"});
 	} else {
 	    el.find(".trash_checkbox").removeAttr("checked");
-	}
-    });
-
-    $("#check_all_div").bind("mouseup", function ( event ) {
-	if ( event.target.tagName.toLowerCase() == "input" ){ return; }
-	var q = $("#check_all");
-	var el = $("#managemenu");
-	if ( q.is( ":checked" ) ){
-	    el.find(".trash_checkbox").removeAttr("checked");
-	} else {
-	    el.find(".trash_checkbox").attr("checked", "checked");
 	}
     });
 
@@ -862,6 +902,8 @@ $(document).ready( function () {
 	event.preventDefault();
 	redoAction();
     });
+
+    $(".list_check").click( checkList );
 
     $("#manage").bind('click', function( event ){
 	event.preventDefault();
@@ -939,6 +981,10 @@ $(document).ready( function () {
 	online = true;
     });
 
+    $(".menu").bind("click", function ( event ) {
+	event.stopPropagation();
+    });
+
     $(".colorSq").bind( "mouseover", function ( event ) {
         if ( !! current ) {
     	    current.remove();
@@ -962,12 +1008,14 @@ $(document).ready( function () {
         big.bind ( "click", function ( event ) {
     	    colorNote ( el, color );
     	    big.remove();
+	    $(".menu").css("display", "none");
         });
 	df.parent().append ( big );
     });
 
     $("#archive").bind( "click", function ( event ) {
 	deleteNote ( $("#" + $(event.currentTarget).parents(".menu").attr("name") ) );
+	$(".menu").css("display", "none");
     });
 
     $(window).bind("focus", function ( event ) {
