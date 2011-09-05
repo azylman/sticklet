@@ -95,7 +95,7 @@ class Note(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
-            memcache.flush_all()
+            memcache.delete("notes")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")

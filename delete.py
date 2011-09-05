@@ -48,7 +48,7 @@ class Trash(webapp.RequestHandler):
                 if db_n:
                     if db_n.is_saved():
                         db_n.delete()
-            memcache.flush_all()
+            memcache.delete("trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
