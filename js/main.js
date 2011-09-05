@@ -771,6 +771,7 @@ function removeActions( id ) {
 	$("#undo").removeClass("enabled").addClass("disabled");
     }
     redoStack = [];
+    $("#redo").removeClass("enabled").addClass("disabled");
 }
 
 function undoAction () {

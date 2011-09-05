@@ -15,6 +15,7 @@ import stickynote
 from django.utils import simplejson as json
 
 from google.appengine.api import users
+from google.appengine.api import memcache
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from webob.multidict import MultiDict, UnicodeMultiDict, NestedMultiDict, NoVars
@@ -34,6 +35,7 @@ class Note(webapp.RequestHandler):
             note.y = int ( self.request.get( 'y' ) )
             note.z = int ( self.request.get( 'z' ) )
             note.put()
+            memcache.flush_all()
             self.response.out.write(json.dumps(note.to_dict()))
         else:
             self.error(401)
@@ -42,19 +44,25 @@ class Note(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
-            notes_query = stickynote.snModel.all().ancestor(
-                stickynote.key(user.email()))
-            notes_query.filter ( "trash = ", 0 ).order('z')
+            note_query = memcache.get("notes")
+            if note_query is not None:
+                self.response.out.write( note_query )
+            else:
+                notes_query = stickynote.snModel.all().ancestor(
+                    stickynote.key(user.email()))
+                notes_query.filter ( "trash = ", 0 ).order('z')
+                
+                min_z = 0
+                arr = []
+                for note in notes_query:
+                    note.z = min_z
+                    note.put()
+                    arr.append ( note.to_dict() )
+                    min_z = min_z + 1
 
-            min_z = 0
-            arr = []
-            for note in notes_query:
-                note.z = min_z
-                note.put()
-                arr.append ( note.to_dict() )
-                min_z = min_z + 1
-
-            self.response.out.write( json.dumps( arr ) )
+                notes = json.dumps( arr )
+                memcache.add( "notes", notes )
+                self.response.out.write( notes )
         else:
             self.error( 401 )
             self.response.out.write( "Not logged in." )
@@ -86,23 +94,7 @@ class Note(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
-        else:
-            self.error(401)
-            self.response.out.write("Not logged in.")
-
-    def delete(self):
-        user = users.get_current_user()
-        if user:
-            dict =  json.loads ( self.request.body )
-            for note in dict:
-                db_n = stickynote.db.get( note['id'] )
-                if db_n:
-                    db_n.trash = 1
-                    db_n.delete_date = datetime.datetime.now()
-                    db_n.put();
-                else:
-                    self.error(400)
-                    self.response.out.write ("Note for the given id does not exist.")
+            memcache.flush_all()
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -111,21 +103,22 @@ class Trash(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
-            notes_query = stickynote.snModel.all().ancestor(
-                stickynote.key(user.email()))
-            notes_query.filter ( "trash = ", 1 ).order('delete_date')
-            self.response.out.write(json.dumps([note.to_dict() for note in notes_query]))
-        else:
-            self.error(401)
-            self.response.out.write("Not logged in.")
-    def delete(self):
-        user = users.get_current_user()
-        if user:
-            dict =  json.loads ( self.request.body )
-            for note in dict:
-                db_n = stickynote.db.get( note['id'] )
-                if db_n.is_saved():
-                    db_n.delete()
+
+            note_query = memcache.get("trash")
+            if note_query is not None:
+                self.response.out.write( note_query )
+            else:
+                notes_query = stickynote.snModel.all().ancestor(
+                    stickynote.key(user.email()))
+                notes_query.filter ( "trash = ", 1 ).order('delete_date')
+
+                arr = []
+                for note in notes_query:
+                    arr.append( note.to_dict() )
+
+                trash = json.dumps( arr )
+                memcache.add( "trash", trash )
+                self.response.out.write( trash )
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -139,11 +132,11 @@ class Trash(webapp.RequestHandler):
                     db_n.trash = 0
                     db_n.delete_date = None
                     db_n.put()
+            memcache.flush_all()
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
                     
-
 
 application = webapp.WSGIApplication([
     ('/notes', Note),

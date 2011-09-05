@@ -15,6 +15,7 @@ import stickynote
 from django.utils import simplejson as json
 
 from google.appengine.api import users
+from google.appengine.api import memcache
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
@@ -32,6 +33,7 @@ class Note(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
+            memcache.flush_all()
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -46,6 +48,7 @@ class Trash(webapp.RequestHandler):
                 if db_n:
                     if db_n.is_saved():
                         db_n.delete()
+            memcache.flush_all()
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
