@@ -621,10 +621,7 @@ function writeNote ( note, fade ) {
 	    var note = notes[$(event.currentTarget).parents(".note").attr("id")];
 	    if ( event.keyCode == 13 && note.is_list == 1 ) {
 		var sel = window.getSelection();
-		var range = sel.getRangeAt(0);
 		var node = sel.focusNode;
-		console.log ( sel.rangeCount );
-		console.log ( node.tagName );
 		if ( $(node).find(".list_check").length == 0 && node.tagName !== undefined ) {
 		    event.preventDefault();
 		    var ch = $("<input />", {
