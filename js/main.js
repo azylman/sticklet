@@ -632,9 +632,6 @@ function writeNote ( note, fade ) {
 		    ch.bind ( "mousedown", function ( event ) {
 			event.stopPropagation();
 		    });
-		    ch.bind ( "mouseup", function ( event ) {
-			event.stopPropagation();
-		    });
 		    $(node).prepend( ch );
 		}
 	    }
@@ -907,9 +904,6 @@ $(document).ready( function () {
 
     $(".list_check").click( checkList );
     $(".list_check").bind("mousedown", function ( event ) {
-	event.stopPropagation();
-    });
-    $(".list_check").bind("mouseup", function ( event ) {
 	event.stopPropagation();
     });
 
