@@ -32,8 +32,8 @@ class Note(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
-            memcache.delete( user.nickname() + "_notes")
-            memcache.delete( user.nickname() + "_trash")
+            memcache.delete( user.user_id() + "_notes")
+            memcache.delete( user.user_id() + "_trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -48,7 +48,7 @@ class Trash(webapp.RequestHandler):
                 if db_n:
                     if db_n.is_saved():
                         db_n.delete()
-            memcache.delete( user.nickname() + "_trash")
+            memcache.delete( user.user_id() + "_trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
