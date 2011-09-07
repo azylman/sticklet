@@ -428,3 +428,27 @@ label {
 .list_check {
     cursor: pointer;
 }
+
+#saved {
+    position:relative;
+    width:123px;
+    height:24px;
+    margin:auto;
+    margin-top:41px;
+    z-index:1004;
+    text-align:center;
+    color: #6e6e6e;
+    background-color:#dcdcdc;
+    border: solid 1px #999;
+    border-radius: 4px;
+    border-top-left-radius:0px;
+    border-top-right-radius:0px;
+    font-size: 106%;
+    display:none;
+}
+
+#saved span {
+    display:inline-block;
+    vertical-align:text-bottom;
+    height:18px;
+}

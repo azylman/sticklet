@@ -178,6 +178,9 @@ function deleteNote ( el ) {
 		  "data" : JSON.stringify ( [note] ),
 		  "success" : function ( resp ) {
 		      dumpNotes();
+		      $("#saved").slideDown("fast", function () {
+			  setTimeout("$('#saved').slideUp('fast')", 3500);
+		      });
 		  },
 		  "error" : function( resp ) {
 		      if( resp.status == 401 ) {
@@ -206,6 +209,9 @@ function saveNote ( note, async, fn ) {
               "type" : "PUT",
               "data" : dict,
               "success" : function ( resp ) {
+		  $("#saved").slideDown("fast", function () {
+		      setTimeout("$('#saved').slideUp('fast')", 3500);
+		  });
 		  if ( fn !== undefined ) {
 		      fn ( resp );
 		  }
