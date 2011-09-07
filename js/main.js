@@ -869,12 +869,12 @@ function searchNotes ( ) {
     $(document).bind("click", function ( event ) {
 	$(".found").removeClass("found");
 	$(".unfound").removeClass("unfound");
+	$("#searchbox").val("").text("");
 	$(document).unbind("click");
     });
 }
 
 function checkList ( event ) {
-    //event.preventDefault();
     event.stopPropagation();
     var el = $(event.currentTarget);
     if ( el.is( ":checked" ) ) {
@@ -962,9 +962,8 @@ $(document).ready( function () {
 	    if ( isEditable( event.target ) ) {
 		$(event.target).blur();
 	    }
-	    if ( $("#searchbox").is(":focus") ){
+	    if ( $("#searchbox").is(":focus") || $(".found, .unfound").length > 0 ){
 		$(document).trigger("click");
-		$("#searchbox").val("").text("");
 	    }
 	} else if ( event.keyCode == 13 ) {
 	    if ( $("#searchbox").is(":focus") ) {
@@ -989,7 +988,7 @@ $(document).ready( function () {
     });
 
     $("#search").bind( "click", function ( event ) {
-	event.preventDefault();
+	//event.preventDefault();
 	event.stopPropagation();
 	searchNotes();
     });
