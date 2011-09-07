@@ -1,5 +1,4 @@
 import os
-#os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from google.appengine.dist import use_library
 use_library('django', '1.2')
 
@@ -33,7 +32,8 @@ class Note(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
-            memcache.flush_all()
+            memcache.delete( user.nickname() + "_notes")
+            memcache.delete( user.nickname() + "_trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -48,7 +48,7 @@ class Trash(webapp.RequestHandler):
                 if db_n:
                     if db_n.is_saved():
                         db_n.delete()
-            memcache.delete("trash")
+            memcache.delete( user.nickname() + "_trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")

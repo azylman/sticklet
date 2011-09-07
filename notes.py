@@ -1,5 +1,4 @@
 import os
-#os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from google.appengine.dist import use_library
 use_library('django', '1.2')
 
@@ -35,8 +34,8 @@ class Note(webapp.RequestHandler):
             note.y = int ( self.request.get( 'y' ) )
             note.z = int ( self.request.get( 'z' ) )
             note.put()
-            memcache.flush_all()
             self.response.out.write(json.dumps(note.to_dict()))
+            memcache.delete( user.nickname() + "_notes" )
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -44,7 +43,7 @@ class Note(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
-            note_query = memcache.get("notes")
+            note_query = memcache.get( user.nickname() + "_notes")
             if note_query is not None:
                 self.response.out.write( note_query )
             else:
@@ -62,7 +61,7 @@ class Note(webapp.RequestHandler):
 
                 notes = json.dumps( arr )
                 self.response.out.write( notes )
-                memcache.add( "notes", notes )
+                memcache.add( user.nickname() + "_notes", notes )
 
         else:
             self.error( 401 )
@@ -95,7 +94,8 @@ class Note(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
-            memcache.delete("notes")
+            memcache.delete( user.nickname() + "_notes")
+            memcache.delete( user.nickname() + "_trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -105,7 +105,7 @@ class Trash(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
 
-            note_query = memcache.get("trash")
+            note_query = memcache.get( user.nickname() + "_trash")
             if note_query is not None:
                 self.response.out.write( note_query )
             else:
@@ -119,7 +119,7 @@ class Trash(webapp.RequestHandler):
 
                 trash = json.dumps( arr )
                 self.response.out.write( trash )
-                memcache.add( "trash", trash )
+                memcache.add( user.nickname() + "_trash", trash )
 
         else:
             self.error(401)
@@ -134,7 +134,8 @@ class Trash(webapp.RequestHandler):
                     db_n.trash = 0
                     db_n.delete_date = None
                     db_n.put()
-            memcache.flush_all()
+            memcache.delete( user.nickname() + "_notes")
+            memcache.delete( user.nickname() + "_trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
