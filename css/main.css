@@ -160,6 +160,7 @@ html,body {
 .found {
     border: 2px solid red !important;
     z-index: 1025 !important;
+    opacity: 1 !important;
 }
 
 .unfound {
@@ -435,7 +436,7 @@ label {
     height:24px;
     margin:auto;
     margin-top:41px;
-    z-index:1004;
+    z-index:1004 !important;
     text-align:center;
     color: #6e6e6e;
     background-color:#dcdcdc;
@@ -444,6 +445,7 @@ label {
     border-top-left-radius:0px;
     border-top-right-radius:0px;
     font-size: 106%;
+    opacity:.65;
     display:none;
 }
 

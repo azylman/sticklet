@@ -13,6 +13,7 @@ var redoStack = [];
 var current;
 var trash = {};
 var userAgent = navigator.userAgent.toLowerCase();
+var t;
 
 try {
     if ( online === undefined ){
@@ -179,14 +180,20 @@ function deleteNote ( el ) {
 		  "success" : function ( resp ) {
 		      dumpNotes();
 		      $("#saved").slideDown("fast", function () {
-			  setTimeout("$('#saved').slideUp('fast')", 3500);
+			  clearTimeout( t );
+			  t = setTimeout("$('#saved').slideUp('fast')", 2500);
 		      });
 		  },
 		  "error" : function( resp ) {
 		      if( resp.status == 401 ) {
 			  window.location = $("#logout").attr("href");
 		      } else {
-			  alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+			  $("#saved span").text( "Failed" );
+			  $('#saved').addClass( "found" );
+			  $("#saved").slideDown("fast", function () {
+			      clearTimeout( t );
+			      t = setTimeout("$('#saved').slideUp('fast', handleError )", 2500);
+			  });
 		      }
 		  }
 		});
@@ -200,6 +207,11 @@ function deleteNote ( el ) {
     });
 }
 
+function handleError ( ) {
+    $('#saved').removeClass( "found" );
+    $('#saved span').text( 'Saved' );
+}
+
 function saveNote ( note, async, fn ) {
 
     var dict = JSON.stringify ( [note] );
@@ -210,7 +222,8 @@ function saveNote ( note, async, fn ) {
               "data" : dict,
               "success" : function ( resp ) {
 		  $("#saved").slideDown("fast", function () {
-		      setTimeout("$('#saved').slideUp('fast')", 3500);
+		      clearTimeout( t );
+		      t = setTimeout("$('#saved').slideUp('fast')", 2500);
 		  });
 		  if ( fn !== undefined ) {
 		      fn ( resp );
@@ -221,7 +234,12 @@ function saveNote ( note, async, fn ) {
 		  if( resp.status == 401 ) {
 		      window.location = $("#logout").attr("href");
 		  } else {
-		      alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+		      $("#saved span").text( "Failed" );
+		      $('#saved').addClass( "found" );
+		      $("#saved").slideDown("fast", function () {
+			  clearTimeout( t );
+			  t = setTimeout("$('#saved').slideUp('fast', handleError )", 2500);
+		      });
 		  }
               }
             });
