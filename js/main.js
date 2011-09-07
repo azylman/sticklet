@@ -278,6 +278,7 @@ function drawTrash() {
 		subj.html("&nbsp;");
 	    }
 	    var content = trash[a].content.replace(/<\/?[^>]+(>|$)/g, "");
+	    content = content.replace( /(&.*?;)/g, " " );
 	    content = content.substr(0,35);
 	    if (content !== "") {
 		snippet.text(content);
