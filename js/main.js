@@ -671,6 +671,8 @@ function writeNote ( note, fade ) {
 		    ch.click ( checkList );
 		    ch.bind ( "mousedown", function ( event ) {
 			event.stopPropagation();
+		    }).bind("dblclick", function ( event ){
+			event.stopPropagation();
 		    });
 		    if ( node.tagName.toLowerCase() == "blockquote") {
 			var di = $("<div />");
@@ -711,7 +713,9 @@ function writeNote ( note, fade ) {
     }
     elm.find( ".list_check").bind( "mousedown", function ( event ) {
 	event.stopPropagation();
-    }).unbind("click").click( checkList );
+    }).unbind("click").click( checkList ).bind("dblclick", function ( event ){
+	event.stopPropagation();
+    });
 }
 
 function dropDown ( po ) {

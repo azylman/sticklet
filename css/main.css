@@ -449,8 +449,7 @@ label {
     display:none;
 }
 
-#saved span {
-    display:inline-block;
-    vertical-align:text-bottom;
-    height:18px;
+#saved div {
+    height:100%;
+    padding-top:2px;
 }
