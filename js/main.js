@@ -355,8 +355,12 @@ function restoreTrash( cs ) {
 	    if( resp.status == 401 ) {
 		window.location = $("#logout").attr("href");
 	    } else {
-		console.log ( resp );
-		alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+		$("#saved span").text( "Failed" );
+		$('#saved').addClass( "found" );
+		$("#saved").slideDown("fast", function () {
+		    clearTimeout( t );
+		    t = setTimeout("$('#saved').slideUp('fast', handleError )", 2500);
+		});		
 	    }
 	}
     });
@@ -392,7 +396,12 @@ function permDelete( cs ){
 		if( resp.status == 401 ) {
 		    window.location = $("#logout").attr("href");
 		}else {
-		    alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+		    $("#saved span").text( "Failed" );
+		    $('#saved').addClass( "found" );
+		    $("#saved").slideDown("fast", function () {
+			clearTimeout( t );
+			t = setTimeout("$('#saved').slideUp('fast', handleError )", 2500);
+		    });
 		}
             }
 	});
