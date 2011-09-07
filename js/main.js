@@ -523,7 +523,8 @@ function updateNote ( note ) {
     }
     el.css(css);
     if ( old.content != note.content ) {
-	el.find("blockquote").html( note.content );
+	el.find("blockquote").html( note.content )
+	el.find(".list_check").unbind("click").click( checkList );
     }
     if ( old.subject != note.subject ) {
 	el.find(".noteHeader").find("div").html( note.subject );
@@ -674,6 +675,9 @@ function writeNote ( note, fade ) {
     if ( fade ) {
 	elm.fadeIn( 350 );
     }
+    elm.find( ".list_check").bind( "mousedown", function ( event ) {
+	event.stopPropagation();
+    }).unbind("click").click( checkList );
 }
 
 function dropDown ( po ) {
@@ -703,7 +707,6 @@ function dropDown ( po ) {
 	    notes[id].is_list = 0;
 	    saveNote( { "id" : id, "is_list" : 0}, true );
 	}
-	//$(".menu").css("display","none");
     });
     var area = $(document);
     area.bind ( "click", function ( event ) {
@@ -921,11 +924,6 @@ $(document).ready( function () {
     $('#redo').bind('click', function( event ) {
 	event.preventDefault();
 	redoAction();
-    });
-
-    $(".list_check").click( checkList );
-    $(".list_check").bind("mousedown", function ( event ) {
-	event.stopPropagation();
     });
 
     $("#manage").bind('click', function( event ){
