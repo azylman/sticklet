@@ -401,6 +401,7 @@ a.right {
 .noSelect {
     -webkit-user-select: none;
     -moz-user-select: none;
+    -moz-user-select: -moz-none;
     -o-user-select: none;
     -khtml-user-select: none;
     user-select: none;
@@ -412,6 +413,8 @@ a.right {
     -o-user-select: text;
     -khtml-user-select: text;
     user-select: text;
+    outline: 1px ridge rgba(0,0,0);
+    outline: 1px ridge rgba(0,0,0,.4);
 }
 
 label {
