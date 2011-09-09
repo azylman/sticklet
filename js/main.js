@@ -458,10 +458,10 @@ function dragging ( e ) {
     el.css("top", (dragged.sy + y - dragged.y) + "px");
 
     if ( $(e.target).parents("#managemenu").length > 0) {
-	el.addClass ( "unfound" ).addClass( "found" );
+	el.addClass ( "unfound found" );
 	$("#managemenu").css("cursor","crosshair");
     } else { 
-	el.removeClass ( "unfound" ).removeClass( "found" );
+	el.removeClass ( "unfound found" );
     }
     
 }
@@ -596,7 +596,7 @@ function writeNote ( note, fade ) {
     var s = $('<div />');
     s.bind("blur", function(event) {
         closeSave(event, $(this));
-        $(this).attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect");
+        $(this).attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect outlined");
     });
     s.bind( "keypress", function ( event ) {
 	if (event.keyCode == 13 ) {
@@ -609,7 +609,7 @@ function writeNote ( note, fade ) {
 	if ( ! online ){ return; }
 	s.attr({"contenteditable" : true});
 	s.css("cursor", "text");
-	s.addClass("yesSelect");
+	s.addClass("yesSelect outlined");
 	s.focus();
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
@@ -648,14 +648,14 @@ function writeNote ( note, fade ) {
     var b = $('<blockquote />');
     b.bind ( "blur", function( event ) {
         closeSave(event, b);
-        b.attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect").
-	    unbind("keypress");
+        b.attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect outlined")
+	    .unbind("keypress");
     });
     b.bind ( "dblclick", function( event ) {
 	if ( ! online ){ return; }
 	b.attr({"contenteditable" : true});
 	b.css("cursor", "text");
-	b.addClass("yesSelect");
+	b.addClass("yesSelect outlined");
 	b.focus();
 	b.bind( "keypress", function ( event ) {
 	    var note = notes[$(event.currentTarget).parents(".note").attr("id")];

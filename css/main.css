@@ -413,6 +413,9 @@ a.right {
     -o-user-select: text;
     -khtml-user-select: text;
     user-select: text;
+}
+
+.outlined {
     outline: 1px ridge rgba(0,0,0);
     outline: 1px ridge rgba(0,0,0,.4);
 }
