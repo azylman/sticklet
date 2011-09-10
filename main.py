@@ -6,6 +6,7 @@ import cgi
 import wsgiref.handlers
 
 from google.appengine.api import users
+from google.appengine.api import channel
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -17,8 +18,9 @@ class MainPage(webapp.RequestHandler):
         if user:
             url = users.create_logout_url("/greeting")
             url_linktext = 'Logout'
-            
+            #token = channel.create_channel( user.user_id() + "_channel" );
             template_values = {
+                #'token' : token,
                 'url': url,
                 'url_linktext': url_linktext,
                 'user' : user.nickname(),

@@ -15,6 +15,7 @@ from django.utils import simplejson as json
 
 from google.appengine.api import users
 from google.appengine.api import memcache
+from google.appengine.api import channel
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from webob.multidict import MultiDict, UnicodeMultiDict, NestedMultiDict, NoVars
@@ -88,9 +89,10 @@ class Note(webapp.RequestHandler):
                         db_n.z = int(note['z'])
                     if 'is_list' in note:
                         db_n.is_list = int(note['is_list'])
-
+                        
                     db_n.modify_date = datetime.datetime.now()
                     db_n.put()
+                    #channel.send_message(user.user_id() + "_channel","{'message':'updated'}")
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
@@ -138,8 +140,7 @@ class Trash(webapp.RequestHandler):
             memcache.delete( user.user_id() + "_trash")
         else:
             self.error(401)
-            self.response.out.write("Not logged in.")
-                    
+            self.response.out.write("Not logged in.")                    
 
 application = webapp.WSGIApplication([
     ('/notes', Note),

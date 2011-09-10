@@ -1077,11 +1077,11 @@ $(document).ready( function () {
     });
 
     $(window).bind("focus", function ( event ) {
-	if ( event.target == event.currentTarget ) {
-	    if ( online ) {
-		getNotes();
-	    }
-	}
+    	if ( event.target == event.currentTarget ) {
+    	    if ( online ) {
+    		getNotes();
+    	    }
+    	}
     });
 
 });
