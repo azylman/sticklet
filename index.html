@@ -117,18 +117,6 @@
     <script type="text/javascript">
       channel = new goog.appengine.Channel('{{ token }}');
       socket = channel.open();
-      <!-- socket.onopen = function( event ) { -->
-      <!--   console.log ( "open" ); -->
-      <!--   console.log ( event ); -->
-      <!-- }; -->
       socket.onmessage = noteUpdate;
-      <!-- socket.onerror = function( event ) { -->
-      <!--   console.log ( "error" ); -->
-      <!--   console.log ( event ); -->
-      <!-- }; -->
-      <!-- socket.onclose = function( event ) { -->
-      <!--   console.log ( "close" ); -->
-      <!--   console.log ( event ); -->
-      <!-- }; -->
     </script>
 </html>

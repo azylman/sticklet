@@ -86,6 +86,9 @@ function noteUpdate( event ) {
 	drawTrash();
 	return;
     }
+    if ( note.z > z ) {
+	note.z = z++;
+    }
     if ( !! notes[note.id] ) {
 	if ( note.trash == 1 ) {
 	    delete notes[note.id];
@@ -166,9 +169,7 @@ function closeSave ( e, obj ) {
     act.push();
 
     var n = { "subject" : subject, "content" : content, "id" : id };
-    if( online ){
-	saveNote ( n, true );
-    }
+    saveNote ( n, true );
 }
 
 function createNote( e ) {
@@ -248,7 +249,9 @@ function handleError ( ) {
 }
 
 function saveNote ( note, async, fn ) {
-
+    if ( ! online ) {
+	return;
+    }
     var dict = JSON.stringify ( [note] );
 
     $.ajax ({ "url" : "/notes",
@@ -557,9 +560,7 @@ function stopDrag ( e ) {
 
     var no = { "x" : note.x, "z" : note.z, "y" : note.y, "id" : note.id };
 
-    if ( online ){
-	saveNote ( no, true );
-    }
+    saveNote ( no, true );
 
 }
 
@@ -780,10 +781,10 @@ function dropDown ( po ) {
     li.click( function ( event ) {
 	if ( li.attr("checked") == "checked" ) {
 	    notes[id].is_list = 1;
-	    saveNote( { "id" : id, "is_list" : 1}, true );
+	    saveNote( { "id" : id, "is_list" : 1 }, true );
 	} else {
 	    notes[id].is_list = 0;
-	    saveNote( { "id" : id, "is_list" : 0}, true );
+	    saveNote( { "id" : id, "is_list" : 0 }, true );
 	}
     });
     var area = $(document);
@@ -806,9 +807,7 @@ function colorNote ( el, color ) {
     act.setAfter ( n );
     act.push ( );
     var note = { "id" : n.id, "color" : color };
-    if ( online ) {
-	saveNote ( note, true );
-    }
+    saveNote ( note, true );
     el.css({"backgroundColor" : color});
 }
 
@@ -868,9 +867,7 @@ function undoAction () {
     writeNote ( act.b, false );
     notes[act.b.id] = act.b;
     dumpNotes();
-    if ( online ) {
-	saveNote ( act.b, true );
-    }
+    saveNote ( act.b, true );
 
     redoStack.push ( act );
 
@@ -890,9 +887,7 @@ function redoAction () {
     writeNote ( act.a, false );
     notes[act.a.id] = act.a;
     dumpNotes();
-    if ( online ) {
-	saveNote ( act.a, true );
-    }
+    saveNote ( act.a, true );
 
     undoStack.push ( act );
 

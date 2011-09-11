@@ -45,6 +45,12 @@ class Greeting(webapp.RequestHandler):
         template_values = {
             'url': url,
             'url_linktext': url_linktext,
+            'color1' : "#F7977A",
+            'color2' : "#C5E3BF",
+            'color3' : "#c1F0F6",
+            'color4' : "#FFF79A",
+            'color5' : "#FDC68A",
+            'color6' : "#D8BFD8"
             }
         
         path = os.path.join(os.path.dirname(__file__), 'greeting.html')
