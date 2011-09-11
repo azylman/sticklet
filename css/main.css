@@ -80,6 +80,7 @@ html,body {
     overflow-y: hidden;
     height:auto;
     max-height:100%;
+    margin-top: 5px;
 }
 
 #menus {
