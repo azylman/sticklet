@@ -31,6 +31,9 @@ handlers:
 - url: /greeting
   script: main.py
 
+- url: /_ah/channel/.*
+  script: notes.py
+
 - url: /manifest
   static_files: manifest
   mime_type: text/cache-manifest

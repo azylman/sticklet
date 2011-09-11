@@ -8,6 +8,7 @@ import datetime
 import sys
 import wsgiref.handlers
 import urlparse
+import stickletUser
 
 import stickynote
 
@@ -15,12 +16,14 @@ from django.utils import simplejson as json
 
 from google.appengine.api import users
 from google.appengine.api import memcache
+from google.appengine.api import channel
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 class Note(webapp.RequestHandler):
     def put(self):
         user = users.get_current_user()
+        up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
             for note in dict:
@@ -29,6 +32,10 @@ class Note(webapp.RequestHandler):
                     db_n.trash = 1
                     db_n.delete_date = datetime.datetime.now()
                     db_n.put();
+                    if up:
+                        for con in up.connections:
+                            mes = json.dumps( db_n.to_dict() )
+                            channel.send_message( con, mes )
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
@@ -41,6 +48,7 @@ class Note(webapp.RequestHandler):
 class Trash(webapp.RequestHandler):
     def put(self):
         user = users.get_current_user()
+        up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
             for note in dict:
@@ -48,6 +56,10 @@ class Trash(webapp.RequestHandler):
                 if db_n:
                     if db_n.is_saved():
                         db_n.delete()
+                        if up:
+                            for con in up.connections:
+                                mes = json.dumps({"to_delete":note['id']})
+                                channel.send_message( con, mes )
             memcache.delete( user.user_id() + "_trash")
         else:
             self.error(401)

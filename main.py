@@ -4,6 +4,7 @@ use_library('django', '1.2')
 
 import cgi
 import wsgiref.handlers
+import random
 
 from google.appengine.api import users
 from google.appengine.api import channel
@@ -18,7 +19,7 @@ class MainPage(webapp.RequestHandler):
         if user:
             url = users.create_logout_url("/greeting")
             url_linktext = 'Logout'
-            token = channel.create_channel( user.user_id() + "_channel" );
+            token = channel.create_channel( user.user_id() + "_chan_" + str(random.random()) );
             template_values = {
                 'token' : token,
                 'url': url,

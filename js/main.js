@@ -77,6 +77,41 @@ function getNotes () {
     });
 }
 
+function noteUpdate( event ) {
+
+    var note = JSON.parse( event.data );
+    if ( !! note.to_delete ) {
+	delete trash[note.to_delete];
+	$("#" + note.to_delete).remove();
+	drawTrash();
+	return;
+    }
+    if ( !! notes[note.id] ) {
+	if ( note.trash == 1 ) {
+	    delete notes[note.id];
+	    trash[note.id] = note;
+	    $("#" + note.id).remove();
+	    drawTrash();
+	} else {
+	    writeNote( note, false );
+	    notes[note.id] = note;
+	}
+    } else if ( !! trash[note.id] ) {
+	if ( note.trash == 0 ) {
+	    delete trash[note.id];
+	    $("#" + note.id).remove();
+	    writeNote( note, false );
+	    notes[note.id] = note;
+	} else {
+	    trash[note.id] = note;
+	}
+	drawTrash();
+    } else {
+	writeNote( note, false );
+	notes[note.id] = note;
+    }
+}
+
 function getTrash () {
     $.ajax ({
 	"url" : "/notes/trash",
@@ -188,7 +223,7 @@ function deleteNote ( el ) {
 		      if( resp.status == 401 ) {
 			  window.location = $("#logout").attr("href");
 		      } else {
-			  $("#saved span").text( "Failed" );
+			  $("#saved div").text( "Failed" );
 			  $('#saved').addClass( "found" );
 			  $("#saved").slideDown("fast", function () {
 			      clearTimeout( t );
@@ -209,7 +244,7 @@ function deleteNote ( el ) {
 
 function handleError ( ) {
     $('#saved').removeClass( "found" );
-    $('#saved span').text( 'Saved' );
+    $('#saved div').text( 'Saved' );
 }
 
 function saveNote ( note, async, fn ) {
@@ -234,7 +269,7 @@ function saveNote ( note, async, fn ) {
 		  if( resp.status == 401 ) {
 		      window.location = $("#logout").attr("href");
 		  } else {
-		      $("#saved span").text( "Failed" );
+		      $("#saved div").text( "Failed" );
 		      $('#saved').addClass( "found" );
 		      $("#saved").slideDown("fast", function () {
 			  clearTimeout( t );
@@ -254,6 +289,8 @@ function drawTrash() {
 		"class" : "trash_item",
 		"id" : trash[a].id
 	    });
+	    div.css({"background-color" : trash[a].color,
+		     "opacity" : .4});
 	    div.bind("mousedown", function ( event ) {
 		if ( $(event.target).is("input") ) { return; }
 		event.preventDefault();
@@ -355,7 +392,7 @@ function restoreTrash( cs ) {
 	    if( resp.status == 401 ) {
 		window.location = $("#logout").attr("href");
 	    } else {
-		$("#saved span").text( "Failed" );
+		$("#saved div").text( "Failed" );
 		$('#saved').addClass( "found" );
 		$("#saved").slideDown("fast", function () {
 		    clearTimeout( t );
@@ -396,7 +433,7 @@ function permDelete( cs ){
 		if( resp.status == 401 ) {
 		    window.location = $("#logout").attr("href");
 		}else {
-		    $("#saved span").text( "Failed" );
+		    $("#saved div").text( "Failed" );
 		    $('#saved').addClass( "found" );
 		    $("#saved").slideDown("fast", function () {
 			clearTimeout( t );
@@ -544,7 +581,7 @@ function updateNote ( note ) {
     var el = $("#" + note.id);
     var css = {};
     if ( old.z != note.z ) {
-	css['zIndex'] = note.z;
+	css['z-index'] = note.z;
     }
     if ( old.x != note.x ) {
 	css['left'] = note.x;
@@ -648,8 +685,7 @@ function writeNote ( note, fade ) {
     var b = $('<blockquote />');
     b.bind ( "blur", function( event ) {
         closeSave(event, b);
-        b.attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect outlined")
-	    .unbind("keypress");
+        b.attr({"contenteditable" : false}).css("cursor", "move").removeClass("yesSelect outlined").unbind("keypress");
     });
     b.bind ( "dblclick", function( event ) {
 	if ( ! online ){ return; }
@@ -699,7 +735,7 @@ function writeNote ( note, fade ) {
 	$(document).bind ( "click", function( event ) {
             if ( isEditable ( event.target ) ){ return; }
             event.stopPropagation();
-            b.attr({"contenteditable" : false});
+	    b.blur();
             $(document).unbind( "click" );
             closeSave( event, b );
 	});

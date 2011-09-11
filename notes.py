@@ -10,6 +10,7 @@ import wsgiref.handlers
 import urlparse
 
 import stickynote
+import stickletUser
 
 from django.utils import simplejson as json
 
@@ -23,9 +24,10 @@ from webob.multidict import MultiDict, UnicodeMultiDict, NestedMultiDict, NoVars
 class Note(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
+        up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
         if user:
             note = stickynote.snModel(parent=stickynote.key(user.email()))
-            note.author = users.get_current_user()
+            note.author = user
             note.content = ""
             note.subject = "Sticklet"
             note.color = ""
@@ -37,6 +39,10 @@ class Note(webapp.RequestHandler):
             note.put()
             self.response.out.write(json.dumps(note.to_dict()))
             memcache.delete( user.user_id() + "_notes" )
+            if up:
+                for con in up.connections:
+                    mes = json.dumps( note.to_dict() )
+                    channel.send_message( con, mes )
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -72,6 +78,7 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             dict =  json.loads ( self.request.body )
+            up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
@@ -92,7 +99,11 @@ class Note(webapp.RequestHandler):
                         
                     db_n.modify_date = datetime.datetime.now()
                     db_n.put()
-                    channel.send_message(user.user_id() + "_channel","{'message':'updated'}")
+                    
+                    if up:
+                        for con in up.connections:
+                            mes = json.dumps( db_n.to_dict() )
+                            channel.send_message( con, mes )
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
@@ -128,6 +139,7 @@ class Trash(webapp.RequestHandler):
             self.response.out.write("Not logged in.")
     def put(self):
         user = users.get_current_user()
+        up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
             for note in dict:
@@ -136,16 +148,39 @@ class Trash(webapp.RequestHandler):
                     db_n.trash = 0
                     db_n.delete_date = None
                     db_n.put()
+                    if up:
+                        for con in up.connections:
+                            mes = json.dumps( db_n.to_dict() )
+                            channel.send_message( con, mes )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
             self.error(401)
-            self.response.out.write("Not logged in.")                    
+            self.response.out.write("Not logged in.")
+
+class Connect(webapp.RequestHandler):
+    def post(self):
+        client_id = self.request.get("from")
+        #get current user isn't working...
+        u_id = client_id.rpartition("-")[2].partition("_")[0]
+        c_u = stickletUser.stickletUser.get_or_insert( u_id )
+        c_u.connections.append( client_id )
+        c_u.put()
+
+class Disconnect(webapp.RequestHandler):
+    def post(self):
+        client_id = self.request.get("from")
+        #get current user isn't working...
+        u_id = client_id.rpartition("-")[2].partition("_")[0]
+        c_u = stickletUser.stickletUser.get_or_insert( u_id )
+        c_u.connections.remove( client_id )
+        c_u.put()
 
 application = webapp.WSGIApplication([
     ('/notes', Note),
-    ('/notes/trash', Trash)
-], debug=True)
+    ('/notes/trash', Trash),
+    ('/_ah/channel/connected/', Connect),
+    ('/_ah/channel/disconnected/', Disconnect) ], debug=True)
 
 def main():
         run_wsgi_app(application)

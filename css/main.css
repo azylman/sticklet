@@ -296,6 +296,8 @@ a.right {
 
 .trash_item {
     cursor:move;
+    background-color: #FFF79A;
+    color:#000000;
 }
 
 .trash_item .trash_checkbox {

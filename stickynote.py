@@ -21,6 +21,7 @@ class snModel(StickyNoteModel):
             "content" : self.content,
             "subject" : self.subject,
             "color" : self.color,
+            "trash" : self.trash,
             "x" : self.x,
             "y" : self.y,
             "z" : self.z,
