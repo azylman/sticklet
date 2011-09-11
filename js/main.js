@@ -1080,13 +1080,13 @@ $(document).ready( function () {
 	$(".menu").css("display", "none");
     });
 
-    $(window).bind("focus", function ( event ) {
-    	if ( event.target == event.currentTarget ) {
-    	    if ( online ) {
-    		getNotes();
-    	    }
-    	}
-    });
+    // $(window).bind("focus", function ( event ) {
+    // 	if ( event.target == event.currentTarget ) {
+    // 	    if ( online ) {
+    // 		getNotes();
+    // 	    }
+    // 	}
+    // });
 
 });
 

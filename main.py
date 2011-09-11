@@ -18,9 +18,9 @@ class MainPage(webapp.RequestHandler):
         if user:
             url = users.create_logout_url("/greeting")
             url_linktext = 'Logout'
-            #token = channel.create_channel( user.user_id() + "_channel" );
+            token = channel.create_channel( user.user_id() + "_channel" );
             template_values = {
-                #'token' : token,
+                'token' : token,
                 'url': url,
                 'url_linktext': url_linktext,
                 'user' : user.nickname(),

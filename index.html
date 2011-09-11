@@ -114,24 +114,24 @@
     <script type="text/javascript" src="/js/jquery.overlaps.min.js"></script>
     <script type="text/javascript" src="/js/main.js"></script>
     <script type="text/javascript" src="/_ah/channel/jsapi"></script>
-    <!-- <script type="text/javascript"> -->
-      <!-- channel = new goog.appengine.Channel('{{ token }}'); -->
-      <!-- socket = channel.open(); -->
-      <!-- socket.onopen = function( event ) { -->
-      <!--   console.log ( "open" ); -->
-      <!--   console.log ( event ); -->
-      <!-- }; -->
-      <!-- socket.onmessage = function( event ) { -->
-      <!--   console.log ( "message" ); -->
-      <!--   console.log ( event ); -->
-      <!-- }; -->
-      <!-- socket.onerror = function( event ) { -->
-      <!--   console.log ( "error" ); -->
-      <!--   console.log ( event ); -->
-      <!-- }; -->
-      <!-- socket.onclose = function( event ) { -->
-      <!--   console.log ( "close" ); -->
-      <!--   console.log ( event ); -->
-      <!-- }; -->
-    <!-- </script> -->
+    <script type="text/javascript">
+      channel = new goog.appengine.Channel('{{ token }}');
+      socket = channel.open();
+      socket.onopen = function( event ) {
+        console.log ( "open" );
+        console.log ( event );
+      };
+      socket.onmessage = function( event ) {
+        console.log ( "message" );
+        console.log ( event );
+      };
+      socket.onerror = function( event ) {
+        console.log ( "error" );
+        console.log ( event );
+      };
+      socket.onclose = function( event ) {
+        console.log ( "close" );
+        console.log ( event );
+      };
+    </script>
 </html>
