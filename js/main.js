@@ -659,37 +659,41 @@ function writeNote ( note, fade ) {
 	b.focus();
 	b.bind( "keypress", function ( event ) {
 	    var note = notes[$(event.currentTarget).parents(".note").attr("id")];
-	    if ( event.keyCode == 13 && note.is_list == 1 ) {
+	    var end = 0;
+	    if ( event.keyCode == 13 ) {
+		event.preventDefault();
 		var sel = window.getSelection();
-		var node = sel.focusNode;
-		if ( $(node).find(".list_check").length == 0 && node.tagName !== undefined ) {
-		    event.preventDefault();
+		var node = $(sel.focusNode);
+		var div = $("<div />");
+		if ( note.is_list == 1 ) {
 		    var ch = $("<input />", {
 			"type" : "checkbox",
 			"class" : "list_check"
 		    });
-		    ch.click ( checkList );
+		    ch.bind( "click", checkList );
 		    ch.bind ( "mousedown", function ( event ) {
-			event.stopPropagation();
+		    	event.stopPropagation();
 		    }).bind("dblclick", function ( event ){
-			event.stopPropagation();
+		    	event.stopPropagation();
 		    });
-		    if ( node.tagName.toLowerCase() == "blockquote") {
-			var di = $("<div />");
-			$(node).prepend( di );
-			di.prepend( "&nbsp;" );
-			di.prepend( ch );
-			var range = document.createRange();
-			range.setStart( di.get(0), 0 );
-			range.setEnd( di.get(0), 2 );
-			sel.removeAllRanges();
-			sel.addRange( range );
-			sel.collapseToEnd( true );
-		    } else {
-			$(node).prepend( "&nbsp;" );
-			$(node).prepend( ch );
-		    }
+		    div.append( ch );
+		    end = 2;
 		}
+		div.append ( "&nbsp;" );
+		if ( node.prop( "tagName" ) !== undefined && node.prop( "tagName" ).toLowerCase() == "blockquote" ) {
+		    if ( end == 0 ) {
+			node.append( "<div><br></div>" );
+		    }
+		    node.append( div );
+		} else {
+		    node.after( div );
+		}
+		var range = document.createRange();
+		range.setStart( div.get(0), 0 );
+		range.setEnd( div.get(0), end );
+		sel.removeAllRanges();
+		sel.addRange( range );
+		sel.collapseToEnd( true );
 	    }
 	});
 	$(document).bind ( "click", function( event ) {
