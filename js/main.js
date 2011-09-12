@@ -78,7 +78,7 @@ function getNotes () {
 }
 
 function noteUpdate( event ){
-    console.log ( event );
+
     var snotes = JSON.parse( event.data );
 
     for( var i = 0; i < snotes.length; i++ ) {
@@ -1079,16 +1079,28 @@ $(document).ready( function () {
 
     $("#help").bind("click", function ( event ){
 	event.preventDefault();
+	$("#help_text").css("display","block");
+	$("#help_overlay").fadeIn("fast");
+    });
+
+
+    $("#share").bind( "click", function ( event ) {
+	$("#share_menu").css("display","block");
+	$(".menu").css("display", "none");
 	$("#help_overlay").fadeIn("fast");
     });
 
     $("#exit_help").bind("click", function ( event ) {
-	$("#help_overlay").fadeOut("fast");
+	$("#help_overlay").fadeOut("fast", function() {
+	    $("#help_text, #share_menu").css("display","none");
+	});
     });
 
     $("#help_overlay").bind( "click", function( event ) {
 	if ( event.target == event.currentTarget ) {
-	    $("#help_overlay").fadeOut("fast");
+	    $("#help_overlay").fadeOut("fast", function( ){
+		$("#help_text, #share_menu").css("display","none");
+	    });
 	}
     });
 
@@ -1140,12 +1152,6 @@ $(document).ready( function () {
     $("#archive").bind( "click", function ( event ) {
 	deleteNote ( $("#" + $(event.currentTarget).parents(".menu").attr("name") ) );
 	$(".menu").css("display", "none");
-    });
-
-    $("#share").bind( "click", function ( event ) {
-	//var id = $("#" + $(event.currentTarget).parents(".menu").attr("name") );
-	//
-	//Bring overlay down with shit.
     });
 
 });
