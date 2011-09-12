@@ -68,6 +68,7 @@ class Trash(webapp.RequestHandler):
 def sentTo( msg, user, cur ):
     up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )    
     if up:
+        cur = user.user_id() + "_chan_" + cur
         for con in up.connections:
             if con != cur:
                 channel.send_message( con, msg )

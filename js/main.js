@@ -78,7 +78,7 @@ function getNotes () {
 }
 
 function noteUpdate( event ){
-
+    console.log ( event );
     var snotes = JSON.parse( event.data );
 
     for( var i = 0; i < snotes.length; i++ ) {
@@ -105,12 +105,14 @@ function noteUpdate( event ){
 		    writeNote( note, false );
 		    notes[note.id] = note;
 		}
+		dumpNotes();
 	    } else if ( !! trash[note.id] ) {
 		if ( note.trash == 0 ) {
 		    delete trash[note.id];
 		    $("#" + note.id).remove();
 		    writeNote( note, false );
 		    notes[note.id] = note;
+		    dumpNotes();
 		} else {
 		    trash[note.id] = note;
 		}
@@ -118,6 +120,7 @@ function noteUpdate( event ){
 	    } else {
 		writeNote( note, false );
 		notes[note.id] = note;
+		dumpNotes();
 	    }
 	}
     }
@@ -216,9 +219,8 @@ function createNote( e ) {
 function deleteNote ( el ) {
 
     var n = notes[el.attr('id')];
-    var note = { "id" : n.id };
+    var note = { "id" : n.id, "from" : token };
     if ( online ) {
-	note.from = token;
 	$.ajax ({ "url" : "/notes/delete",
 		  "type" : "PUT",
 		  "data" : JSON.stringify ( [note] ),
@@ -261,7 +263,7 @@ function saveNote ( note, async, fn ) {
     if ( ! online ) {
 	return;
     }
-    note.from = token;
+    note["from"] = token;
     var dict = JSON.stringify ( [note] );
 
     $.ajax ({ "url" : "/notes",

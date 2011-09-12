@@ -5,6 +5,7 @@ use_library('django', '1.2')
 import cgi
 import wsgiref.handlers
 import random
+import sticklet_users
 
 from google.appengine.api import users
 from google.appengine.api import channel
@@ -19,9 +20,15 @@ class MainPage(webapp.RequestHandler):
         if user:
             url = users.create_logout_url("/greeting")
             url_linktext = 'Logout'
-            token = channel.create_channel( user.user_id() + "_chan_" + str(random.random()) );
+            up = sticklet_users.stickletUser.get_or_insert( user.user_id() );
+            if up and up.author is None:
+                up.author = user;
+                up.email = user.email();
+            rand = str(random.random());
+            token = channel.create_channel( user.user_id() + "_chan_" + rand )
             template_values = {
-                'token' : token,
+                'token' : rand,
+                'chan' : token,
                 'url': url,
                 'url_linktext': url_linktext,
                 'user' : user.nickname(),
