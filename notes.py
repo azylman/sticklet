@@ -10,7 +10,7 @@ import wsgiref.handlers
 import urlparse
 
 import stickynote
-import stickletUser
+import sticklet_users
 
 from django.utils import simplejson as json
 
@@ -24,7 +24,7 @@ from webob.multidict import MultiDict, UnicodeMultiDict, NestedMultiDict, NoVars
 class Note(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
-        up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
+        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
         if user:
             note = stickynote.snModel(parent=stickynote.key(user.email()))
             note.author = user
@@ -78,7 +78,7 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             dict =  json.loads ( self.request.body )
-            up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
+            #up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
@@ -100,13 +100,10 @@ class Note(webapp.RequestHandler):
                     db_n.modify_date = datetime.datetime.now()
                     db_n.put()
                     
-                    if up:
-                        for con in up.connections:
-                            mes = json.dumps( db_n.to_dict() )
-                            channel.send_message( con, mes )
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
+            sentTo(self.request.body)
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -139,7 +136,7 @@ class Trash(webapp.RequestHandler):
             self.response.out.write("Not logged in.")
     def put(self):
         user = users.get_current_user()
-        up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
+        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
             for note in dict:
@@ -163,7 +160,7 @@ class Connect(webapp.RequestHandler):
         client_id = self.request.get("from")
         #get current user isn't working...
         u_id = client_id.rpartition("-")[2].partition("_")[0]
-        c_u = stickletUser.stickletUser.get_or_insert( u_id )
+        c_u = sticklet_users.stickletUser.get_or_insert( u_id )
         c_u.connections.append( client_id )
         c_u.put()
 
@@ -172,9 +169,15 @@ class Disconnect(webapp.RequestHandler):
         client_id = self.request.get("from")
         #get current user isn't working...
         u_id = client_id.rpartition("-")[2].partition("_")[0]
-        c_u = stickletUser.stickletUser.get_or_insert( u_id )
+        c_u = sticklet_users.stickletUser.get_or_insert( u_id )
         c_u.connections.remove( client_id )
         c_u.put()
+
+def sentTo( msg ):
+    up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )    
+    if up:
+        for con in up.connections:
+            channel.send_message( con, msg )
 
 application = webapp.WSGIApplication([
     ('/notes', Note),

@@ -8,7 +8,7 @@ import datetime
 import sys
 import wsgiref.handlers
 import urlparse
-import stickletUser
+import sticklet_users
 
 import stickynote
 
@@ -23,7 +23,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 class Note(webapp.RequestHandler):
     def put(self):
         user = users.get_current_user()
-        up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
+        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
             for note in dict:
@@ -48,7 +48,7 @@ class Note(webapp.RequestHandler):
 class Trash(webapp.RequestHandler):
     def put(self):
         user = users.get_current_user()
-        up = stickletUser.stickletUser.get_by_key_name( user.user_id() )
+        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
             for note in dict:

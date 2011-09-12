@@ -78,40 +78,45 @@ function getNotes () {
 }
 
 function noteUpdate( event ) {
-
-    var note = JSON.parse( event.data );
-    if ( !! note.to_delete ) {
-	delete trash[note.to_delete];
-	$("#" + note.to_delete).remove();
-	drawTrash();
-	return;
-    }
-    if ( note.z > z ) {
-	note.z = z++;
-    }
-    if ( !! notes[note.id] ) {
-	if ( note.trash == 1 ) {
-	    delete notes[note.id];
-	    trash[note.id] = note;
-	    $("#" + note.id).remove();
+    var snotes = JSON.parse( event.data );
+    for( var i = 0; i < notes.length; i++ ) {
+	note = snotes[i];
+	if ( !! note.to_delete ) {
+	    delete trash[note.to_delete];
+	    $("#" + note.to_delete).remove();
+	    drawTrash();
+	    return;
+	}
+	if ( note.z > z ) {
+	    note.z = z++;
+	}
+	if ( !! notes[note.id] ) {
+	    if ( note.trash == 1 ) {
+		delete notes[note.id];
+		trash[note.id] = note;
+		$("#" + note.id).remove();
+		drawTrash();
+	    } else {
+		if ( compare( note, notes[note.id] ) == 1 ) {
+		    return;
+		}
+		writeNote( note, false );
+		notes[note.id] = note;
+	    }
+	} else if ( !! trash[note.id] ) {
+	    if ( note.trash == 0 ) {
+		delete trash[note.id];
+		$("#" + note.id).remove();
+		writeNote( note, false );
+		notes[note.id] = note;
+	    } else {
+		trash[note.id] = note;
+	    }
 	    drawTrash();
 	} else {
 	    writeNote( note, false );
 	    notes[note.id] = note;
 	}
-    } else if ( !! trash[note.id] ) {
-	if ( note.trash == 0 ) {
-	    delete trash[note.id];
-	    $("#" + note.id).remove();
-	    writeNote( note, false );
-	    notes[note.id] = note;
-	} else {
-	    trash[note.id] = note;
-	}
-	drawTrash();
-    } else {
-	writeNote( note, false );
-	notes[note.id] = note;
     }
 }
 
@@ -570,7 +575,7 @@ function compare ( note, note2 ) {
     var nA = (note2 === undefined ) ? notes[note.id] : note2;
     if ( !!nA ) {
 	if ( nA.z == note.z && nA.x == note.x && nA.y == note.y && nA.content == note.content &&
-             nA.subject == note.subject && nA.color == note.color ) {
+             nA.subject == note.subject && nA.color == note.color && note.trash == nA.trash ) {
             return 1;
 	}
     }
