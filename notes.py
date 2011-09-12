@@ -189,11 +189,11 @@ class Share(webapp.RequestHandler):
                 add = add.filter( "email =", mail['email'] ).get()
                 if add:
                     db_n = stickynote.db.get( mail['id'] )
-                    up.has_shared.append( mail['id'] )
+                    add.has_shared.append( mail['id'] )
                     if db_n:
                         db_n.shared_with.append( user.user_id() )
                         db_n.put()
-                    up.put()
+                    add.put()
                 self.response.out.write(mail['email'])
         else:
             self.error(401)
