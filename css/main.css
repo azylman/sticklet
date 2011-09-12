@@ -252,6 +252,11 @@ a.enabled:active {
     border-color: #444;
 }
 
+a.toggled {
+    box-shadow: inset 1px 1px 5px #ccc;
+    border: 1px solid rgba(0, 0, 0, .3);
+}
+
 a.left {
     -webkit-border-top-right-radius: 0;
     -moz-border-radius-topright: 0;
