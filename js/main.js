@@ -774,15 +774,17 @@ function dropDown ( po ) {
     var id = el.attr("id");
     var li = $("#list");
     if ( notes[id].is_list == 1 ) {
-	li.attr("checked", "checked");
+		li.addClass("toggled");
     } else {
-	li.removeAttr("checked");
+		li.removeClass("toggled");
     }
     li.click( function ( event ) {
-	if ( li.attr("checked") == "checked" ) {
+	if ( !li.hasClass("toggled") ) {
+		li.addClass("toggled");
 	    notes[id].is_list = 1;
 	    saveNote( { "id" : id, "is_list" : 1 }, true );
 	} else {
+		li.removeClass("toggled");
 	    notes[id].is_list = 0;
 	    saveNote( { "id" : id, "is_list" : 0 }, true );
 	}
