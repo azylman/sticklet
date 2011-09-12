@@ -186,7 +186,7 @@ class Share(webapp.RequestHandler):
             up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
             if up:
                 add = sticklet_users.stickletUser.all()
-                add = add.filter( "email=", mail['email'] ).get()
+                add = add.filter( "email =", mail['email'] ).get()
                 if add:
                     db_n = stickynote.db.get( mail['id'] )
                     up.has_shared.append( mail['id'] )
