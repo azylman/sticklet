@@ -86,6 +86,7 @@ class Note(webapp.RequestHandler):
         if user:
             dict =  json.loads ( self.request.body )
             cur = ""
+            notes = []
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
@@ -105,13 +106,14 @@ class Note(webapp.RequestHandler):
                         db_n.is_list = int(note['is_list'])
                     cur = note['from']    
                     db_n.modify_date = datetime.datetime.now()
+                    notes.append ( db_n.to_dict() )
                     db_n.put()
                     
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
 
-            sentTo(self.request.body, user, cur )
+            sentTo( json.dumps( notes ), user, cur )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -156,6 +158,7 @@ class Trash(webapp.RequestHandler):
                     db_n.delete_date = None
                     db_n.put()
                     notes.append( db_n.to_dict() )
+
             sentTo( json.dumps( notes ), user, cur )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
