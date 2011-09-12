@@ -173,8 +173,8 @@ class Connect(webapp.RequestHandler):
         c_u = sticklet_users.stickletUser.get_or_insert( u_id )
         c_u.connections.append( client_id )
         c_u.put()
-        memcache.delete( c_u.user_id() + "_user" );
-        memcache.add( c_u.user_id() + "_user", c_u )
+        #memcache.delete( c_u.user_id() + "_user" );
+        #memcache.add( c_u.user_id() + "_user", c_u )
 
 class Disconnect(webapp.RequestHandler):
     def post(self):
@@ -184,8 +184,8 @@ class Disconnect(webapp.RequestHandler):
         c_u = sticklet_users.stickletUser.get_or_insert( u_id )
         c_u.connections.remove( client_id )
         c_u.put()
-        memcache.delete( c_u.user_id() + "_user" );
-        memcache.add( c_u.user_id() + "_user", c_u )
+        #memcache.delete( c_u.user_id() + "_user" );
+        #memcache.add( c_u.user_id() + "_user", c_u )
         
 
 class Share(webapp.RequestHandler):
@@ -207,10 +207,10 @@ class Share(webapp.RequestHandler):
             self.response.out.write("Not logged in.")
 
 def sentTo( msg, user, cur ):
-    up = memcache.get( user.user_id() + "_user")
-    if up is None:
-        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
-        memcache.add( user.user_id() + "_user", up )
+    #up = memcache.get( user.user_id() + "_user")
+    #if up is None:
+    up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+    #    memcache.add( user.user_id() + "_user", up )
     if up:
         cur = user.user_id() + "_chan_" + cur
         for con in up.connections:
@@ -220,8 +220,8 @@ def sentTo( msg, user, cur ):
         up.author = user
         up.email = user.email()
         up.put()
-        memcache.delete( user.user_id() + "_user" );
-        memcache.add( user.user_id() + "_user", up )
+        #memcache.delete( user.user_id() + "_user" );
+        #memcache.add( user.user_id() + "_user", up )
 
 application = webapp.WSGIApplication([
     ('/notes', Note),
