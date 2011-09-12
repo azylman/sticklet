@@ -24,7 +24,6 @@ from webob.multidict import MultiDict, UnicodeMultiDict, NestedMultiDict, NoVars
 class Note(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
-        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
         if user:
             note = stickynote.snModel(parent=stickynote.key(user.email()))
             note.author = user
@@ -48,9 +47,7 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             note_query = memcache.get( user.user_id() + "_notes")
-            if note_query is not None:
-                self.response.out.write( note_query )
-            else:
+            if note_query is None:
                 notes_query = stickynote.snModel.all().ancestor(
                     stickynote.key(user.email()))
                 notes_query.filter ( "trash = ", 0 ).order('z')
@@ -62,20 +59,22 @@ class Note(webapp.RequestHandler):
                     note.put()
                     arr.append ( note.to_dict() )
                     min_z = min_z + 1
+                memcache.add( user.user_id() + "_notes", arr )
+            else:
+                arr = note_query
 
-                u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
-                if u:
-                    for nos in u.has_shared:
-                        note = stickynote.db.get( nos )
+            u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+            if u:
+                for nos in u.has_shared:
+                    note = stickynote.db.get( nos )
+                    if note:
                         arr.append( note.to_dict() )
-                        # if note:
-                        #     if u.author.user_id() in note.shared_with:
-                        #         arr.append( note.to_dict() )
+                        if u.author.user_id() in note.shared_with:
+                            arr.append( note.to_dict() )
                 # do something about z-indexes here
 
                 notes = json.dumps( arr )
                 self.response.out.write( notes )
-                memcache.add( user.user_id() + "_notes", notes )
 
         else:
             self.error( 401 )
@@ -174,6 +173,8 @@ class Connect(webapp.RequestHandler):
         c_u = sticklet_users.stickletUser.get_or_insert( u_id )
         c_u.connections.append( client_id )
         c_u.put()
+        memcache.delete( c_u.user_id() + "_user" );
+        memcache.add( c_u.user_id() + "_user", c_u )
 
 class Disconnect(webapp.RequestHandler):
     def post(self):
@@ -183,30 +184,33 @@ class Disconnect(webapp.RequestHandler):
         c_u = sticklet_users.stickletUser.get_or_insert( u_id )
         c_u.connections.remove( client_id )
         c_u.put()
+        memcache.delete( c_u.user_id() + "_user" );
+        memcache.add( c_u.user_id() + "_user", c_u )
+        
 
 class Share(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
         mail = json.loads ( self.request.body )
         if user:
-            up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
-            if up:
-                add = sticklet_users.stickletUser.all()
-                add = add.filter( "email =", mail['email'] ).get()
-                if add:
-                    db_n = stickynote.db.get( mail['id'] )
-                    add.has_shared.append( mail['id'] )
-                    if db_n:
-                        db_n.shared_with.append( user.user_id() )
-                        db_n.put()
-                    add.put()
-                self.response.out.write(mail['email'])
+            add = sticklet_users.stickletUser.all()
+            add = add.filter( "email =", mail['email'] ).get()
+            if add:
+                db_n = stickynote.db.get( mail['id'] )
+                add.has_shared.append( mail['id'] )
+                if db_n:
+                    db_n.shared_with.append( user.user_id() )
+                    db_n.put()
+                add.put()
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
 
 def sentTo( msg, user, cur ):
-    up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+    up = memcache.get( user.user_id() + "_user")
+    if up is None:
+        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+        memcache.add( user.user_id() + "_user", up )
     if up:
         cur = user.user_id() + "_chan_" + cur
         for con in up.connections:
@@ -216,6 +220,8 @@ def sentTo( msg, user, cur ):
         up.author = user
         up.email = user.email()
         up.put()
+        memcache.delete( user.user_id() + "_user" );
+        memcache.add( user.user_id() + "_user", up )
 
 application = webapp.WSGIApplication([
     ('/notes', Note),

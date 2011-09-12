@@ -66,7 +66,10 @@ class Trash(webapp.RequestHandler):
             self.response.out.write("Not logged in.")
 
 def sentTo( msg, user, cur ):
-    up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )    
+    up = memcache.get( user.user_id() + "_user")
+    if up is None:
+        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+        memcache.add( user.user_id() + "_user", up )
     if up:
         cur = user.user_id() + "_chan_" + cur
         for con in up.connections:
@@ -77,6 +80,8 @@ def sentTo( msg, user, cur ):
         up.author = user
         up.email = user.email()
         up.put()
+        memcache.delete( user.user_id() + "_user" );
+        memcache.add( user.user_id() + "_user", up )
 
 application = webapp.WSGIApplication([
     ('/notes/delete', Note),
