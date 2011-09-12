@@ -79,9 +79,10 @@ function getNotes () {
 
 function noteUpdate( event ) {
     var snotes = JSON.parse( event.data );
-    for( var i = 0; i < notes.length; i++ ) {
-	note = snotes[i];
-	console.log ( note );
+
+    for( var i = 0; i < snotes.length; i++ ) {
+	var note = snotes[i];
+
 	if ( !! note.to_delete ) {
 	    delete trash[note.to_delete];
 	    $("#" + note.to_delete).remove();

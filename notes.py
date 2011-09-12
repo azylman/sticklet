@@ -143,7 +143,7 @@ class Trash(webapp.RequestHandler):
                     db_n.delete_date = None
                     db_n.put()
                     notes.append( db_n.to_dict() )
-            sendTo( json.dumps( notes ), user )
+            sentTo( json.dumps( notes ), user )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
