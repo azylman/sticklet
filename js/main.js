@@ -81,41 +81,42 @@ function noteUpdate( event ) {
     var snotes = JSON.parse( event.data );
     for( var i = 0; i < notes.length; i++ ) {
 	note = snotes[i];
+	console.log ( note );
 	if ( !! note.to_delete ) {
 	    delete trash[note.to_delete];
 	    $("#" + note.to_delete).remove();
 	    drawTrash();
-	    return;
-	}
-	if ( note.z > z ) {
-	    note.z = z++;
-	}
-	if ( !! notes[note.id] ) {
-	    if ( note.trash == 1 ) {
-		delete notes[note.id];
-		trash[note.id] = note;
-		$("#" + note.id).remove();
+	} else {
+	    if ( note.z > z ) {
+		note.z = z++;
+	    }
+	    if ( !! notes[note.id] ) {
+		if ( note.trash == 1 ) {
+		    delete notes[note.id];
+		    trash[note.id] = note;
+		    $("#" + note.id).remove();
+		    drawTrash();
+		} else {
+		    if ( compare( note, notes[note.id] ) == 1 ) {
+			return;
+		    }
+		    writeNote( note, false );
+		    notes[note.id] = note;
+		}
+	    } else if ( !! trash[note.id] ) {
+		if ( note.trash == 0 ) {
+		    delete trash[note.id];
+		    $("#" + note.id).remove();
+		    writeNote( note, false );
+		    notes[note.id] = note;
+		} else {
+		    trash[note.id] = note;
+		}
 		drawTrash();
 	    } else {
-		if ( compare( note, notes[note.id] ) == 1 ) {
-		    return;
-		}
 		writeNote( note, false );
 		notes[note.id] = note;
 	    }
-	} else if ( !! trash[note.id] ) {
-	    if ( note.trash == 0 ) {
-		delete trash[note.id];
-		$("#" + note.id).remove();
-		writeNote( note, false );
-		notes[note.id] = note;
-	    } else {
-		trash[note.id] = note;
-	    }
-	    drawTrash();
-	} else {
-	    writeNote( note, false );
-	    notes[note.id] = note;
 	}
     }
 }

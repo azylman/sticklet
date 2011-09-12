@@ -23,22 +23,20 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 class Note(webapp.RequestHandler):
     def put(self):
         user = users.get_current_user()
-        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
+            notes = []
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
                     db_n.trash = 1
                     db_n.delete_date = datetime.datetime.now()
                     db_n.put();
-                    if up:
-                        for con in up.connections:
-                            mes = json.dumps( db_n.to_dict() )
-                            channel.send_message( con, mes )
+                    notes.append( db_n.to_dict() )
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
+            sentTo( json.dumps( notes ), user )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -48,27 +46,30 @@ class Note(webapp.RequestHandler):
 class Trash(webapp.RequestHandler):
     def put(self):
         user = users.get_current_user()
-        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
+            notes = []
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
                     if db_n.is_saved():
                         db_n.delete()
-                        if up:
-                            for con in up.connections:
-                                mes = json.dumps({"to_delete":note['id']})
-                                channel.send_message( con, mes )
+                        notes.append( {"to_delete":note['id']} )
+            sentTo( json.dumps( notes ), user )
             memcache.delete( user.user_id() + "_trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
 
+def sentTo( msg, user ):
+    up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )    
+    if up:
+        for con in up.connections:
+            channel.send_message( con, msg )
+
 application = webapp.WSGIApplication([
     ('/notes/delete', Note),
-    ('/notes/trash/delete', Trash)
-], debug=True)
+    ('/notes/trash/delete', Trash) ], debug=True)
 
 def main():
         run_wsgi_app(application)

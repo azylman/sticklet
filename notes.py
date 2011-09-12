@@ -39,10 +39,7 @@ class Note(webapp.RequestHandler):
             note.put()
             self.response.out.write(json.dumps(note.to_dict()))
             memcache.delete( user.user_id() + "_notes" )
-            if up:
-                for con in up.connections:
-                    mes = json.dumps( note.to_dict() )
-                    channel.send_message( con, mes )
+            sentTo( json.dumps( [note.to_dict()] ), user )
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -78,7 +75,6 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             dict =  json.loads ( self.request.body )
-            #up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
@@ -103,7 +99,8 @@ class Note(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
-            sentTo(self.request.body)
+
+            sentTo(self.request.body, user)
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -136,19 +133,17 @@ class Trash(webapp.RequestHandler):
             self.response.out.write("Not logged in.")
     def put(self):
         user = users.get_current_user()
-        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
         if user:
             dict =  json.loads ( self.request.body )
+            notes = []
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
                     db_n.trash = 0
                     db_n.delete_date = None
                     db_n.put()
-                    if up:
-                        for con in up.connections:
-                            mes = json.dumps( db_n.to_dict() )
-                            channel.send_message( con, mes )
+                    notes.append( db_n.to_dict() )
+            sendTo( json.dumps( notes ), user )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -173,7 +168,7 @@ class Disconnect(webapp.RequestHandler):
         c_u.connections.remove( client_id )
         c_u.put()
 
-def sentTo( msg ):
+def sentTo( msg, user ):
     up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )    
     if up:
         for con in up.connections:
