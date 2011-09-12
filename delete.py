@@ -26,9 +26,11 @@ class Note(webapp.RequestHandler):
         if user:
             dict =  json.loads ( self.request.body )
             notes = []
+            cur = ""
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
+                    cur = note['from']
                     db_n.trash = 1
                     db_n.delete_date = datetime.datetime.now()
                     db_n.put();
@@ -36,7 +38,7 @@ class Note(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
-            sentTo( json.dumps( notes ), user )
+            sentTo( json.dumps( notes ), user, cur )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -49,23 +51,26 @@ class Trash(webapp.RequestHandler):
         if user:
             dict =  json.loads ( self.request.body )
             notes = []
+            cur = ""
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
                     if db_n.is_saved():
+                        cur = note['from']
                         db_n.delete()
                         notes.append( {"to_delete":note['id']} )
-            sentTo( json.dumps( notes ), user )
+            sentTo( json.dumps( notes ), user, cur )
             memcache.delete( user.user_id() + "_trash")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
 
-def sentTo( msg, user ):
+def sentTo( msg, user, cur ):
     up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )    
     if up:
         for con in up.connections:
-            channel.send_message( con, msg )
+            if con != cur:
+                channel.send_message( con, msg )
 
     if up.author is None:
         up.author = user

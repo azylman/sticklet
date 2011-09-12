@@ -208,7 +208,7 @@ function createNote( e ) {
 		      alert( "Failed to connect with server, if problem persists, contact the webmasters.");
 		  }
 	      },
-              "data" : {"x" : x, "y" : y, "z" : ++z}
+              "data" : {"x" : x, "y" : y, "z" : ++z, "from" : token}
             });
 }
 
@@ -217,6 +217,7 @@ function deleteNote ( el ) {
     var n = notes[el.attr('id')];
     var note = { "id" : n.id };
     if ( online ) {
+	note.from = token;
 	$.ajax ({ "url" : "/notes/delete",
 		  "type" : "PUT",
 		  "data" : JSON.stringify ( [note] ),
@@ -259,6 +260,7 @@ function saveNote ( note, async, fn ) {
     if ( ! online ) {
 	return;
     }
+    note.from = token;
     var dict = JSON.stringify ( [note] );
 
     $.ajax ({ "url" : "/notes",
@@ -375,7 +377,7 @@ function restoreTrash( cs ) {
 
     var idArr = [];
     for( var a = 0; a < cs.length; a++) {
-	idArr.push ( {"id" : cs[a].name} );
+	idArr.push ( {"id" : cs[a].name, "from" : token} );
         $("#" + cs[a].name).fadeOut( function () {
 	    $(this).remove();
 	});
@@ -418,7 +420,7 @@ function permDelete( cs ){
 
     var idArr = [];
     for( var a = 0; a < cs.length; a++) {
-	idArr.push ( {"id" : cs[a].name });
+	idArr.push ( {"id" : cs[a].name, "from" : token});
     }
     if ( idArr.length < 1 ) { return; }
     var dict = JSON.stringify(idArr);
@@ -781,17 +783,17 @@ function dropDown ( po ) {
     var id = el.attr("id");
     var li = $("#list");
     if ( notes[id].is_list == 1 ) {
-		li.addClass("toggled");
+	li.addClass("toggled");
     } else {
-		li.removeClass("toggled");
+	li.removeClass("toggled");
     }
     li.click( function ( event ) {
 	if ( !li.hasClass("toggled") ) {
-		li.addClass("toggled");
+	    li.addClass("toggled");
 	    notes[id].is_list = 1;
 	    saveNote( { "id" : id, "is_list" : 1 }, true );
 	} else {
-		li.removeClass("toggled");
+	    li.removeClass("toggled");
 	    notes[id].is_list = 0;
 	    saveNote( { "id" : id, "is_list" : 0 }, true );
 	}
@@ -984,7 +986,7 @@ function shareWith( email, id ) {
 		      alert( "Failed to connect with server, if problem persists, contact the webmasters.");
 		  }
 	      },
-              "data" : JSON.stringify({"id" : id, "email" : email})
+              "data" : JSON.stringify({"id" : id, "email" : email, "from" : token})
             });    
 }
 

@@ -39,7 +39,7 @@ class Note(webapp.RequestHandler):
             note.put()
             self.response.out.write(json.dumps(note.to_dict()))
             memcache.delete( user.user_id() + "_notes" )
-            sentTo( json.dumps( [note.to_dict()] ), user )
+            sentTo( json.dumps( [note.to_dict()] ), user, self.request.get( 'from' ) )
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -85,6 +85,7 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             dict =  json.loads ( self.request.body )
+            cur = ""
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
@@ -102,7 +103,7 @@ class Note(webapp.RequestHandler):
                         db_n.z = int(note['z'])
                     if 'is_list' in note:
                         db_n.is_list = int(note['is_list'])
-                        
+                    cur = note['from']    
                     db_n.modify_date = datetime.datetime.now()
                     db_n.put()
                     
@@ -110,7 +111,7 @@ class Note(webapp.RequestHandler):
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
 
-            sentTo(self.request.body, user)
+            sentTo(self.request.body, user, cur )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -146,14 +147,16 @@ class Trash(webapp.RequestHandler):
         if user:
             dict =  json.loads ( self.request.body )
             notes = []
+            cur = ""
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
+                    cur = note['from']
                     db_n.trash = 0
                     db_n.delete_date = None
                     db_n.put()
                     notes.append( db_n.to_dict() )
-            sentTo( json.dumps( notes ), user )
+            sentTo( json.dumps( notes ), user, cur )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -199,11 +202,12 @@ class Share(webapp.RequestHandler):
             self.error(401)
             self.response.out.write("Not logged in.")
 
-def sentTo( msg, user ):
+def sentTo( msg, user, cur ):
     up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
     if up:
         for con in up.connections:
-            channel.send_message( con, msg )
+            if con != cur:
+                channel.send_message( con, msg )
     if up.author is None:
         up.author = user
         up.email = user.email()
