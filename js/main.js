@@ -77,7 +77,8 @@ function getNotes () {
     });
 }
 
-function noteUpdate( event ) {
+function noteUpdate( event ){
+
     var snotes = JSON.parse( event.data );
 
     for( var i = 0; i < snotes.length; i++ ) {
