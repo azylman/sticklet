@@ -7,6 +7,7 @@ class StickyNoteModel(db.Model):
     subject = db.StringProperty()
     color = db.StringProperty()
     trash = db.IntegerProperty()
+    shared_with = db.ListProperty(str)
     x = db.IntegerProperty()
     y = db.IntegerProperty()
     z = db.IntegerProperty()

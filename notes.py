@@ -63,6 +63,16 @@ class Note(webapp.RequestHandler):
                     arr.append ( note.to_dict() )
                     min_z = min_z + 1
 
+                u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+                if u:
+                    for nos in u.has_shared:
+                        note = stickynote.db.get( nos )
+                        arr.append( note.to_dict() )
+                        # if note:
+                        #     if u.author.user_id() in note.shared_with:
+                        #         arr.append( note.to_dict() )
+                # do something about z-indexes here
+
                 notes = json.dumps( arr )
                 self.response.out.write( notes )
                 memcache.add( user.user_id() + "_notes", notes )
@@ -168,17 +178,43 @@ class Disconnect(webapp.RequestHandler):
         c_u.connections.remove( client_id )
         c_u.put()
 
+class Share(webapp.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        mail = json.loads ( self.request.body )
+        if user:
+            up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+            if up:
+                add = sticklet_users.stickletUser.all()
+                add = add.filter( "email=", mail['email'] ).get()
+                if add:
+                    db_n = stickynote.db.get( mail['id'] )
+                    up.has_shared.append( mail['id'] )
+                    if db_n:
+                        db_n.shared_with.append( user.user_id() )
+                        db_n.put()
+                    up.put()
+                self.response.out.write(mail['email'])
+        else:
+            self.error(401)
+            self.response.out.write("Not logged in.")
+
 def sentTo( msg, user ):
-    up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )    
+    up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
     if up:
         for con in up.connections:
             channel.send_message( con, msg )
+    if up.author is None:
+        up.author = user
+        up.email = user.email()
+        up.put()
 
 application = webapp.WSGIApplication([
     ('/notes', Note),
     ('/notes/trash', Trash),
     ('/_ah/channel/connected/', Connect),
-    ('/_ah/channel/disconnected/', Disconnect) ], debug=True)
+    ('/_ah/channel/disconnected/', Disconnect),
+    ('/share', Share) ], debug=True)
 
 def main():
         run_wsgi_app(application)

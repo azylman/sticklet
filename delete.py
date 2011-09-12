@@ -67,6 +67,11 @@ def sentTo( msg, user ):
         for con in up.connections:
             channel.send_message( con, msg )
 
+    if up.author is None:
+        up.author = user
+        up.email = user.email()
+        up.put()
+
 application = webapp.WSGIApplication([
     ('/notes/delete', Note),
     ('/notes/trash/delete', Trash) ], debug=True)

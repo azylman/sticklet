@@ -970,6 +970,24 @@ function checkList ( event ) {
     saveNote( { "id" : id, "content" : notes[id].content}, true );	
 }
 
+function shareWith( email, id ) {
+    $.ajax ({ "type" : "POST",
+              "async" : true,
+              "url" : "/share",
+              "success" : function( event ) {
+		  console.log ( event );
+              },
+	      "error" : function ( resp ) {
+		  if( resp.status == 401 ) {
+		      window.location = $("#logout").attr("href");
+		  } else {
+		      alert( "Failed to connect with server, if problem persists, contact the webmasters.");
+		  }
+	      },
+              "data" : JSON.stringify({"id" : id, "email" : email})
+            });    
+}
+
 $(document).ready( function () {
 
     $('#noteArea').bind('dblclick', function(event) {
@@ -1070,7 +1088,6 @@ $(document).ready( function () {
     });
 
     $("#search").bind( "click", function ( event ) {
-	//event.preventDefault();
 	event.stopPropagation();
 	searchNotes();
     });
@@ -1120,13 +1137,11 @@ $(document).ready( function () {
 	$(".menu").css("display", "none");
     });
 
-    // $(window).bind("focus", function ( event ) {
-    // 	if ( event.target == event.currentTarget ) {
-    // 	    if ( online ) {
-    // 		getNotes();
-    // 	    }
-    // 	}
-    // });
+    $("#share").bind( "click", function ( event ) {
+	//var id = $("#" + $(event.currentTarget).parents(".menu").attr("name") );
+	//
+	//Bring overlay down with shit.
+    });
 
 });
 
