@@ -48,7 +48,9 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             note_query = memcache.get( user.user_id() + "_notes")
-            if note_query is None:
+            if note_query is not None:
+                self.response.out.write( note_query )
+            else:    
                 notes_query = stickynote.snModel.all().ancestor(
                     stickynote.key(user.email()))
                 notes_query.filter ( "trash = ", 0 ).order('z')
@@ -60,9 +62,9 @@ class Note(webapp.RequestHandler):
                     note.put()
                     arr.append ( note.to_dict() )
                     min_z = min_z + 1
-                memcache.add( user.user_id() + "_notes", arr )
-            else:
-                arr = note_query
+                notes = json.dumps( arr )
+                memcache.add( user.user_id() + "_notes", notes )
+                self.response.out.write( notes )
 
             # u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
             # if u:
@@ -73,10 +75,6 @@ class Note(webapp.RequestHandler):
             #             if u.author.user_id() in note.shared_with:
             #                 arr.append( note.to_dict() )
                 # do something about z-indexes here
-
-                notes = json.dumps( arr )
-                self.response.out.write( notes )
-
         else:
             self.error( 401 )
             self.response.out.write( "Not logged in." )
@@ -198,11 +196,14 @@ class Share(webapp.RequestHandler):
             add = add.filter( "email =", mail['email'] ).get()
             if add:
                 db_n = stickynote.db.get( mail['id'] )
-                add.has_shared.append( mail['id'] )
                 if db_n:
+                    add.has_shared.append( mail['id'] )
                     db_n.shared_with.append( user.user_id() )
+                    db_n.is_shared = 1
                     db_n.put()
-                add.put()
+                    add.put()
+                self.error(400)
+                self.response.out.write("No such note.")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
