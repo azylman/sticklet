@@ -213,11 +213,12 @@ class Share(webapp.RequestHandler):
                 if note:
                     if u.author.user_id() in note.shared_with:
                         arr.append( note.to_dict() )
-                    else:
-                        self.error(400)
-                else:
-                    self.error(400)
-                    self.response.out.write("No such note.")
+                    #else:
+                    #    self.error(400)
+                    #    self.response.out.write("No such user.")
+                #else:
+                #    self.error(400)
+                #    self.response.out.write("No such note.")
             self.response.out.write( json.dumps( arr ) )
 
 def sentTo( msg, user, cur ):
