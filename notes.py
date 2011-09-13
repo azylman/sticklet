@@ -32,6 +32,7 @@ class Note(webapp.RequestHandler):
             note.color = ""
             note.trash = 0
             note.is_list = 0
+            note.is_shared = 0
             note.x = int ( self.request.get( 'x' ) )
             note.y = int ( self.request.get( 'y' ) )
             note.z = int ( self.request.get( 'z' ) )
@@ -63,14 +64,14 @@ class Note(webapp.RequestHandler):
             else:
                 arr = note_query
 
-            u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
-            if u:
-                for nos in u.has_shared:
-                    note = stickynote.db.get( nos )
-                    if note:
-                        arr.append( note.to_dict() )
-                        if u.author.user_id() in note.shared_with:
-                            arr.append( note.to_dict() )
+            # u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+            # if u:
+            #     for nos in u.has_shared:
+            #         note = stickynote.db.get( nos )
+            #         if note:
+            #             arr.append( note.to_dict() )
+            #             if u.author.user_id() in note.shared_with:
+            #                 arr.append( note.to_dict() )
                 # do something about z-indexes here
 
                 notes = json.dumps( arr )

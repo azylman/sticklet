@@ -1086,7 +1086,9 @@ $(document).ready( function () {
 
     $("#share").bind( "click", function ( event ) {
 	$("#share_menu").css("display","block");
+	var id = $(event.currentTarget).parents(".menu").attr("name");
 	$(".menu").css("display", "none");
+	$("#current_share").text( '"' + notes[id].subject + '"' );
 	$("#help_overlay").fadeIn("fast");
     });
 

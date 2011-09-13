@@ -385,6 +385,10 @@ a.right {
     right:-20px;
 }
 
+.share_size {
+    font-size:130%;
+}
+
 #help_text {
     overflow-y: auto;
     width:80%;
