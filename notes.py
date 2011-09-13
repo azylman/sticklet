@@ -66,15 +66,6 @@ class Note(webapp.RequestHandler):
                 memcache.add( user.user_id() + "_notes", notes )
                 self.response.out.write( notes )
 
-            # u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
-            # if u:
-            #     for nos in u.has_shared:
-            #         note = stickynote.db.get( nos )
-            #         if note:
-            #             arr.append( note.to_dict() )
-            #             if u.author.user_id() in note.shared_with:
-            #                 arr.append( note.to_dict() )
-                # do something about z-indexes here
         else:
             self.error( 401 )
             self.response.out.write( "Not logged in." )
@@ -197,16 +188,34 @@ class Share(webapp.RequestHandler):
             if add:
                 db_n = stickynote.db.get( mail['id'] )
                 if db_n:
-                    add.has_shared.append( mail['id'] )
-                    db_n.shared_with.append( user.user_id() )
+                    if mail['id'] not in add.has_shared:
+                        add.has_shared.append( mail['id'] )
+                    if add.author.user_id() not in db_n.shared_with:
+                        db_n.shared_with.append( add.author.user_id() )
                     db_n.is_shared = 1
                     db_n.put()
                     add.put()
-                self.error(400)
-                self.response.out.write("No such note.")
+                else:
+                    self.error(400)
+                    self.response.out.write("No such note.")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
+
+    def get(self):
+        user = users.get_current_user()
+        u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+        if u:
+            arr = []
+            for nos in u.has_shared:
+                note = stickynote.db.get( nos )
+                if note:
+                    if u.author.user_id() in note.shared_with:
+                        arr.append( note.to_dict() )
+                else:
+                    self.error(400)
+                    self.response.out.write("No such note.")
+            self.response.out.write( json.dumps( arr ) )
 
 def sentTo( msg, user, cur ):
     #up = memcache.get( user.user_id() + "_user")
