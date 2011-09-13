@@ -162,6 +162,10 @@ class Connect(webapp.RequestHandler):
         #get current user isn't working...
         u_id = client_id.rpartition("-")[2].partition("_")[0]
         c_u = sticklet_users.stickletUser.get_or_insert( u_id )
+
+        if len( c_u.connections ) > 4:
+            c_u.connections.pop( 0 )
+
         c_u.connections.append( client_id )
         c_u.put()
         #memcache.delete( c_u.user_id() + "_user" );
@@ -173,7 +177,8 @@ class Disconnect(webapp.RequestHandler):
         #get current user isn't working...
         u_id = client_id.rpartition("-")[2].partition("_")[0]
         c_u = sticklet_users.stickletUser.get_or_insert( u_id )
-        c_u.connections.remove( client_id )
+        if client_id in c_u.connections:
+            c_u.connections.remove( client_id )
         c_u.put()
         #memcache.delete( c_u.user_id() + "_user" );
         #memcache.add( c_u.user_id() + "_user", c_u )
@@ -210,15 +215,11 @@ class Share(webapp.RequestHandler):
             arr = []
             for nos in u.has_shared:
                 note = stickynote.db.get( nos )
-                if note:
-                    if u.author.user_id() in note.shared_with:
-                        arr.append( note.to_dict() )
-                    #else:
-                    #    self.error(400)
-                    #    self.response.out.write("No such user.")
-                #else:
-                #    self.error(400)
-                #    self.response.out.write("No such note.")
+                if note and u.author.user_id() in note.shared_with:
+                    arr.append( note.to_dict() )
+                else:
+                    u.has_shared.remove( nos )
+                    u.put()
             self.response.out.write( json.dumps( arr ) )
 
 def sentTo( msg, user, cur ):
