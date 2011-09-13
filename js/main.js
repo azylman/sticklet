@@ -88,6 +88,10 @@ function noteUpdate( event ){
 	    delete trash[note.to_delete];
 	    $("#" + note.to_delete).remove();
 	    drawTrash();
+	} else if ( note == "error" ){ 
+	    socket.close();
+	    socket.disconnect_();
+	    console.log ( channel );
 	} else {
 	    if ( note.z > z ) {
 		note.z = z++;

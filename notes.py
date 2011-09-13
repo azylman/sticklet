@@ -164,7 +164,8 @@ class Connect(webapp.RequestHandler):
         c_u = sticklet_users.stickletUser.get_or_insert( u_id )
 
         if len( c_u.connections ) > 4:
-            c_u.connections.pop( 0 )
+            odd = c_u.connections.pop( 0 )
+            channel.send_message( odd, json.dumps( ['error'] ) )
 
         c_u.connections.append( client_id )
         c_u.put()
