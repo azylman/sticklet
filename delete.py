@@ -9,6 +9,7 @@ import sys
 import wsgiref.handlers
 import urlparse
 import sticklet_users
+import string
 
 import stickynote
 
@@ -78,7 +79,7 @@ def sentTo( msg, user, cur ):
 
     if up.author is None:
         up.author = user
-        up.email = user.email()
+        up.email = string.lower(user.email())
         up.put()
         #memcache.delete( user.user_id() + "_user" );
         #memcache.add( user.user_id() + "_user", up )

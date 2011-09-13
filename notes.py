@@ -8,6 +8,7 @@ import datetime
 import sys
 import wsgiref.handlers
 import urlparse
+import string
 
 import stickynote
 import sticklet_users
@@ -212,6 +213,8 @@ class Share(webapp.RequestHandler):
                 if note:
                     if u.author.user_id() in note.shared_with:
                         arr.append( note.to_dict() )
+                    else:
+                        self.error(400)
                 else:
                     self.error(400)
                     self.response.out.write("No such note.")
@@ -229,7 +232,7 @@ def sentTo( msg, user, cur ):
                 channel.send_message( con, msg )
     if up.author is None:
         up.author = user
-        up.email = user.email()
+        up.email = string.lower(user.email())
         up.put()
         #memcache.delete( user.user_id() + "_user" );
         #memcache.add( user.user_id() + "_user", up )
