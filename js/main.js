@@ -960,7 +960,9 @@ function searchNotes ( ) {
     $(document).bind("click", function ( event ) {
 	$(".found").removeClass("found");
 	$(".unfound").removeClass("unfound");
-	$("#searchbox").val("").text("");
+	if ( ! $(event.target).is("#searchbox") ) {
+	    $("#searchbox").val("").text("").blur();
+	}
 	$(document).unbind("click");
     });
 }
