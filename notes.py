@@ -161,7 +161,10 @@ class Connect(webapp.RequestHandler):
         client_id = self.request.get("from")
         #get current user isn't working...
         u_id = client_id.rpartition("-")[2].partition("_")[0]
-        c_u = sticklet_users.stickletUser.get_or_insert( u_id )
+
+        c_u = memcache.get ( u_id + "_user" )
+        if c_u is None:
+            c_u = sticklet_users.stickletUser.get_or_insert( u_id )
 
         if len( c_u.connections ) > 4:
             odd = c_u.connections.pop( 0 )
@@ -169,20 +172,22 @@ class Connect(webapp.RequestHandler):
 
         c_u.connections.append( client_id )
         c_u.put()
-        #memcache.delete( c_u.user_id() + "_user" );
-        #memcache.add( c_u.user_id() + "_user", c_u )
+        memcache.set( c_u.user_id() + "_user", c_u )
 
 class Disconnect(webapp.RequestHandler):
     def post(self):
         client_id = self.request.get("from")
         #get current user isn't working...
         u_id = client_id.rpartition("-")[2].partition("_")[0]
-        c_u = sticklet_users.stickletUser.get_or_insert( u_id )
+
+        c_u = memcache.get( u_id + "_user" )
+        if c_u is None:
+            c_u = sticklet_users.stickletUser.get_or_insert( u_id )
+
         if client_id in c_u.connections:
             c_u.connections.remove( client_id )
         c_u.put()
-        #memcache.delete( c_u.user_id() + "_user" );
-        #memcache.add( c_u.user_id() + "_user", c_u )
+        memcache.set( c_u.user_id() + "_user", c_u )
         
 
 class Share(webapp.RequestHandler):
@@ -211,7 +216,11 @@ class Share(webapp.RequestHandler):
 
     def get(self):
         user = users.get_current_user()
-        u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+        u = memcache.get( user.user_id() + "_user")
+        updated = false
+        if u is None:
+            u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+            updated = true
         if u:
             arr = []
             for nos in u.has_shared:
@@ -221,24 +230,26 @@ class Share(webapp.RequestHandler):
                 else:
                     u.has_shared.remove( nos )
                     u.put()
+                    updated = true
             self.response.out.write( json.dumps( arr ) )
+            if updated:
+                memcache.set( user.user_id() + "_user", up )
 
 def sentTo( msg, user, cur ):
-    #up = memcache.get( user.user_id() + "_user")
-    #if up is None:
-    up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
-    #    memcache.add( user.user_id() + "_user", up )
+    up = memcache.get( user.user_id() + "_user")
+    if up is None:
+        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+        if up:
+            if up.author is None:
+                up.author = user
+                up.email = string.lower(user.email())
+                up.put()
+        memcache.add( user.user_id() + "_user", up )
     if up:
         cur = user.user_id() + "_chan_" + cur
         for con in up.connections:
             if con != cur:
                 channel.send_message( con, msg )
-    if up.author is None:
-        up.author = user
-        up.email = string.lower(user.email())
-        up.put()
-        #memcache.delete( user.user_id() + "_user" );
-        #memcache.add( user.user_id() + "_user", up )
 
 application = webapp.WSGIApplication([
     ('/notes', Note),

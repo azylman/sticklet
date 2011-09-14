@@ -21,10 +21,16 @@ class MainPage(webapp.RequestHandler):
         if user:
             url = users.create_logout_url("/greeting")
             url_linktext = 'Logout'
-            up = sticklet_users.stickletUser.get_or_insert( user.user_id() )
-            if up and up.author is None:
-                up.author = user
-                up.email = string.lower(user.email())
+
+            up = memcache.get( user.user_id() + "_user")
+            if up is None:
+                up = sticklet_users.stickletUser.get_or_insert( user.user_id() )
+                if up and up.author is None:
+                    up.author = user
+                    up.email = string.lower(user.email())
+                    up.put()
+                memcache.set( user.user_id() + "_user", up )
+
             rand = str(random.random())
             token = channel.create_channel( user.user_id() + "_chan_" + rand )
             template_values = {
