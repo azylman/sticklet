@@ -334,6 +334,7 @@ function drawTrash() {
 		    if ( event.relatedTarget.id == "noteArea" && event.which == 1 ) {
 			event.preventDefault();
 		    } else {
+			el.find(".trash_content").removeClass("wrap");
 			eld.find(".trash_all").css("display","none");
 			eld.unbind("mouseout");
 		    }
