@@ -244,7 +244,7 @@ def sentTo( msg, user, cur ):
                 up.author = user
                 up.email = string.lower(user.email())
                 up.put()
-        memcache.set( user.user_id() + "_user", up )
+            memcache.set( user.user_id() + "_user", up )
     if up:
         cur = user.user_id() + "_chan_" + cur
         for con in up.connections:

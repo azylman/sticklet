@@ -20,8 +20,29 @@ class MainPage(webapp.RequestHandler):
 
         user = users.get_current_user()
         if user:
+
             url = users.create_logout_url("/greeting")
             url_linktext = 'Logout'
+
+            rand = str(random.random())
+            token = channel.create_channel( user.user_id() + "_chan_" + rand )
+
+            template_values = {
+                'token' : rand,
+                'chan' : token,
+                'url': url,
+                'url_linktext': url_linktext,
+                'user' : user.nickname(),
+                'color1' : "#F7977A",
+                'color2' : "#C5E3BF",
+                'color3' : "#C1F0F6",
+                'color4' : "#FFF79A",
+                'color5' : "#FDC68A",
+                'color6' : "#D8BFD8"
+            }
+
+            path = os.path.join(os.path.dirname(__file__), 'index.html')
+            self.response.out.write(template.render(path, template_values))
 
             up = memcache.get( user.user_id() + "_user")
             if up is None:
@@ -31,25 +52,6 @@ class MainPage(webapp.RequestHandler):
                     up.email = string.lower(user.email())
                     up.put()
                 memcache.set( user.user_id() + "_user", up )
-
-            rand = str(random.random())
-            token = channel.create_channel( user.user_id() + "_chan_" + rand )
-            template_values = {
-                'token' : rand,
-                'chan' : token,
-                'url': url,
-                'url_linktext': url_linktext,
-                'user' : user.nickname(),
-                'color1' : "#F7977A",
-                'color2' : "#C5E3BF",
-                'color3' : "#c1F0F6",
-                'color4' : "#FFF79A",
-                'color5' : "#FDC68A",
-                'color6' : "#D8BFD8"
-            }
-
-            path = os.path.join(os.path.dirname(__file__), 'index.html')
-            self.response.out.write(template.render(path, template_values))
         else:
             self.redirect("/greeting")
 
