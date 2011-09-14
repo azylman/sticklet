@@ -17,6 +17,14 @@ html,body {
     min-width:770px;
 }
 
+.wrap {
+    white-space: initial !important;
+}
+
+.trash_all {
+    display:none;
+}
+
 .note {
     width: 220px;
     min-height: 200px;

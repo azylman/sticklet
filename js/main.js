@@ -310,6 +310,19 @@ function drawTrash() {
 	    });
 	    div.css({"background-color" : trash[a].color,
 		     "opacity" : .4});
+	    div.bind( "mouseover", function ( event ) {
+		var eld = $(event.currentTarget);
+		el.find(".trash_content").removeClass("wrap");
+		eld.find(".trash_content").addClass("wrap");
+		eld.bind( "mouseout", function( event ) {
+		    if ( event.relatedTarget.id == "noteArea" && event.which == 1 ) {
+			console.log ( event );
+			event.preventDefault();
+		    } else {
+			eld.find(".trash_content").removeClass("wrap").unbind("mouseout");
+		    }
+		});
+	    });
 	    div.bind("mousedown", function ( event ) {
 		if ( $(event.target).is("input") ) { return; }
 		event.preventDefault();
@@ -326,9 +339,12 @@ function drawTrash() {
 		    restoreTrash( div.find(".trash_checkbox") );
 		    area.unbind("mouseup");
 		});
+		area.bind( "mouseover", function ( event ) {
+		    event.stopPropagation();
+		});
 		div.bind("mouseup", function ( event ) {
 		    area.css("cursor", "auto");
-		    area.unbind("mouseup");
+		    area.unbind("mouseup").unbind("mouseover");
 		});
 	    });
 	    div.bind( "click", function ( event ) {
@@ -359,15 +375,20 @@ function drawTrash() {
 	    }
 	    var content = trash[a].content.replace(/<\/?[^>]+(>|$)/g, "");
 	    content = content.replace( /(&.*?;)/g, " " );
-	    content = content.substr(0,35);
-	    if (content !== "") {
-		snippet.text(content);
+	    var content_ = content.substr(0,35);
+	    if (content_ !== "") {
+		snippet.text(content_);
+		var e = $("<span />", {
+		    "class" : "trash_all"
+		}).text(content.substr(35));
+		snippet.append( e );
 	    } else {
 		snippet.html("&nbsp;");
 	    }
 	    sp.append(subj);
 	    sp.append(snippet);
 	    div.append ( sp );
+	    div.append( "<hr />" );
 	    el.prepend( div );
 	}
     }
