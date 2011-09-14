@@ -14,6 +14,7 @@ var current;
 var trash = {};
 var userAgent = navigator.userAgent.toLowerCase();
 var t;
+var down;
 
 try {
     if ( online === undefined ){
@@ -331,7 +332,8 @@ function drawTrash() {
 			event.preventDefault();
 			return;
 		    }
-		    if ( event.relatedTarget.id == "noteArea" && event.which == 1 ) {
+		    console.log ( event );
+		    if ( event.relatedTarget.id == "noteArea" && down ) {
 			event.preventDefault();
 		    } else {
 			el.find(".trash_content").removeClass("wrap");
@@ -342,6 +344,7 @@ function drawTrash() {
 	    });
 	    div.bind("mousedown", function ( event ) {
 		if ( $(event.target).is("input") ) { return; }
+		down = true;
 		event.preventDefault();
 		var div = $(event.currentTarget);
 		var area = $("#noteArea");
@@ -355,13 +358,12 @@ function drawTrash() {
 		    saveNote( {"id" : note.id, "x" : note.x, "y" : note.y, "z" : note.z}, true );
 		    restoreTrash( div.find(".trash_checkbox") );
 		    area.unbind("mouseup");
-		});
-		area.bind( "mouseover", function ( event ) {
-		    event.stopPropagation();
+		    down = false;
 		});
 		div.bind("mouseup", function ( event ) {
 		    area.css("cursor", "auto");
-		    area.unbind("mouseup").unbind("mouseover");
+		    area.unbind("mouseup");
+		    down = false;
 		});
 	    });
 	    div.bind( "click", function ( event ) {
