@@ -863,6 +863,9 @@ function dropDown ( po ) {
 
 function colorNote ( el, color ) {
     var n = notes[el.attr( 'id' )];
+    if ( n.color == color ) {
+	return;
+    }
     var act = new Action ();
     act.setBefore ( n );
     n.color = color;

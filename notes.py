@@ -30,7 +30,7 @@ class Note(webapp.RequestHandler):
             note.author = user
             note.content = ""
             note.subject = "Sticklet"
-            note.color = ""
+            note.color = "#FFF79A"
             note.trash = 0
             note.is_list = 0
             note.is_shared = 0
