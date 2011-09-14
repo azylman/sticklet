@@ -172,7 +172,7 @@ class Connect(webapp.RequestHandler):
 
         c_u.connections.append( client_id )
         c_u.put()
-        memcache.set( c_u.user_id() + "_user", c_u )
+        memcache.set( c_u.author.user_id() + "_user", c_u )
 
 class Disconnect(webapp.RequestHandler):
     def post(self):
@@ -187,7 +187,7 @@ class Disconnect(webapp.RequestHandler):
         if client_id in c_u.connections:
             c_u.connections.remove( client_id )
         c_u.put()
-        memcache.set( c_u.user_id() + "_user", c_u )
+        memcache.set( c_u.author.user_id() + "_user", c_u )
         
 
 class Share(webapp.RequestHandler):
@@ -217,10 +217,10 @@ class Share(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         u = memcache.get( user.user_id() + "_user")
-        updated = false
+        updated = False
         if u is None:
             u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
-            updated = true
+            updated = True
         if u:
             arr = []
             for nos in u.has_shared:
@@ -230,7 +230,7 @@ class Share(webapp.RequestHandler):
                 else:
                     u.has_shared.remove( nos )
                     u.put()
-                    updated = true
+                    updated = True
             self.response.out.write( json.dumps( arr ) )
             if updated:
                 memcache.set( user.user_id() + "_user", up )
@@ -244,7 +244,7 @@ def sentTo( msg, user, cur ):
                 up.author = user
                 up.email = string.lower(user.email())
                 up.put()
-        memcache.add( user.user_id() + "_user", up )
+        memcache.set( user.user_id() + "_user", up )
     if up:
         cur = user.user_id() + "_chan_" + cur
         for con in up.connections:
