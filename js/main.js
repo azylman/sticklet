@@ -299,6 +299,13 @@ function saveNote ( note, async, fn ) {
             });
 }
 
+function isChild ( el, elm ) {
+    while( el != elm && el.tagName.toLowerCase() != "body" ) {
+	el = el.parentNode;
+    }
+    return el == elm;
+}
+
 function drawTrash() {
     $("#check_all").removeAttr("checked");
     var el = $("#archived_content");
@@ -311,15 +318,24 @@ function drawTrash() {
 	    div.css({"background-color" : trash[a].color,
 		     "opacity" : .4});
 	    div.bind( "mouseover", function ( event ) {
+		if ( isChild( event.relatedTarget, event.currentTarget ) ) {
+		    event.preventDefault();
+		    return;
+		}
 		var eld = $(event.currentTarget);
 		el.find(".trash_content").removeClass("wrap");
 		eld.find(".trash_content").addClass("wrap");
+		eld.find(".trash_all").fadeIn( "fast" );
 		eld.bind( "mouseout", function( event ) {
+		    if ( isChild( event.relatedTarget, event.currentTarget ) ) {
+			event.preventDefault();
+			return;
+		    }
 		    if ( event.relatedTarget.id == "noteArea" && event.which == 1 ) {
-			console.log ( event );
 			event.preventDefault();
 		    } else {
-			eld.find(".trash_content").removeClass("wrap").unbind("mouseout");
+			eld.find(".trash_all").css("display","none");
+			eld.unbind("mouseout");
 		    }
 		});
 	    });
