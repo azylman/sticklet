@@ -19,6 +19,7 @@ html,body {
 
 .wrap {
     white-space: normal !important;
+    min-height:100px;
 }
 
 .trash_all {
@@ -341,7 +342,7 @@ a.right {
 .trash_item .trash_content {
     display: inline-block;
     white-space: nowrap;
-    width:70%;
+    width:90%;
     margin-left:30px;
 }
 

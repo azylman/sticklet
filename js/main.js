@@ -336,7 +336,6 @@ function drawTrash() {
 			event.preventDefault();
 			return;
 		    }
-		    console.log ( event );
 		    if ( event.relatedTarget.id == "noteArea" && down ) {
 			event.preventDefault();
 		    } else {
@@ -1165,10 +1164,8 @@ $(document).ready( function () {
     });
 
     $("body").bind("online", function ( event ) {
-	console.log ( "true" );
 	online = true;
     }).bind("offline", function ( event ) {
-	console.log ( "false" );
 	online = true;
     });
 
