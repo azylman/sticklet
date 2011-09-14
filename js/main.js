@@ -172,12 +172,16 @@ function closeSave ( e, obj ) {
 
     var note = obj.parents(".note");
     var id = note.attr('id');
+    var subject = note.find(".noteHeader").children().html();
+    var content = note.find(".noteContent").children().html();
+
+    if ( notes[id].subject == subject && notes[id].content == content ) {
+	return;
+    } 
 
     var act = new Action ();
     act.setBefore( notes[id] );
 
-    var subject = note.find(".noteHeader").children().html();
-    var content = note.find(".noteContent").children().html();
     notes[id].subject = subject;
     notes[id].content = content;
 
