@@ -1156,9 +1156,13 @@ $(document).ready( function () {
 		redoAction();
 	    }
 	} else if ( event.shiftKey ) {
-	    if ( ! isEditable( event.target ) && event.target.id != "searchbox" ) {
+	    if ( ! isEditable( event.target ) && ! $(event.target).hasClass( "textbox" ) ) {
 		if ( event.keyCode == 191 ){
-		    $("#help_overlay").fadeToggle("fast");
+		    if ( $("#help_overlay").is( ":visible" ) ) {
+			$("#help_overlay").click();
+		    } else {
+			$("#help").click();
+		    }
 		} else if ( event.keyCode == 65 ) {
 		    $("#manage").click();
 		}
