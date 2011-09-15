@@ -15,6 +15,8 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
+from django.utils import simplejson as json
+
 class MainPage(webapp.RequestHandler):
     def get(self):
 
@@ -24,12 +26,7 @@ class MainPage(webapp.RequestHandler):
             url = users.create_logout_url("/greeting")
             url_linktext = 'Logout'
 
-            rand = str(random.random())
-            token = channel.create_channel( user.user_id() + "_chan_" + rand )
-
             template_values = {
-                'token' : rand,
-                'chan' : token,
                 'url': url,
                 'url_linktext': url_linktext,
                 'user' : user.nickname(),
@@ -44,14 +41,6 @@ class MainPage(webapp.RequestHandler):
             path = os.path.join(os.path.dirname(__file__), 'index.html')
             self.response.out.write(template.render(path, template_values))
 
-            up = memcache.get( user.user_id() + "_user")
-            if up is None:
-                up = sticklet_users.stickletUser.get_or_insert( user.user_id() )
-                if up and up.author is None:
-                    up.author = user
-                    up.email = string.lower(user.email())
-                    up.put()
-                memcache.set( user.user_id() + "_user", up )
         else:
             self.redirect("/greeting")
 
@@ -72,10 +61,29 @@ class Greeting(webapp.RequestHandler):
         
         path = os.path.join(os.path.dirname(__file__), 'greeting.html')
         self.response.out.write(template.render(path, template_values))
+
+class Channel(webapp.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        rand = str(random.random())
+        token = channel.create_channel( user.user_id() + "_chan_" + rand )
+        s = { "token" : token, "rand" : rand }
+        self.response.out.write( json.dumps( s ) )
+
+        up = memcache.get( user.user_id() + "_user")
+        if up is None:
+            up = sticklet_users.stickletUser.get_or_insert( user.user_id() )
+            if up and up.author is None:
+                up.author = user
+                up.email = string.lower(user.email())
+                up.put()
+            memcache.set( user.user_id() + "_user", up )
+
             
 application = webapp.WSGIApplication([
         ('/', MainPage),
-        ('/greeting', Greeting)
+        ('/greeting', Greeting),
+        ('/channel', Channel)
 ], debug=True)
 
 def main():

@@ -15,6 +15,7 @@ var trash = {};
 var userAgent = navigator.userAgent.toLowerCase();
 var t;
 var down;
+var token;
 
 try {
     if ( online === undefined ){
@@ -39,6 +40,21 @@ function getSize( obj ) {
 	}
     }
     return max;
+}
+
+function getChannel () {
+    $.ajax({
+	"type" : "GET",
+	"async" : true,
+	"url" : "/channel",
+	"dataType" : "json",
+	"success" : function ( resp ) {
+	    var channel = new goog.appengine.Channel( resp.token );
+	    token = resp.rand;
+	    var socket = channel.open();
+	    socket.onmessage = noteUpdate;
+	}
+    });
 }
 
 function getNotes () {
@@ -404,9 +420,9 @@ function drawTrash() {
 		    "class" : "trash_all"
 		}).text(content.substr(35));
 		snippet.append( e );
-	    } else {
-		snippet.html("&nbsp;");
 	    }
+	    
+	    snippet.append("&nbsp;");
 	    sp.append(subj);
 	    sp.append(snippet);
 	    div.append ( sp );
@@ -775,16 +791,15 @@ function writeNote ( note, fade ) {
 		var sel = window.getSelection().getRangeAt(0);
 		var node = sel.startContainer;
 
-		if ( !!node.tagName && node.tagName.toLowerCase() == "blockquote" ) {
-		    var tmp = $("<div />").html("&nbsp;");
-		    $(node).append ( tmp );
-		    node = tmp.get(0);
+		if ( node.nodeType == 3 ) {
+		    node = $(node).parent();
+		} else if ( node.tagName.toLowerCase() == "blockquote" ) {
+		    var tmds = $("<div />").html("&nbsp;");
+		    $(node).prepend( tmds );
+		    node = tmds;
+		} else {
+		    node = $(node);
 		}
-
-		while ( !node.tagName || ! (node.tagName.toLowerCase() == "div" && node.parentNode.tagName.toLowerCase() == "blockquote") ) {
-		    node = node.parentNode;
-		}
-		node = $(node);
 
 		var div = $("<div />");
 		if ( note.is_list == 1 && ! event.shiftKey ) {
@@ -1275,5 +1290,6 @@ if ( window.localStorage.getItem( "notes_" + username ) ){
 }
 
 if ( online ) {
+    getChannel();
     getNotes();
 }

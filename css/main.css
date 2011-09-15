@@ -160,7 +160,7 @@ html,body {
     margin-right:1px;
 }
 
-#searcharea input:focus {
+.textbox input:focus {
     border:1px solid #999999;
 }
 
