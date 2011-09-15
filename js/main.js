@@ -793,7 +793,7 @@ function writeNote ( note, fade ) {
 		var sel = window.getSelection().getRangeAt(0);
 		var node = sel.startContainer;
 
-		if ( node.nodeType == 3 ) {
+		if ( node.nodeType == Node.TEXT_NODE ) {
 		    node = $(node).parent();
 		} else if ( node.tagName.toLowerCase() == "blockquote" ) {
 		    var tmds = $("<div />").html("&nbsp;");
