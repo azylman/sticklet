@@ -16,6 +16,8 @@ var userAgent = navigator.userAgent.toLowerCase();
 var t;
 var down;
 var token;
+var socket;
+var channel;
 
 try {
     if ( online === undefined ){
@@ -49,9 +51,9 @@ function getChannel () {
 	"url" : "/channel",
 	"dataType" : "json",
 	"success" : function ( resp ) {
-	    var channel = new goog.appengine.Channel( resp.token );
+	    channel = new goog.appengine.Channel( resp.token );
 	    token = resp.rand;
-	    var socket = channel.open();
+	    socket = channel.open();
 	    socket.onmessage = noteUpdate;
 	}
     });

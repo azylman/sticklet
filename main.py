@@ -24,11 +24,9 @@ class MainPage(webapp.RequestHandler):
         if user:
 
             url = users.create_logout_url("/greeting")
-            url_linktext = 'Logout'
 
             template_values = {
                 'url': url,
-                'url_linktext': url_linktext,
                 'user' : user.nickname(),
                 'color1' : "#F7977A",
                 'color2' : "#C5E3BF",
@@ -50,7 +48,6 @@ class Greeting(webapp.RequestHandler):
         url_linktext = "Log In"
         template_values = {
             'url': url,
-            'url_linktext': url_linktext,
             'color1' : "#F7977A",
             'color2' : "#C5E3BF",
             'color3' : "#c1F0F6",
