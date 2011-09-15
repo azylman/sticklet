@@ -755,7 +755,7 @@ function writeNote ( note, fade ) {
 	b.focus();
 
 	if ( b.html() === "" ) {
-	    b.append($("<div />").html("&nbsp;"));
+	    b.html($("<div />").html("&nbsp;"));
 	}
 	var sel = window.getSelection();
 	var range = document.createRange();
@@ -768,16 +768,24 @@ function writeNote ( note, fade ) {
 
 	b.bind( "keypress", function ( event ) {
 	    if ( event.keyCode == 13 ) {
-		var note = notes[$(event.currentTarget).parents(".note").attr("id")];
-		var end = 0;
 		event.preventDefault();
 		event.stopPropagation();
+		var note = notes[$(event.currentTarget).parents(".note").attr("id")];
+		var end = 0;
 		var sel = window.getSelection().getRangeAt(0);
 		var node = sel.startContainer;
+
+		if ( !!node.tagName && node.tagName.toLowerCase() == "blockquote" ) {
+		    var tmp = $("<div />").html("&nbsp;");
+		    $(node).append ( tmp );
+		    node = tmp.get(0);
+		}
+
 		while ( !node.tagName || ! (node.tagName.toLowerCase() == "div" && node.parentNode.tagName.toLowerCase() == "blockquote") ) {
 		    node = node.parentNode;
 		}
 		node = $(node);
+
 		var div = $("<div />");
 		if ( note.is_list == 1 && ! event.shiftKey ) {
 		    var ch = $("<input />", {
@@ -795,7 +803,8 @@ function writeNote ( note, fade ) {
 		}
 		div.append ( "&nbsp;" );
 
-		if ( node.is_list == 1 && (node.html() == "&nbsp;" || node.html() === "") ) {
+		if ( note.is_list == 1 && (node.html() == "&nbsp;" || node.html() === "") && 
+		     !event.shiftKey ) {
 		    node.replaceWith( div );
 		} else {
 		    node.after( div );
@@ -809,6 +818,7 @@ function writeNote ( note, fade ) {
 		sel.removeAllRanges();
 		sel.addRange( range );
 		sel.collapseToEnd( true );
+		return false;
 	    }
 	});
 	$(document).bind ( "click", function( event ) {
@@ -820,7 +830,7 @@ function writeNote ( note, fade ) {
 	});
     });
 
-    b.html(note.content);
+    b.html(note.content.replace( "<br>", "" ));
 
     c.append ( b );
     elm.append ( c );

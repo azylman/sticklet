@@ -330,6 +330,7 @@ a.right {
     background-color: #FFF79A;
     color:#000000;
     position:relative;
+    min-height: 46px;
 }
 
 .trash_item .trash_checkbox {

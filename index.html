@@ -133,10 +133,10 @@
       socket = channel.open();
       socket.onmessage = noteUpdate;
       socket.onerror = function( event ) {
-         var re = confirm( "Your connection has timed out.  Click okay to refresh the page.");
-         if ( re ) {
-            window.location.reload();
-         }
+         //var re = confirm( "Your connection has timed out.  Click okay to refresh the page.");
+         //if ( re ) {
+         //   window.location.reload();
+         //}
       };
     </script>
 </html>
