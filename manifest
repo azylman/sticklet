@@ -9,6 +9,7 @@ CACHE:
 /js/jquery.js
 /js/jquery.overlaps.min.js
 /images/context.png
+/favicon.ico
 
 NETWORK:
 *
