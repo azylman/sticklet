@@ -753,15 +753,33 @@ function writeNote ( note, fade ) {
 	b.css("cursor", "text");
 	b.addClass("yesSelect outlined");
 	b.focus();
+
+	if ( b.html() === "" ) {
+	    b.append($("<div />").html("&nbsp;"));
+	}
+	var sel = window.getSelection();
+	var range = document.createRange();
+	var rel = b.children("div").last().get(0);
+	range.setStart( rel, 0 );
+	range.setEnd( rel, 1 );
+	sel.removeAllRanges();
+	sel.addRange( range );
+	sel.collapseToEnd( true );
+
 	b.bind( "keypress", function ( event ) {
-	    var note = notes[$(event.currentTarget).parents(".note").attr("id")];
-	    var end = 0;
 	    if ( event.keyCode == 13 ) {
+		var note = notes[$(event.currentTarget).parents(".note").attr("id")];
+		var end = 0;
 		event.preventDefault();
-		var sel = window.getSelection();
-		var node = $(sel.focusNode);
+		event.stopPropagation();
+		var sel = window.getSelection().getRangeAt(0);
+		var node = sel.startContainer;
+		while ( !node.tagName || ! (node.tagName.toLowerCase() == "div" && node.parentNode.tagName.toLowerCase() == "blockquote") ) {
+		    node = node.parentNode;
+		}
+		node = $(node);
 		var div = $("<div />");
-		if ( note.is_list == 1 ) {
+		if ( note.is_list == 1 && ! event.shiftKey ) {
 		    var ch = $("<input />", {
 			"type" : "checkbox",
 			"class" : "list_check"
@@ -776,15 +794,16 @@ function writeNote ( note, fade ) {
 		    end = 2;
 		}
 		div.append ( "&nbsp;" );
-		if ( node.prop( "tagName" ) !== undefined && node.prop( "tagName" ).toLowerCase() == "blockquote" ) {
-		    if ( end == 0 ) {
-			node.append( "<div><br></div>" );
-		    }
-		    node.append( div );
+
+		if ( node.is_list == 1 && (node.html() == "&nbsp;" || node.html() === "") ) {
+		    node.replaceWith( div );
 		} else {
 		    node.after( div );
 		}
+
 		var range = document.createRange();
+		var sel = window.getSelection();
+
 		range.setStart( div.get(0), 0 );
 		range.setEnd( div.get(0), end );
 		sel.removeAllRanges();
@@ -800,7 +819,9 @@ function writeNote ( note, fade ) {
             closeSave( event, b );
 	});
     });
+
     b.html(note.content);
+
     c.append ( b );
     elm.append ( c );
     $( "#" + note.id ).remove();
@@ -811,6 +832,7 @@ function writeNote ( note, fade ) {
     if ( fade ) {
 	elm.fadeIn( 350 );
     }
+
     elm.find( ".list_check").bind( "mousedown", function ( event ) {
 	event.stopPropagation();
     }).unbind("click").click( checkList ).bind("dblclick", function ( event ){
