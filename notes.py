@@ -33,7 +33,6 @@ class Note(webapp.RequestHandler):
             note.color = "#FFF79A"
             note.trash = 0
             note.is_list = 0
-            note.is_shared = 0
             note.x = int ( self.request.get( 'x' ) )
             note.y = int ( self.request.get( 'y' ) )
             note.z = int ( self.request.get( 'z' ) )
@@ -217,7 +216,6 @@ class Share(webapp.RequestHandler):
                         memcache.set( user_t.author.user_id() + "_user", user_t )
                     if user_t.author.user_id() not in db_n.shared_with:
                         db_n.shared_with.append( user_t.author.user_id() )
-                        db_n.is_shared = 2
                         db_n.put()
                         memcache.delete( db_n.author.user_id() + "_notes" )
                     #self.response.out.write( json.dumps( user_t.has_shared ) )

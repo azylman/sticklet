@@ -7,7 +7,6 @@ class StickyNoteModel(db.Model):
     subject = db.StringProperty()
     color = db.StringProperty()
     trash = db.IntegerProperty()
-    is_shared = db.IntegerProperty()
     shared_with = db.StringListProperty()
     x = db.IntegerProperty()
     y = db.IntegerProperty()
@@ -27,8 +26,7 @@ class snModel(StickyNoteModel):
             "x" : self.x,
             "y" : self.y,
             "z" : self.z,
-            "is_list" : self.is_list,
-            "is_shared" : self.is_shared})
+            "is_list" : self.is_list})
 
 def key(email):
     return db.Key.from_path('StickyNote', email)

@@ -71,7 +71,9 @@ function getShared () {
 	"success" : function ( resp ) {
 	    console.log ( resp );
 	    $.each( resp, function ( i ) {
-		resp[i].is_shared = 1;
+		if ( resp[i].z > z ) {
+		    resp[i].z = z++;
+		}
 		if ( resp[i].trash == 1 ) {
 		    trash[resp[i].id] = resp[i];
 		} else {
