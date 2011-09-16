@@ -207,7 +207,7 @@ class Share(webapp.RequestHandler):
         if user:
             smail = json.loads ( self.request.body )
             add = sticklet_users.stickletUser.all()
-            user_t = add.filter( "email =", smail['email'] ).get()
+            user_t = add.filter( "email =", smail['email'].lower() ).get()
             if user_t:
                 db_n = stickynote.db.get( smail['id'] )
                 if db_n:
@@ -219,7 +219,7 @@ class Share(webapp.RequestHandler):
                         db_n.shared_with.append( user_t.author.user_id() )
                         db_n.put()
                         memcache.delete( db_n.author.user_id() + "_notes" )
-                    mail.send_mail( sender="admin@sticklet.com",
+                    mail.send_mail( sender="Sticklet.com <admin@sticklet.com>",
                                     to=user_t.email,
                                     subject=user_t.author.nickname() + " has shared a sticklet with you!",
                                     body="Sign in to www.sticklet.com to view and collaborate on it!" )
@@ -227,6 +227,9 @@ class Share(webapp.RequestHandler):
                 else:
                     self.error(400)
                     self.response.out.write("No such note.")
+            else:
+                self.error(400)
+                self.response.out.write("No such email")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")

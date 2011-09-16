@@ -69,7 +69,6 @@ function getShared () {
 	"url" : "/share",
 	"dataType" : "json",
 	"success" : function ( resp ) {
-	    console.log ( resp );
 	    $.each( resp, function ( i ) {
 		if ( resp[i].z > z ) {
 		    resp[i].z = z++;
