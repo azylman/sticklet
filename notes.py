@@ -221,7 +221,7 @@ class Share(webapp.RequestHandler):
                         memcache.delete( db_n.author.user_id() + "_notes" )
                     mail.send_mail( sender="Sticklet.com <admin@sticklet.com>",
                                     to=user_t.email,
-                                    subject=user_t.author.nickname() + " has shared a sticklet with you!",
+                                    subject=user.nickname() + " has shared a sticklet with you!",
                                     body="Sign in to www.sticklet.com to view and collaborate on it!" )
                     #self.response.out.write( json.dumps( user_t.has_shared ) )
                 else:
