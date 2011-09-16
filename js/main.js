@@ -55,6 +55,35 @@ function getChannel () {
 	    token = resp.rand;
 	    socket = channel.open();
 	    socket.onmessage = noteUpdate;
+	},
+	"error" : function ( s ) {
+	    
+	}
+    });
+}
+
+function getShared () {
+    $.ajax({
+	"type" : "GET",
+	"async" : true,
+	"url" : "/share",
+	"dataType" : "json",
+	"success" : function ( resp ) {
+	    console.log ( resp );
+	    $.each( resp, function ( i ) {
+		resp[i].is_shared = 1;
+		if ( resp[i].trash == 1 ) {
+		    trash[resp[i].id] = resp[i];
+		} else {
+		    writeNote( resp[i], false );
+		    notes[resp[i].id] = resp[i];
+		}
+	    });
+	    drawTrash();
+	    dumpNotes()
+	},
+	"error" : function ( s ) {
+	    alert ( "error in share" );
 	}
     });
 }
@@ -85,6 +114,7 @@ function getNotes () {
 		    $( "#" + notes[d].id ).remove();
 		}
 	    }
+	    getShared();
             notes = tmp;
             dumpNotes();
 	},
@@ -1080,8 +1110,8 @@ function shareWith( email, id ) {
     $.ajax ({ "type" : "POST",
               "async" : true,
               "url" : "/share",
-              "success" : function( event ) {
-		  console.log ( event );
+              "success" : function( resp ) {
+		  console.log ( resp );
               },
 	      "error" : function ( resp ) {
 		  if( resp.status == 401 ) {
@@ -1194,7 +1224,13 @@ $(document).ready( function () {
 	var id = $(event.currentTarget).parents(".menu").attr("name");
 	$(".menu").css("display", "none");
 	$("#current_share").text( '"' + notes[id].subject + '"' );
+	$("#sharebox").attr( "name", id );
 	$("#help_overlay").fadeIn("fast");
+    });
+
+    $("#share_with").bind( "click", function ( event ) {
+	var el = $("#sharebox");
+	shareWith( el.attr("value"), el.attr("name") );
     });
 
     $("#exit_help").bind("click", function ( event ) {

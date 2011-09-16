@@ -27,7 +27,6 @@ class Note(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             dict =  json.loads ( self.request.body )
-            snotes = []
             cur = ""
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
@@ -36,11 +35,16 @@ class Note(webapp.RequestHandler):
                     db_n.trash = 1
                     db_n.delete_date = datetime.datetime.now()
                     db_n.put();
-                    snotes.append( db_n.to_dict() )
+                    if user.user_id() == db_n.author.user_id():
+                        susers = [user.user_id()]
+                    else:
+                        susers = [user.user_id(), db_n.author.user_id()]                    
+                    for u in db_n.shared_with:
+                        susers.append( u )
+                    notes.sentTo( json.dumps( [db_n.to_dict()] ), susers, cur )
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
-            notes.sentTo( json.dumps( snotes ), user, cur )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -52,16 +56,35 @@ class Trash(webapp.RequestHandler):
         user = users.get_current_user()
         if user:
             dict =  json.loads ( self.request.body )
-            snotes = []
             cur = ""
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
                     if db_n.is_saved():
                         cur = note['from']
-                        db_n.delete()
-                        snotes.append( {"to_delete":note['id']} )
-            notes.sentTo( json.dumps( snotes ), user, cur )
+
+                        if user.user_id() == db_n.author.user_id():
+                            susers = []
+                            for u in db_n.shared_with:
+                                susers.append( u )
+                            if user.user_id() not in susers:
+                                susers.append( user.user_id() )
+                            db_n.delete()
+                        else:
+                            susers = [user.user_id()]
+                            if user.user_id() in db_n.shared_with:
+                                db_n.shared_with.remove( user.user_id() )
+                                db_n.put()
+                            c_u = memcache.get( user.user_id() + "_user" )
+                            if c_u is None:
+                                c_u = notes.sticklet_users.stickletUser.get( user.user_id() )
+                            if note['id'] in c_u.has_shared:
+                                c_u.has_shared.remove( note['id'] )
+                                c_u.put()
+                                memcache.set( user.user_id() + "_user", c_u )
+
+                        notes.sentTo( json.dumps( [{"to_delete":note['id']}] ), susers, cur )
+
             memcache.delete( user.user_id() + "_trash")
         else:
             self.error(401)

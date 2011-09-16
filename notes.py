@@ -40,7 +40,7 @@ class Note(webapp.RequestHandler):
             note.put()
             self.response.out.write(json.dumps(note.to_dict()))
             memcache.delete( user.user_id() + "_notes" )
-            sentTo( json.dumps( [note.to_dict()] ), user, self.request.get( 'from' ) )
+            sentTo( json.dumps( [note.to_dict()] ), [user.user_id()], self.request.get( 'from' ) )
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -78,7 +78,6 @@ class Note(webapp.RequestHandler):
         if user:
             dict =  json.loads ( self.request.body )
             cur = ""
-            notes = []
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
@@ -96,16 +95,22 @@ class Note(webapp.RequestHandler):
                         db_n.z = int(note['z'])
                     if 'is_list' in note:
                         db_n.is_list = int(note['is_list'])
-                    cur = note['from']    
                     db_n.modify_date = datetime.datetime.now()
-                    notes.append ( db_n.to_dict() )
                     db_n.put()
-                    
+                    cur = note['from']
+                    if user.user_id() == db_n.author.user_id():
+                        susers = [user.user_id()]
+                    else:
+                        susers = [user.user_id(), db_n.author.user_id()]
+                    for u in db_n.shared_with:
+                        if u not in susers:
+                            susers.append( u )
+
+                    sentTo( json.dumps( [db_n.to_dict()] ), susers, cur )
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
 
-            sentTo( json.dumps( notes ), user, cur )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -116,7 +121,6 @@ class Trash(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
-
             note_query = memcache.get( user.user_id() + "_trash")
             if note_query is not None:
                 self.response.out.write( note_query )
@@ -136,11 +140,11 @@ class Trash(webapp.RequestHandler):
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
+
     def put(self):
         user = users.get_current_user()
         if user:
             dict =  json.loads ( self.request.body )
-            notes = []
             cur = ""
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
@@ -149,9 +153,14 @@ class Trash(webapp.RequestHandler):
                     db_n.trash = 0
                     db_n.delete_date = None
                     db_n.put()
-                    notes.append( db_n.to_dict() )
+                    if user.user_id() == db_n.author.user_id():
+                        susers = [user.user_id()]
+                    else:
+                        susers = [user.user_id(), db_n.author.user_id()]                    
+                    for u in db_n.shared_with:
+                        susers.append( u )
+                    sentTo( json.dumps( [db_n.to_dict()] ), susers, cur )
 
-            sentTo( json.dumps( notes ), user, cur )
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
         else:
@@ -195,20 +204,23 @@ class Disconnect(webapp.RequestHandler):
 class Share(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
-        mail = json.loads ( self.request.body )
         if user:
+            mail = json.loads ( self.request.body )
             add = sticklet_users.stickletUser.all()
-            add = add.filter( "email =", mail['email'] ).get()
+            user_t = add.filter( "email =", mail['email'] ).get()
             if add:
                 db_n = stickynote.db.get( mail['id'] )
                 if db_n:
-                    if mail['id'] not in add.has_shared:
-                        add.has_shared.append( mail['id'] )
-                    if add.author.user_id() not in db_n.shared_with:
-                        db_n.shared_with.append( add.author.user_id() )
-                    db_n.is_shared = 1
-                    db_n.put()
-                    add.put()
+                    if mail['id'] not in user_t.has_shared:
+                        user_t.has_shared.append( mail['id'] )
+                        user_t.put()
+                        memcache.set( user_t.author.user_id() + "_user", user_t )
+                    if user_t.author.user_id() not in db_n.shared_with:
+                        db_n.shared_with.append( user_t.author.user_id() )
+                        db_n.is_shared = 2
+                        db_n.put()
+                        memcache.delete( db_n.author.user_id() + "_notes" )
+                    #self.response.out.write( json.dumps( user_t.has_shared ) )
                 else:
                     self.error(400)
                     self.response.out.write("No such note.")
@@ -235,23 +247,24 @@ class Share(webapp.RequestHandler):
                     updated = True
             self.response.out.write( json.dumps( arr ) )
             if updated:
-                memcache.set( user.user_id() + "_user", up )
+                memcache.set( user.user_id() + "_user", u )
 
-def sentTo( msg, user, cur ):
-    up = memcache.get( user.user_id() + "_user")
-    if up is None:
-        up = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
-        if up:
-            if up.author is None:
-                up.author = user
-                up.email = string.lower(user.email())
-                up.put()
-            memcache.set( user.user_id() + "_user", up )
-    if up:
-        cur = user.user_id() + "_chan_" + cur
-        for con in up.connections:
-            if con != cur:
-                channel.send_message( con, msg )
+def sentTo( msg, susers, cur ):
+    for up in susers:
+        u = memcache.get( up + "_user")
+        if u is None:
+            u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+            if u:
+                if u.author is None:
+                    u.author = user
+                    u.email = string.lower(user.email())
+                    u.put()
+                memcache.set( up + "_user", u )
+        if u:
+            cur = u.author.user_id() + "_chan_" + cur
+            for con in u.connections:
+                if con != cur:
+                    channel.send_message( con, msg )
 
 application = webapp.WSGIApplication([
     ('/notes', Note),
