@@ -18,6 +18,7 @@ from django.utils import simplejson as json
 from google.appengine.api import users
 from google.appengine.api import memcache
 from google.appengine.api import channel
+from google.appengine.api import mail
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from webob.multidict import MultiDict, UnicodeMultiDict, NestedMultiDict, NoVars
@@ -218,6 +219,10 @@ class Share(webapp.RequestHandler):
                         db_n.shared_with.append( user_t.author.user_id() )
                         db_n.put()
                         memcache.delete( db_n.author.user_id() + "_notes" )
+                    mail.send_mail( sender="admin@sticklet.com",
+                                    to=user_t.email,
+                                    subject=user_t.author.nickname() + " has shared a sticklet with you!",
+                                    body="Sign in to www.sticklet.com to view and collaborate on it!" )
                     #self.response.out.write( json.dumps( user_t.has_shared ) )
                 else:
                     self.error(400)
