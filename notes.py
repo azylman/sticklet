@@ -251,7 +251,7 @@ def sentTo( msg, susers, cur ):
     for up in susers:
         u = memcache.get( up + "_user")
         if u is None:
-            u = sticklet_users.stickletUser.get_by_key_name( user.user_id() )
+            u = sticklet_users.stickletUser.get_by_key_name( up )
             if u:
                 if u.author is None:
                     u.author = user
