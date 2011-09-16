@@ -205,14 +205,14 @@ class Share(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user:
-            mail = json.loads ( self.request.body )
+            smail = json.loads ( self.request.body )
             add = sticklet_users.stickletUser.all()
-            user_t = add.filter( "email =", mail['email'] ).get()
-            if add:
-                db_n = stickynote.db.get( mail['id'] )
+            user_t = add.filter( "email =", smail['email'] ).get()
+            if user_t:
+                db_n = stickynote.db.get( smail['id'] )
                 if db_n:
-                    if mail['id'] not in user_t.has_shared:
-                        user_t.has_shared.append( mail['id'] )
+                    if smail['id'] not in user_t.has_shared:
+                        user_t.has_shared.append( smail['id'] )
                         user_t.put()
                         memcache.set( user_t.author.user_id() + "_user", user_t )
                     if user_t.author.user_id() not in db_n.shared_with:
