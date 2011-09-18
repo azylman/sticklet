@@ -55,6 +55,9 @@ function getChannel () {
 	    token = resp.rand;
 	    socket = channel.open();
 	    socket.onmessage = noteUpdate;
+	    socket.onclose = function ( event ) {
+		getChannel();
+	    };
 	},
 	"error" : function ( s ) {
 	    
@@ -139,9 +142,15 @@ function noteUpdate( event ){
 	    $("#" + note.to_delete).remove();
 	    drawTrash();
 	} else if ( note == "error" ){ 
-	    socket.close();
-	    socket.disconnect_();
-	    console.log ( channel );
+	    //socket.close();
+	    //socket.disconnect_();
+	    socket = null;
+	    channel = null;
+	    $(".iframe").remove();
+	    var yes = confirm( "Your session has ended.  Press okay to refresh the page." );
+	    if ( yes ) {
+	    	window.location.reload();
+	    }
 	} else {
 	    if ( note.z > z ) {
 		note.z = z++;
@@ -1112,11 +1121,13 @@ function shareWith( email, id ) {
               "async" : true,
               "url" : "/share",
               "success" : function( resp ) {
-		  console.log ( resp );
+		  $("#sharebox").attr("value", "").text("");
               },
 	      "error" : function ( resp ) {
 		  if( resp.status == 401 ) {
 		      window.location = $("#logout").attr("href");
+		  } else if ( resp.status == 400 ) {
+		      alert( "No such user.  Send them an email to join." );
 		  } else {
 		      alert( "Failed to connect with server, if problem persists, contact the webmasters.");
 		  }
@@ -1205,6 +1216,8 @@ $(document).ready( function () {
 	    }
 	    if ( $("#searchbox").is(":focus") || $(".found, .unfound").length > 0 ){
 		$(document).trigger("click");
+	    } else if ( $("#sharebox").is(":focus") ) {
+		$("#share_with").click();
 	    }
 	} else if ( event.keyCode == 13 ) {
 	    if ( $("#searchbox").is(":focus") ) {
@@ -1225,7 +1238,7 @@ $(document).ready( function () {
 	var id = $(event.currentTarget).parents(".menu").attr("name");
 	$(".menu").css("display", "none");
 	$("#current_share").text( '"' + notes[id].subject + '"' );
-	$("#sharebox").attr( "name", id );
+	$("#sharebox").attr( "name", id ).focus();
 	$("#help_overlay").fadeIn("fast");
     });
 
