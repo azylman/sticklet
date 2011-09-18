@@ -223,7 +223,7 @@ class Share(webapp.RequestHandler):
                         db_n.shared_with.append( user_t.author.user_id() )
                         update = True
                     if user_t.author.email not in db_n.shared_with_emails:
-                        db_n.shared_with_emails.append( user_t.author.email )
+                        db_n.shared_with_emails.append( user_t.author.email() )
                         update = True
                     if update:
                         db_n.put()
