@@ -6,6 +6,7 @@
 "use strict";
 
 var notes = {};
+var tmp;
 var dragged = {};
 var z = 0;
 var undoStack = [];
@@ -80,14 +81,62 @@ function getShared () {
 		    trash[resp[i].id] = resp[i];
 		} else {
 		    writeNote( resp[i], false );
-		    notes[resp[i].id] = resp[i];
+		    tmp[resp[i].id] = resp[i];
+		    delete notes[resp[i].id];
 		}
 	    });
+            for ( var d in notes ){
+	    	if ( notes.hasOwnProperty ( d ) ) {
+	    	    $( "#" + notes[d].id ).remove();
+	    	}
+	    }	
+	    notes = tmp;
+	    tmp = {};
 	    drawTrash();
-	    dumpNotes()
+	    dumpNotes();
+	    if ( getSize( notes ) == 0 && getSize( trash ) == 0 ) {
+		var el = $("<div />", {
+		    "id" : "double_click_help"
+		});
+		el.text("Double click anywhere to add note");
+		var doc = $(document);
+		$("#noteArea").append(el);
+		doc.bind( "dblclick", function ( event ) {
+		    doc.unbind("dblclick");
+		    el.remove();
+		});
+	    }
 	},
 	"error" : function ( s ) {
 	    alert ( "error in share" );
+	}
+    });
+}
+
+function getSticklets(){
+    var tmpArr;
+    var tmpArr2;
+    var tmpArr3;
+}
+
+function getTrash () {
+    $.ajax ({
+	"url" : "/notes/trash",
+	"async" : true,
+	"type" : "GET",
+	"dataType" : "json",
+	"success" : function( resp ) {
+	    getShared();
+            trash = {};
+            $.each(resp, function(index) {
+		trash[resp[index].id] = resp[index];
+            });
+            drawTrash();
+	},
+	"error" : function ( resp ) {
+	    if( resp.status == 401 ) {
+		window.location = $("#logout").attr("href");
+	    }
 	}
     });
 }
@@ -99,7 +148,7 @@ function getNotes () {
 	"type" : "GET",
 	"dataType" : "json",
 	"success" : function( resp ) {
-            var tmp = {};
+            tmp = {};
 	    z = 0;
             $.each(resp, function(index) {
 		z++;
@@ -113,14 +162,6 @@ function getNotes () {
 		tmp[resp[index].id] = resp[index];
             });
 	    getTrash();
-            for ( var d in notes ){
-		if ( notes.hasOwnProperty ( d ) ) {
-		    $( "#" + notes[d].id ).remove();
-		}
-	    }
-	    getShared();
-            notes = tmp;
-            dumpNotes();
 	},
 	"error" : function ( resp ) {
 	    if( resp.status == 401 ) {
@@ -187,39 +228,6 @@ function noteUpdate( event ){
 	    }
 	}
     }
-}
-
-function getTrash () {
-    $.ajax ({
-	"url" : "/notes/trash",
-	"async" : true,
-	"type" : "GET",
-	"dataType" : "json",
-	"success" : function( resp ) {
-            trash = {};
-            $.each(resp, function(index) {
-		trash[resp[index].id] = resp[index];
-            });
-            drawTrash();
-	    if ( getSize( notes ) == 0 && getSize( trash ) == 0 ) {
-		var el = $("<div />", {
-		    "id" : "double_click_help"
-		});
-		el.text("Double click anywhere to add note");
-		var doc = $(document);
-		$("#noteArea").append(el);
-		doc.bind( "dblclick", function ( event ) {
-		    doc.unbind("dblclick");
-		    el.remove();
-		});
-	    }
-	},
-	"error" : function ( resp ) {
-	    if( resp.status == 401 ) {
-		window.location = $("#logout").attr("href");
-	    }
-	}
-    });
 }
 
 function dumpNotes ( ){
