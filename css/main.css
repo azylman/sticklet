@@ -160,8 +160,9 @@ html,body {
     margin-right:1px;
 }
 
-.textbox input:focus {
-    border:1px solid #999999;
+.textbox:focus {
+    outline: 1px ridge rgb(0,0,0);
+    outline: 1px ridge rgba(0,0,0,.4);
 }
 
 #searcharea {
@@ -400,6 +401,20 @@ a.right {
 #share_menu {
     text-align:center;
     display:none;
+}
+
+#who_shared {
+    overflow:auto;
+}
+
+#ownership {
+    font-style: italic;
+    font-variant: small-caps;
+    font-weight:100;
+}
+
+#email_share {
+    margin: 50px;
 }
 
 #help_menu h1 {

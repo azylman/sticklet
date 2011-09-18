@@ -34,6 +34,7 @@ class Note(webapp.RequestHandler):
             note.color = "#FFF79A"
             note.trash = 0
             note.is_list = 0
+            note.shared_with_emails.append( user.email() )
             note.x = int ( self.request.get( 'x' ) )
             note.y = int ( self.request.get( 'y' ) )
             note.z = int ( self.request.get( 'z' ) )
@@ -61,6 +62,8 @@ class Note(webapp.RequestHandler):
                 for note in notes_query:
                     if note.z != min_z:
                         note.z = min_z
+                        if user.email() not in note.shared_with_emails:
+                            note.shared_with_emails.insert( 0, user.email() )
                         note.put()
                     arr.append ( note.to_dict() )
                     min_z = min_z + 1
@@ -208,28 +211,33 @@ class Share(webapp.RequestHandler):
             smail = json.loads ( self.request.body )
             add = sticklet_users.stickletUser.all()
             user_t = add.filter( "email =", smail['email'].lower() ).get()
-            if user_t:
+            if user_t and user_t.author.user_id() != user.user_id():
                 db_n = stickynote.db.get( smail['id'] )
                 if db_n:
+                    update = False
                     if smail['id'] not in user_t.has_shared:
                         user_t.has_shared.append( smail['id'] )
                         user_t.put()
                         memcache.set( user_t.author.user_id() + "_user", user_t )
                     if user_t.author.user_id() not in db_n.shared_with:
                         db_n.shared_with.append( user_t.author.user_id() )
+                        update = True
+                    if user_t.author.email not in db_n.shared_with_emails:
+                        db_n.shared_with_emails.append( user_t.author.email )
+                        update = True
+                    if update:
                         db_n.put()
                         memcache.delete( db_n.author.user_id() + "_notes" )
                     mail.send_mail( sender="Sticklet.com <admin@sticklet.com>",
                                     to=user_t.email,
                                     subject=user.nickname() + " has shared a sticklet with you!",
                                     body="Sign in to www.sticklet.com to view and collaborate on it!" )
-                    #self.response.out.write( json.dumps( user_t.has_shared ) )
                 else:
                     self.error(400)
                     self.response.out.write("No such note.")
             else:
                 self.error(400)
-                self.response.out.write("No such email")
+                self.response.out.write("No such email address.")
         else:
             self.error(401)
             self.response.out.write("Not logged in.")

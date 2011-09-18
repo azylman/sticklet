@@ -1124,18 +1124,40 @@ function checkList ( event ) {
     saveNote( { "id" : id, "content" : notes[id].content}, true );	
 }
 
+function drawShared( id ) {
+    var note = notes[id];
+    var area = $("#who_shared");
+    area.html("");
+    if ( !! note.shared_emails ) {
+	for( var i = 0; i < note.shared_emails.length; i++ ){
+	    var el = $("<div />").text( note.shared_emails[i] );
+	    if ( i == 0 ) {
+		el.append( $("<span />", {
+		    "class" : "ownership"
+		}).text( " - owner" ) );
+	    }
+	    area.append( el );
+	}
+    } else {
+	area.append( "<div>Not shared with anyone.</div>" );
+    }
+}
+
 function shareWith( email, id ) {
     $.ajax ({ "type" : "POST",
               "async" : true,
               "url" : "/share",
               "success" : function( resp ) {
 		  $("#sharebox").attr("value", "").text("");
+		  notes[id].shared_emails.push( email );
+		  $("#who_shared").append ( $("<div />").text( email ) );
               },
 	      "error" : function ( resp ) {
 		  if( resp.status == 401 ) {
 		      window.location = $("#logout").attr("href");
 		  } else if ( resp.status == 400 ) {
 		      alert( "No such user.  Send them an email to join." );
+		      $("#sharebox").attr("value", "").text("");
 		  } else {
 		      alert( "Failed to connect with server, if problem persists, contact the webmasters.");
 		  }
@@ -1247,6 +1269,7 @@ $(document).ready( function () {
 	$(".menu").css("display", "none");
 	$("#current_share").text( '"' + notes[id].subject + '"' );
 	$("#sharebox").attr( "name", id ).focus();
+	drawShared( id );
 	$("#help_overlay").fadeIn("fast");
     });
 
