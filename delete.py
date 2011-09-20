@@ -66,6 +66,9 @@ class Trash(webapp.RequestHandler):
                         if user.user_id() == db_n.author.user_id():
                             susers = []
                             for u in db_n.shared_with:
+                                s = sticklet_users.stickletUser.get_by_key_name( u )
+                                if note.['id'] in s.has_shared:
+                                    s.has_shared.remove( note['id'] )
                                 susers.append( u )
                             if user.user_id() not in susers:
                                 susers.append( user.user_id() )
