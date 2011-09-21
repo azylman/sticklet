@@ -85,8 +85,8 @@ class Trash(webapp.RequestHandler):
                                     db_n.shared_with.remove( u )
                                     db_n.put()
                                     break
-                                if user.email().lower() in db_n.shared_with_emails:
-                                    db_n.shared_with_emails.remove( user.email() )
+                            if user.email().lower() in db_n.shared_with_emails:
+                                db_n.shared_with_emails.remove( user.email().lower() )
                             c_u = memcache.get( user.user_id() + "_user" )
                             if c_u is None:
                                 c_u = notes.sticklet_users.stickletUser.get( user.user_id() )
