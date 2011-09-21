@@ -79,14 +79,14 @@ class Trash(webapp.RequestHandler):
                             db_n.delete()
                         else:
                             susers = [user.user_id()]
+                            if user.email().lower() in db_n.shared_with_emails:
+                                db_n.shared_with_emails.remove( user.email().lower() )
                             for u in db_n.shared_with:
                                 v = json.loads( u )
                                 if v['id'] == user.user_id():
                                     db_n.shared_with.remove( u )
                                     db_n.put()
                                     break
-                            if user.email().lower() in db_n.shared_with_emails:
-                                db_n.shared_with_emails.remove( user.email().lower() )
                             c_u = memcache.get( user.user_id() + "_user" )
                             if c_u is None:
                                 c_u = notes.sticklet_users.stickletUser.get( user.user_id() )
