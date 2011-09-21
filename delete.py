@@ -40,8 +40,11 @@ class Note(webapp.RequestHandler):
                     else:
                         susers = [user.user_id(), db_n.author.user_id()]                    
                     for u in db_n.shared_with:
-                        susers.append( u )
-                    notes.sentTo( json.dumps( [db_n.to_dict()] ), susers, cur )
+                        v = json.loads( u )
+                        i = v['id']
+                        if i not in susers:
+                            susers.append( i )
+                    notes.sentTo( db_n, susers, cur )
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
@@ -66,18 +69,24 @@ class Trash(webapp.RequestHandler):
                         if user.user_id() == db_n.author.user_id():
                             susers = []
                             for u in db_n.shared_with:
-                                s = sticklet_users.stickletUser.get_by_key_name( u )
+                                v = json.loads( u )
+                                s = sticklet_users.stickletUser.get_by_key_name( v['id'] )
                                 if s and note['id'] in s.has_shared:
                                     s.has_shared.remove( note['id'] )
-                                susers.append( u )
+                                susers.append( v['id'] )
                             if user.user_id() not in susers:
                                 susers.append( user.user_id() )
                             db_n.delete()
                         else:
                             susers = [user.user_id()]
-                            if user.user_id() in db_n.shared_with:
-                                db_n.shared_with.remove( user.user_id() )
-                                db_n.put()
+                            for u in db_n.shared_with:
+                                v = json.loads( u )
+                                if v['id'] == user.user_id():
+                                    db_n.shared_with.remove( u )
+                                    db_n.put()
+                                    break
+                                if user.email().lower() in db_n.shared_with_emails:
+                                    db_n.shared_with_emails.remove( user.email() )
                             c_u = memcache.get( user.user_id() + "_user" )
                             if c_u is None:
                                 c_u = notes.sticklet_users.stickletUser.get( user.user_id() )
@@ -86,7 +95,7 @@ class Trash(webapp.RequestHandler):
                                 c_u.put()
                                 memcache.set( user.user_id() + "_user", c_u )
 
-                        notes.sentTo( json.dumps( [{"to_delete":note['id']}] ), susers, cur )
+                        notes.sentTo( {"to_delete":note['id']}, susers, cur )
 
             memcache.delete( user.user_id() + "_trash")
         else:

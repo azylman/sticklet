@@ -41,7 +41,7 @@ class Note(webapp.RequestHandler):
             note.put()
             self.response.out.write(json.dumps(note.to_dict()))
             memcache.delete( user.user_id() + "_notes" )
-            sentTo( json.dumps( [note.to_dict()] ), [user.user_id()], self.request.get( 'from' ) )
+            sentTo( note, [user.user_id()], self.request.get( 'from' ) )
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -84,32 +84,56 @@ class Note(webapp.RequestHandler):
             for note in dict:
                 db_n = stickynote.db.get( note['id'] )
                 if db_n:
+                    change = False
+                    susers = [user.user_id()]
                     if 'content' in note:
                         db_n.content = note['content']
+                        change = True
                     if 'subject' in note:
                         db_n.subject = note['subject']
-                    if 'color' in note:
-                        db_n.color = note['color']
-                    if 'x' in note:
-                        db_n.x = int(note['x'])
-                    if 'y' in note:
-                        db_n.y = int(note['y'])
-                    if 'z' in note:
-                        db_n.z = int(note['z'])
+                        change = True
                     if 'is_list' in note:
                         db_n.is_list = int(note['is_list'])
+                        change = True
+                    if db_n.author.user_id() == user.user_id():
+                        if 'color' in note:
+                            db_n.color = note['color']
+                        if 'x' in note:
+                            db_n.x = int(note['x'])
+                        if 'y' in note:
+                            db_n.y = int(note['y'])
+                        if 'z' in note:
+                            db_n.z = int(note['z'])
+                    else:
+                        if 'color' in note or 'x' in note or 'y' in note or 'z' in note:
+                            for sd in db_n.shared_with:
+                                p = json.loads( sd )
+                                if p['id'] == user.user_id():
+                                    if 'color' in note:
+                                        p['color'] = note['color']
+                                    if 'x' in note:
+                                        p['x'] = int(note['x'])
+                                    if 'y' in note:
+                                        p['y'] = int(note['y'])
+                                    if 'z' in note:
+                                        p['z'] = int(note['z'])
+                                    db_n.shared_with.remove( sd )
+                                    db_n.shared_with.append( json.dumps( p ) )
+                                    break
+                    if change:
+                        if db_n.author.user_id() not in susers:
+                            susers.append( db_n.author.user_id() )
+                        for u in db_n.shared_with:
+                            v = json.loads( u )
+                            i = v['id']
+                            if i not in susers:
+                                susers.append( i )
+
                     db_n.modify_date = datetime.datetime.now()
                     db_n.put()
                     cur = note['from']
-                    if user.user_id() == db_n.author.user_id():
-                        susers = [user.user_id()]
-                    else:
-                        susers = [user.user_id(), db_n.author.user_id()]
-                    for u in db_n.shared_with:
-                        if u not in susers:
-                            susers.append( u )
 
-                    sentTo( json.dumps( [db_n.to_dict()] ), susers, cur )
+                    sentTo( db_n, susers, cur )
                 else:
                     self.error(400)
                     self.response.out.write ("Note for the given id does not exist.")
@@ -161,8 +185,11 @@ class Trash(webapp.RequestHandler):
                     else:
                         susers = [user.user_id(), db_n.author.user_id()]                    
                     for u in db_n.shared_with:
-                        susers.append( u )
-                    sentTo( json.dumps( [db_n.to_dict()] ), susers, cur )
+                        v = json.loads( u )
+                        i = v['id']
+                        if i not in susers:
+                            susers.append( i )
+                    sentTo( db_n, susers, cur )
 
             memcache.delete( user.user_id() + "_notes")
             memcache.delete( user.user_id() + "_trash")
@@ -220,7 +247,12 @@ class Share(webapp.RequestHandler):
                         user_t.put()
                         memcache.set( user_t.author.user_id() + "_user", user_t )
                     if user_t.author.user_id() not in db_n.shared_with:
-                        db_n.shared_with.append( user_t.author.user_id() )
+                        db_n.shared_with.append( json.dumps({"id" : user_t.author.user_id(),
+                                                  "color" : db_n.color,
+                                                  "x" : db_n.x,
+                                                  "y" : db_n.y,
+                                                  "z" : db_n.z})
+                                                 )
                         update = True
                     if user_t.author.email not in db_n.shared_with_emails:
                         db_n.shared_with_emails.append( user_t.author.email() )
@@ -228,16 +260,20 @@ class Share(webapp.RequestHandler):
                     if update:
                         db_n.put()
                         memcache.delete( db_n.author.user_id() + "_notes" )
-                    mail.send_mail( sender="Sticklet.com <admin@sticklet.com>",
-                                    to=user_t.email,
-                                    subject=user.nickname() + " has shared a sticklet with you!",
-                                    body="Sign in to www.sticklet.com to view and collaborate on it!" )
+                    if len(user_t.connections) == 0:
+                        mail.send_mail( sender="Sticklet.com <admin@sticklet.com>",
+                                        to=user_t.email,
+                                        subject=user.nickname() + " has shared a sticklet with you!",
+                                        body="Sign in to www.sticklet.com to view and collaborate on it!" )
                 else:
                     self.error(400)
                     self.response.out.write("No such note.")
             else:
-                self.error(400)
-                self.response.out.write("No such email address.")
+                if "gmail" in smail['email']:
+                    mail.send_mail( sender="Sticklet.com <admin@sticklet.com>",
+                                    to=smail['email'],
+                                    subject=user.nickname() + " has shared a sticklet with you!",
+                                    body="Sign in to www.sticklet.com with a your gmail account to view and collaborate on it!" )
         else:
             self.error(401)
             self.response.out.write("Not logged in.")
@@ -253,8 +289,17 @@ class Share(webapp.RequestHandler):
             arr = []
             for nos in u.has_shared:
                 note = stickynote.db.get( nos )
-                if note and u.author.user_id() in note.shared_with:
-                    arr.append( note.to_dict() )
+                if note:
+                    for js in note.shared_with:
+                        d = json.loads( js )
+                        if d['id'] == u.author.user_id():
+                            dic = note.to_dict()
+                            dic['color'] = d['color']
+                            dic['x'] = d['x']
+                            dic['y'] = d['y']
+                            dic['z'] = d['z']
+                            arr.append( dic )
+                            break
                 else:
                     u.has_shared.remove( nos )
                     u.put()
@@ -263,7 +308,7 @@ class Share(webapp.RequestHandler):
             if updated:
                 memcache.set( user.user_id() + "_user", u )
 
-def sentTo( msg, susers, cur ):
+def sentTo( note, susers, cur ):
     for up in susers:
         u = memcache.get( up + "_user")
         if u is None:
@@ -275,10 +320,25 @@ def sentTo( msg, susers, cur ):
                     u.put()
                 memcache.set( up + "_user", u )
         if u:
+            try:
+                d = note['to_delete']
+                db_n = note
+            except:
+                db_n = note.to_dict()
+                if up != note.author.user_id():
+                    for d in note.shared_with:
+                        t = json.loads( d )
+                        if t['id'] == up:
+                            db_n['color'] = t['color']
+                            db_n['x'] = t['x']
+                            db_n['y'] = t['y']
+                            db_n['z'] = t['z']
+                            break
+
             cur = u.author.user_id() + "_chan_" + cur
             for con in u.connections:
                 if con != cur:
-                    channel.send_message( con, msg )
+                    channel.send_message( con, json.dumps( [db_n] ) )
 
 application = webapp.WSGIApplication([
     ('/notes', Note),
