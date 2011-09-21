@@ -1144,13 +1144,16 @@ function drawShared( id ) {
 }
 
 function shareWith( email, id ) {
+    email = email.toLowerCase();
     $.ajax ({ "type" : "POST",
               "async" : true,
               "url" : "/share",
               "success" : function( resp ) {
 		  $("#sharebox").attr("value", "").text("");
-		  notes[id].shared_emails.push( email );
-		  $("#who_shared").append ( $("<div />").text( email ) );
+		  if( notes[id].shared_emails.indexOf( email ) == -1 ) {
+		      notes[id].shared_emails.push( email );
+		      $("#who_shared").append ( $("<div />").text( email ) );
+		  }
               },
 	      "error" : function ( resp ) {
 		  if( resp.status == 401 ) {
