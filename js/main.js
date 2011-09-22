@@ -183,8 +183,6 @@ function noteUpdate( event ){
 	    $("#" + note.to_delete).remove();
 	    drawTrash();
 	} else if ( note == "error" ){ 
-	    //socket.close();
-	    //socket.disconnect_();
 	    socket = null;
 	    channel = null;
 	    $(".iframe").remove();
@@ -291,6 +289,22 @@ function createNote( e ) {
             });
 }
 
+function savedDrop( suc ) {
+    if ( suc ) {
+	$("#saved").slideDown("fast", function () {
+	    clearTimeout( t );
+	    t = setTimeout("$('#saved').slideUp('fast')", 2500);
+	});
+    } else {
+	$("#saved div").text( "Failed" );
+	$('#saved').addClass( "found" );
+	$("#saved").slideDown("fast", function () {
+	    clearTimeout( t );
+	    t = setTimeout("$('#saved').slideUp('fast', handleError )", 2500);
+	});
+    }
+}
+
 function deleteNote ( el ) {
 
     var n = notes[el.attr('id')];
@@ -301,21 +315,13 @@ function deleteNote ( el ) {
 		  "data" : JSON.stringify ( [note] ),
 		  "success" : function ( resp ) {
 		      dumpNotes();
-		      $("#saved").slideDown("fast", function () {
-			  clearTimeout( t );
-			  t = setTimeout("$('#saved').slideUp('fast')", 2500);
-		      });
+		      savedDrop( true );
 		  },
 		  "error" : function( resp ) {
 		      if( resp.status == 401 ) {
 			  window.location = $("#logout").attr("href");
 		      } else {
-			  $("#saved div").text( "Failed" );
-			  $('#saved').addClass( "found" );
-			  $("#saved").slideDown("fast", function () {
-			      clearTimeout( t );
-			      t = setTimeout("$('#saved').slideUp('fast', handleError )", 2500);
-			  });
+			  savedDrop( false );
 		      }
 		  }
 		});
@@ -346,10 +352,7 @@ function saveNote ( note, async, fn ) {
               "type" : "PUT",
               "data" : dict,
               "success" : function ( resp ) {
-		  $("#saved").slideDown("fast", function () {
-		      clearTimeout( t );
-		      t = setTimeout("$('#saved').slideUp('fast')", 2500);
-		  });
+		  savedDrop( true );
 		  if ( fn !== undefined ) {
 		      fn ( resp );
 		  }
@@ -359,12 +362,7 @@ function saveNote ( note, async, fn ) {
 		  if( resp.status == 401 ) {
 		      window.location = $("#logout").attr("href");
 		  } else {
-		      $("#saved div").text( "Failed" );
-		      $('#saved').addClass( "found" );
-		      $("#saved").slideDown("fast", function () {
-			  clearTimeout( t );
-			  t = setTimeout("$('#saved').slideUp('fast', handleError )", 2500);
-		      });
+		      savedDrop( false );
 		  }
               }
             });
@@ -1154,11 +1152,13 @@ function shareWith( email, id ) {
 		      notes[id].shared_emails.push( email );
 		      $("#who_shared").append ( $("<div />").text( email ) );
 		  }
+		  savedDrop( true );
               },
 	      "error" : function ( resp ) {
 		  if( resp.status == 401 ) {
 		      window.location = $("#logout").attr("href");
 		  } else if ( resp.status == 400 ) {
+		      savedDrop( false );
 		      alert( "No such user.  Send them an email to join." );
 		      $("#sharebox").attr("value", "").text("");
 		  } else {
@@ -1249,12 +1249,12 @@ $(document).ready( function () {
 	    }
 	    if ( $("#searchbox").is(":focus") || $(".found, .unfound").length > 0 ){
 		$(document).trigger("click");
-	    } else if ( $("#sharebox").is(":focus") ) {
-		$("#share_with").click();
-	    }
+	    } 
 	} else if ( event.keyCode == 13 ) {
 	    if ( $("#searchbox").is(":focus") ) {
 		searchNotes();
+	    } else if ( $("#sharebox").is(":focus") ) {
+		$("#share_with").click();
 	    }
 	}
     });
