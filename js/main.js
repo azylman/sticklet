@@ -380,13 +380,15 @@ function drawTrash() {
     var el = $("#archived_content");
     for ( var a in trash ) {
 	if ( trash.hasOwnProperty ( a ) && $("#" + a).length == 0 ) {
-	    var div = $("<div />",{
+	    var div2 = $("<div />",{
 		"class" : "trash_item",
 		"id" : trash[a].id
 	    });
+	    var div = $( "<div />" );
+	    div2.append( div );
 	    div.css({"background-color" : trash[a].color,
 		     "opacity" : .4});
-	    div.bind( "mouseover", function ( event ) {
+	    div2.bind( "mouseover", function ( event ) {
 		if ( isChild( event.relatedTarget, event.currentTarget ) ) {
 		    event.preventDefault();
 		    return;
@@ -409,8 +411,8 @@ function drawTrash() {
 		    }
 		});
 	    });
-	    div.bind("mousedown", function ( event ) {
-		if ( $(event.target).is("input") ) { return; }
+	    div2.bind("mousedown", function ( event ) {
+		if ( $(event.target).is("input") || event.button !== 0 ) { return; }
 		down = true;
 		event.preventDefault();
 		var div = $(event.currentTarget);
@@ -433,7 +435,7 @@ function drawTrash() {
 		    down = false;
 		});
 	    });
-	    div.bind( "click", function ( event ) {
+	    div2.bind( "click", function ( event ) {
 		if ( event.target.tagName.toLowerCase() == "input"){ return; }
 		var ing = $(event.currentTarget).find("input");
 		ing.attr("checked", !ing.is(":checked") );
@@ -475,7 +477,7 @@ function drawTrash() {
 	    sp.append(snippet);
 	    div.append ( sp );
 	    div.append( "<hr />" );
-	    el.prepend( div );
+	    el.prepend( div2 );
 	}
     }
     if ( getSize(trash) > 0 ) {
